@@ -1,0 +1,60 @@
+.plans {
+  margin-top: 140px;
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    h1 {
+      color: #fff;
+      font-weight: 600;
+      font-size: 24px;
+    }
+  }
+  .commonTable {
+    margin-top: 20px;
+  }
+}
+
+.createPlan {
+  .form-container {
+    padding: 20px;
+    margin: auto;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
+
+      label {
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #FFFFFF;
+      }
+
+      input {
+        background: #080808;
+        border: 1px solid #080808;
+        padding: 14px;
+        border-radius: 7px;
+        font-size: 16px;
+        color: #FFFFFF;
+        outline: none;
+
+        &::placeholder {
+          color: #A0A0A0;
+        }
+
+        &:focus {
+          border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+      }
+    }
+  }
+  .customButton  {
+    margin: 0 auto;
+    max-width: 174px;
+    width: 100%;
+    display: flex;
+  justify-content: center;
+  }
+}

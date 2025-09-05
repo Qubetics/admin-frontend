@@ -1,0 +1,61 @@
+.onboarding-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: #080808;
+  background-image: url("../../../assets/mainBg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+.onboarding-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  background-color: rgba(8, 8, 8, 0.8);
+  backdrop-filter: blur(5px);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.onboarding-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 80px 20px; 
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 450px;
+}
+
+.onboarding-footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: transparent;
+  backdrop-filter: blur(5px);
+  z-index: 1000;
+  padding: 1rem 0;
+  border-top: 1px solid #3B393C;
+}
+
+// Responsive adjustments
+@media (max-width: 991px) {
+  .login-container {
+    max-width: 90%;
+    margin: 2rem auto;
+  }
+  
+  .onboarding-main {
+    padding: 80px 15px 100px; 
+  }
+}

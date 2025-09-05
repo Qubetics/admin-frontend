@@ -1,0 +1,117 @@
+.header-main {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  transition: 0.3s all;
+  border-bottom: 1px solid #3b393c;
+
+  background-color: #121212;
+  height: 100px;
+  @media screen and (max-width: 676px) {
+    display: flex;
+    flex-direction: column-reverse;
+  }
+
+  &__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 25px;
+    padding-bottom: 25px;
+    gap: 30px;
+    @media (max-width: 1299px) {
+      justify-content: unset;
+      gap: 20px;
+    }
+    @media (max-width: 1200px) {
+      justify-content: space-between;
+    }
+    @media screen and (max-width: 676px) {
+      width: 100%;
+    }
+
+    .mob__List {
+      align-items: center;
+      @media screen and (max-width: 1200px) {
+        display: none;
+      }
+    }
+  }
+}
+
+.header {
+  position: fixed;
+  z-index: 1;
+  width: 100%;
+  transition: 0.3s all;
+  border-bottom: 1px solid #3b393c;
+  padding: 0 98px;
+  background-color: #121212;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 43px;
+
+    .header__title {
+      font-weight: 600;
+      font-size: 14px;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+  }
+
+  &__nav {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+
+    a {
+      font-size: 16px;
+      font-weight: 700;
+      color: #a0a0a0;
+      text-decoration: none;
+      transition: color 0.3s;
+      position: relative;
+      padding: 8px 0;
+
+      &:hover, 
+      &.active {
+        color: #ffffff;
+      }
+    }
+  }
+
+  &__wallet {
+    padding: 6px 14px;
+    font-size: 14px;
+    border-radius: 20px;
+    background: #000000;
+    border: 1px solid #555;
+    color: #ddd;
+    cursor: pointer;
+    transition: border 0.3s;
+
+    &:hover {
+      border-color: #fff;
+    }
+  }
+}
+
+/* 🔹 Responsive Styles */
+@media (max-width: 768px) {
+  .header {
+    &__nav {
+      display: none; // hide links on mobile
+    }
+
+    &__wallet {
+      font-size: 12px;
+      padding: 5px 12px;
+    }
+  }
+}

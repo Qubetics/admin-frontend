@@ -1,0 +1,88 @@
+:root {
+  --bg-background: #111827;
+  --clr-card: rgb(168, 219, 215);
+  --clr-1: rgb(121, 255, 247);
+  --clr-2: rgb(255, 200, 118);
+  --clr-4: #91baf8;
+  --clr-3: rgb(106, 168, 209) 0deg;
+  --clr-5: rgb(255, 152, 226) 120deg;
+  --clr-6: rgb(247, 186, 229);
+}
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 90deg;
+  inherits: false;
+}
+.customButton {
+    white-space: nowrap;
+  
+    @media (max-width: 1199px) {
+      display: flex !important;
+      justify-content: center;
+      height: 50px;
+    }
+  
+    position: relative;
+    display: inline-block;
+    padding: 12.5px 20px;
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    background-color: #000;
+    text-decoration: none;
+    border: none;
+    border-radius: 30px;
+    overflow: hidden;
+    cursor: pointer;
+  
+    &::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      padding: 2px;
+      border-radius: 30px;
+      background: conic-gradient(
+        from var(--gradient-angle),
+        var(--clr-card),
+        var(--clr-1),
+        var(--clr-2),
+        var(--clr-3),
+        var(--clr-4),
+        var(--clr-5),
+        var(--clr-6),
+        var(--clr-2),
+        var(--clr-1),
+        var(--clr-card)
+      );
+      animation: rotate 2.5s linear infinite;
+      -webkit-mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      animation: rotate 3s linear infinite;
+    }
+    @keyframes rotate {
+      0% {
+        --gradient-angle: 0deg;
+      }
+
+      100% {
+        --gradient-angle: 360deg;
+      }
+    }
+  
+    &:disabled {
+      cursor: not-allowed;
+    }
+  
+  &-bordered {
+    border: 1px solid var(--brandPurple);
+    background-color: transparent;
+    color: var(--brandPurple);
+    &:hover {
+      background-color: var(--darkPurple);
+      color: var(--white);
+    }
+  }
+}
