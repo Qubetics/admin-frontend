@@ -10,7 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@cosmjs/launchpad": "^0.27.1",
+    "@ethersproject/bytes": "^5.8.0",
+    "@hanchon/signature-to-pubkey": "^1.0.1",
     "bootstrap": "^5.3.8",
+    "buffer": "^6.0.3",
+    "js-sha3": "^0.9.3",
     "react": "^19.1.1",
     "react-bootstrap": "^2.10.10",
     "react-dom": "^19.1.1",
