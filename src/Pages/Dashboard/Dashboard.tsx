@@ -126,7 +126,7 @@ export default function Dashboard() {
           </div>
         </div>
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <div className="modal-overlay">
@@ -140,7 +140,7 @@ export default function Dashboard() {
             </div>
           </Modal.Body>
         </Modal>
-        <Modal show={rejectShow} onHide={handleRejectClose}>
+        <Modal show={rejectShow} onHide={handleRejectClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <div className="modal-overlay">

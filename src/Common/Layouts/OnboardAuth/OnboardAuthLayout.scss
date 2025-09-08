@@ -33,7 +33,6 @@
 
 .login-container {
   width: 100%;
-  max-width: 450px;
 }
 
 .onboarding-footer {
@@ -50,10 +49,7 @@
 
 // Responsive adjustments
 @media (max-width: 991px) {
-  .login-container {
-    max-width: 90%;
-    margin: 2rem auto;
-  }
+ 
   
   .onboarding-main {
     padding: 80px 15px 100px; 

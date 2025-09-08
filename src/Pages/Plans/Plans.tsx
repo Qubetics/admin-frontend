@@ -136,7 +136,7 @@ const Plans = () => {
           </div>
         </div>
 
-        <Modal show={show} onHide={handleClose}>
+        <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <div className="modal-overlay">
@@ -144,14 +144,15 @@ const Plans = () => {
                 <h2>dVPN Plan</h2>
                 <p>Plan Created Successfully!</p>
                 <div className="action-btns">
-                  <button className="gradient-btn">Ok</button>
+                  {/* <button className="gradient-btn">Ok</button> */}
+                  <ButtonCustom label="Ok" />
                 </div>
               </div>
             </div>
           </Modal.Body>
         </Modal>
 
-        <Modal show={createShow} onHide={handleCreateClose}>
+        <Modal show={createShow} onHide={handleCreateClose} centered>
           <Modal.Header closeButton>
             <h2>Create Plan</h2>
           </Modal.Header>

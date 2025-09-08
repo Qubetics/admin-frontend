@@ -4,12 +4,14 @@ import { Link, useLocation } from "react-router-dom";
 import Path from "../../Routing/Constant/RoutePaths";
 import { env } from "../../Constant/envConstants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
+import { useState, useEffect } from "react";
 
 interface Window {
   keplr?: any; // or type it properly if you know the exact type
 }
 
 function Header() {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const isLoginPage = location.pathname === Path.LOGIN;
   const { authData, setAuthData } = useIsLoggedIn();
@@ -48,11 +50,20 @@ function Header() {
     }
   };
 
-
   // Function to check if a path is active
   const isActive = (path: string) => {
-    return location.pathname === path ? 'active' : '';
+    return location.pathname === path ? "active" : "";
   };
+  // Close menu when route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  // Toggle mobile menu
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
     <>
       {isLoginPage ? (
@@ -67,22 +78,49 @@ function Header() {
           </div>
         </div>
       ) : (
-        <header className="header ">
-          {/* Left Section: Logo + Title */}
-          <div className="header__left">
-            <img src={Logo} alt="logo" className="header__logo" />
+        <header className="header">
+          <div className="header__container">
+            {/* Left Section: Logo + Title */}
+            <div className="header__left">
+              <img src={Logo} alt="logo" className="header__logo" />
 
-            {/* Center Navigation */}
-            <nav className="header__nav">
-              <a href={Path.DASHBOARD} className={isActive(Path.DASHBOARD)}>Dashboard</a>
-              <a href={Path.PLANS} className={isActive(Path.PLANS)}>Plans</a>
-              <a href={Path.NODES} className={isActive(Path.NODES)}>Nodes</a>
-            </nav>
+              {/* Navigation */}
+              <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
+                <a href={Path.DASHBOARD} className={isActive(Path.DASHBOARD)}>
+                  Dashboard
+                </a>
+                <a href={Path.PLANS} className={isActive(Path.PLANS)}>
+                  Plans
+                </a>
+                <a href={Path.NODES} className={isActive(Path.NODES)}>
+                  Nodes
+                </a>
+              </nav>
+            </div>
+
+            {/* Right Section: Wallet */}
+            <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
+              {authData && (
+                <span className="header__wallet-address">
+                  {authData.slice(0, 6)}...{authData.slice(-4)}
+                </span>
+              )}
+              <button className="header__wallet" onClick={handleClick}>
+                {authData ? "Connected" : "Connect Wallet"}
+              </button>
+            
+            {/* Mobile Menu Toggle Button */}
+            <button
+              className={`header__menu-toggle ${isMenuOpen ? "open" : ""}`}
+              onClick={toggleMenu}
+              aria-label="Toggle menu"
+            >
+              <span></span>
+              <span></span>
+              <span></span>
+            </button>
+            </div>
           </div>
-
-          {/* Right Section: Wallet */}
-          {authData && <span style={{ backgroundColor: "white" }}>{authData.slice(0, 6)}...{authData.slice(-4)}</span>}
-          <button className="header__wallet" onClick={handleClick}>Connect Wallet</button>
         </header>
       )}
     </>

@@ -1,12 +1,13 @@
+// Login header styles
 .header-main {
   position: fixed;
   z-index: 1;
   width: 100%;
   transition: 0.3s all;
   border-bottom: 1px solid #3b393c;
-
   background-color: #121212;
   height: 100px;
+
   @media screen and (max-width: 676px) {
     display: flex;
     flex-direction: column-reverse;
@@ -16,22 +17,25 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding-top: 25px;
-    padding-bottom: 25px;
+    padding: 25px 0;
     gap: 30px;
+    
     @media (max-width: 1299px) {
       justify-content: unset;
       gap: 20px;
     }
+    
     @media (max-width: 1200px) {
       justify-content: space-between;
     }
+    
     @media screen and (max-width: 676px) {
       width: 100%;
     }
 
     .mob__List {
       align-items: center;
+      
       @media screen and (max-width: 1200px) {
         display: none;
       }
@@ -39,36 +43,41 @@
   }
 }
 
+// Main header styles
 .header {
   position: fixed;
-  z-index: 1;
+  z-index: 1000;
   width: 100%;
   transition: 0.3s all;
   border-bottom: 1px solid #3b393c;
   padding: 0 98px;
   background-color: #121212;
-  height: 100px;
+  height: 80px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  @media (max-width: 991px) {
+    padding: 0 40px;
+  }
+  
+  &__container {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 
   &__left {
     display: flex;
     align-items: center;
     gap: 43px;
-
-    .header__title {
-      font-weight: 600;
-      font-size: 14px;
-      color: #ffffff;
-      letter-spacing: 0.5px;
-    }
+    position: relative;
   }
 
   &__nav {
     display: flex;
     align-items: center;
     gap: 28px;
+    transition: all 0.3s ease-in-out;
 
     a {
       font-size: 16px;
@@ -95,23 +104,115 @@
     color: #ddd;
     cursor: pointer;
     transition: border 0.3s;
+    width: max-content;
 
     &:hover {
       border-color: #fff;
     }
   }
-}
 
-/* 🔹 Responsive Styles */
-@media (max-width: 768px) {
-  .header {
-    &__nav {
-      display: none; // hide links on mobile
+  // Mobile Menu Toggle Button
+  &__menu-toggle {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1001;
+
+    span {
+      display: block;
+      width: 100%;
+      height: 3px;
+      background: #fff;
+      border-radius: 3px;
+      transition: all 0.3s ease-in-out;
     }
 
-    &__wallet {
-      font-size: 12px;
-      padding: 5px 12px;
+    &.open {
+      span:nth-child(1) {
+        transform: translateY(9px) rotate(45deg);
+      }
+      span:nth-child(2) {
+        opacity: 0;
+      }
+      span:nth-child(3) {
+        transform: translateY(-9px) rotate(-45deg);
+      }
+    }
+  }
+
+  // Right section styles
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+
+  &__wallet-address {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 5px 10px;
+    border-radius: 12px;
+    font-size: 14px;
+    color: #fff;
+  }
+
+  // Mobile styles
+  @media (max-width: 767px) {
+    padding: 0 15px;
+    height: 70px;
+
+    &__left {
+      gap: 20px;
+      width: 100%;
+      justify-content: space-between;
+    }
+
+    &__nav {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      width: 100%;
+      background: #121212;
+      flex-direction: column;
+      padding: 20px 0;
+      gap: 15px;
+      transform: translateY(-150%);
+      opacity: 0;
+      z-index: 999;
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+      display: flex !important;
+
+      &.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      a {
+        width: 100%;
+        text-align: center;
+        padding: 12px 0;
+        font-size: 18px;
+      }
+    }
+
+    &__menu-toggle {
+      display: flex;
+    }
+  }
+
+  // Desktop styles
+  @media (min-width: 768px) {
+    &__nav {
+      display: flex !important;
+    }
+    
+    &__menu-toggle {
+      display: none;
     }
   }
 }
