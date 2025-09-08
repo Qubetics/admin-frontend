@@ -1,6 +1,8 @@
 import { useState } from "react";
 import "./Dashboard.scss";
 import Modal from "react-bootstrap/Modal";
+import { linkNode } from "../../utils/Helper/CommonHelper";
+import { useIsLoggedIn } from "../../Context/LoggedInContext";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
@@ -18,15 +20,16 @@ interface TableRow {
   request: string;
 }
 export default function Dashboard() {
+  const [rejectShow, setRejectShow] = useState(false);
   const [show, setShow] = useState(false);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const [rejectShow, setRejectShow] = useState(false);
+  // const handleShow = () => setShow(true);
 
   const handleRejectClose = () => setRejectShow(false);
   const handleRejectShow = () => setRejectShow(true);
+
+  const { authData } = useIsLoggedIn();
 
   const CardBox: React.FC<CardBoxProps> = ({ title, value }) => {
     return (
@@ -37,10 +40,10 @@ export default function Dashboard() {
     );
   };
 
-  const onClick= ()=> {
-  //  const result = linkNode(); 
-  //  console.log("🚀 ~ onClick ~ result:", result)
-  }
+  const onClick = async () => {
+    const result = await linkNode(authData);
+    console.log("🚀 ~ onClick ~ result:", result);
+  };
 
   const data: TableRow[] = [
     {

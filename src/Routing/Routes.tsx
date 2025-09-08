@@ -1,16 +1,16 @@
-import { createBrowserRouter } from 'react-router-dom';
-import PrivateRoute from './Private/Private';
-import PublicRoute from './Public/Public';
-import PAGES from './Pages';
+import { createBrowserRouter } from "react-router-dom";
+import PrivateRoute from "./Private/Private";
+import PublicRoute from "./Public/Public";
+import PAGES from "./Pages";
 
 export const router = createBrowserRouter([
   {
-    path: '/',
+    path: "/",
     element: <PublicRoute />,
     children: PAGES().PUBLIC_PAGES,
   },
   {
-    path: '/',
+    path: "/",
     element: <PrivateRoute />,
     children: PAGES().PRIVATE_PAGES,
   },

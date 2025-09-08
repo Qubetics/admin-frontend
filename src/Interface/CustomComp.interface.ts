@@ -1,4 +1,4 @@
-import React from 'react';
+import React from "react";
 
 export interface inputCustomProps {
   label?: string;
@@ -22,7 +22,7 @@ export interface ButtonCustomProps {
   onClick?: () => void;
   label?: string;
   className?: string;
-  type?: 'submit' | 'button' | 'reset' | undefined;
+  type?: "submit" | "button" | "reset" | undefined;
   bordered?: boolean;
   disabled?: boolean;
   tabIndex?: number;
@@ -35,10 +35,9 @@ export interface SubHeaderContentsProps {
   subHeading?: string;
   buttonText?: string;
   className?: string;
-  type?: 'submit' | 'button' | 'reset' | undefined;
+  type?: "submit" | "button" | "reset" | undefined;
   options?: React.ReactNode;
 }
-
 
 export interface HelpPropsData {
   onClickState?: () => void;

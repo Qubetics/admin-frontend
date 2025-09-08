@@ -2,17 +2,17 @@ import { useEffect, useState } from "react";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import "./Plans.scss";
 import Modal from "react-bootstrap/Modal";
-import useGetApi from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
-import { apiMethods } from "../../Constant/constants";
 import type { Plan } from "../../utils/Interfaces";
+import useNetworkRequest from "../../Hooks/useGetApi";
 
 const Plans = () => {
   const [show, setShow] = useState(false);
   const [planList, setPlanList] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [page,setPage]=useState<number>(1);
+  const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
+  const useGetApi = useNetworkRequest();
 
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
@@ -23,25 +23,17 @@ const Plans = () => {
   const handleCreateShow = () => setCreateShow(true);
 
   const getAllPlan = async () => {
-    try {
-      setIsLoading(false);
-      const result = await useGetApi(
-        apiUrls.getAllPlan(page,2),
-        apiMethods.GET
-      );
-      console.log("🚀 ~ getAllPlan ~ result:", result?.data?.data);
-      setPlanList(result?.data?.data || []);
-      if (result?.data?.total) {
-        setTotalPages(Math.ceil(result.data.total / 2));
-      } else {
-        setTotalPages(1); // fallback: manually set pages
-      }
-    } catch (error) {
-      console.error(error, "error");
-    } finally {
-      setIsLoading(false);
-    }
-  }
+    setIsLoading(true);
+    const { success, data } = await useGetApi({
+      endpoint: apiUrls.getAllPlan(page, 2),
+    });
+    setIsLoading(false);
+
+    if (!success) return;
+
+    setPlanList(data?.data || []);
+    setTotalPages(data?.total ? Math.ceil(data?.total / 2) : 1);
+  };
 
   const handlePrev = () => {
     if (page > 1) setPage(page - 1);
@@ -75,7 +67,7 @@ const Plans = () => {
               </tr>
             </thead>
             <tbody>
-            {isLoading ? (
+              {isLoading ? (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center" }}>
                     Loading...
@@ -182,6 +174,6 @@ const Plans = () => {
       </div>
     </div>
   );
-}
+};
 
 export default Plans;
