@@ -1,6 +1,7 @@
 import { useState } from "react";
 import "./Dashboard.scss";
 import Modal from "react-bootstrap/Modal";
+// import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
   title: string;
@@ -35,6 +36,11 @@ export default function Dashboard() {
       </div>
     );
   };
+
+  const onClick= ()=> {
+  //  const result = linkNode(); 
+  //  console.log("🚀 ~ onClick ~ result:", result)
+  }
 
   const data: TableRow[] = [
     {
@@ -95,7 +101,7 @@ export default function Dashboard() {
                   <td>{row.request}</td>
                   <td>
                     <div className="action-btns">
-                      <button className="approve-btn" onClick={handleShow}>
+                      <button className="approve-btn" onClick={onClick}>
                         Approve
                       </button>
                       <button className="reject-btn" onClick={handleRejectShow}>
