@@ -1,21 +1,93 @@
-
-import ButtonCustom from '../../Common/ButtonCustom/ButtonCustom';
-import "./Login.scss"
+import { useNavigate } from "react-router-dom";
+import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
+import { envConstants } from "../../Constant/envConstants";
+import { useIsLoggedIn } from "../../Context/LoggedInContext";
+import "./Login.scss";
+import useNetworkRequest from "../../Hooks/useGetApi";
+import { apiUrls } from "../../Constant/apiUrls";
+import { computePubKey } from "../../utils/Helper/CommonHelper";
+import { apiMethods } from "../../Constant/constants";
 
 export default function Login() {
+  const { setAuthData } = useIsLoggedIn();
+  const navigate = useNavigate();
+  const useGetApi = useNetworkRequest();
+
+  const handleClick = async () => {
+    if (!window?.keplr) {
+      console.error("Install Keplr Wallet extension");
+      return;
+    }
+
+    const chainId = envConstants.chainId;
+
+    try {
+      await window.keplr.disable(chainId);
+      await window.keplr.enable(chainId);
+
+      const offlineSigner = window.keplr.getOfflineSigner(chainId);
+      const accounts = await offlineSigner.getAccounts();
+
+      if (!accounts?.length) {
+        console.error("No accounts found in Keplr");
+        return;
+      }
+      setAuthData(accounts[0]?.address);
+      await handleSign(accounts[0]?.address);
+
+      navigate("/dashboard");
+    } catch (error: any) {
+      return;
+    }
+  };
+
+  const handleSign = async (
+    address: string = "sent1q6dw49xcfg2jz5cvw8dx3ah008rkh0235mnnlh"
+  ) => {
+    try {
+      const message = address;
+
+      const { signature, pub_key } = await (
+        window?.keplr as any
+      )?.signArbitrary(envConstants.chainId, address, message);
+
+      const pubKeyFromSignature = computePubKey(address, signature, message);
+
+      if (!pubKeyFromSignature) {
+        console.error("Could not compute public key from signature.");
+        return;
+      }
+      const { success } = await useGetApi({
+        endpoint: apiUrls.login,
+        method: apiMethods.POST,
+        body: {
+          address,
+          pubKey: pubKeyFromSignature,
+          signature: { pub_key, signature },
+        },
+      });
+
+      if (!success) return;
+
+      sessionStorage.clear();
+      setAuthData("");
+    } catch (error: any) {
+      console.error("Signing failed: " + error?.message);
+    }
+  };
 
   // Login form handling using formik
   return (
-    <form  className="loginForm">
-      
+    <div className="loginForm">
       <h3>Login</h3>
-      <div className='connectBtn'>
-      <ButtonCustom
-        label="Connect Wallet"
-        type="submit"
-        tabIndex={3}
-      />
+      <div className="connectBtn">
+        <ButtonCustom
+          label="Connect Wallet"
+          type="submit"
+          tabIndex={3}
+          onClick={() => handleClick()}
+        />
       </div>
-    </form>
+    </div>
   );
 }

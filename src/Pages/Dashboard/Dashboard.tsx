@@ -1,7 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Dashboard.scss";
 import Modal from "react-bootstrap/Modal";
-// import { linkNode } from "../../utils/Helper/CommonHelper";
+import { linkNode } from "../../utils/Helper/CommonHelper";
+import { useIsLoggedIn } from "../../Context/LoggedInContext";
+import useNetworkRequest from "../../Hooks/useGetApi";
+import { apiUrls } from "../../Constant/apiUrls";
+import Pagination from "../../utils/pagination";
 
 interface CardBoxProps {
   title: string;
@@ -9,24 +13,30 @@ interface CardBoxProps {
 }
 
 interface TableRow {
-  org: string;
+  orgName: string;
   email: string;
   location: string;
-  address: string;
+  nodeAddress: string;
   bandwidth: string;
   plan: string;
-  request: string;
+  requestFor: string;
 }
+
 export default function Dashboard() {
+  const [rejectShow, setRejectShow] = useState(false);
   const [show, setShow] = useState(false);
+  const [nodeList, setNodeList] = useState<TableRow[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState<number>(0);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
-  const [rejectShow, setRejectShow] = useState(false);
+  // const handleShow = () => setShow(true);
 
   const handleRejectClose = () => setRejectShow(false);
   const handleRejectShow = () => setRejectShow(true);
+
+  const { authData } = useIsLoggedIn();
+  const useGetApi = useNetworkRequest();
 
   const CardBox: React.FC<CardBoxProps> = ({ title, value }) => {
     return (
@@ -37,31 +47,27 @@ export default function Dashboard() {
     );
   };
 
-  const onClick= ()=> {
-  //  const result = linkNode(); 
-  //  console.log("🚀 ~ onClick ~ result:", result)
-  }
+  const onClick = async () => {
+    const result = await linkNode(authData);
+    console.log("🚀 ~ onClick ~ result:", result);
+  };
 
-  const data: TableRow[] = [
-    {
-      org: "Mysterium",
-      email: "sam@gmail.com",
-      location: "India",
-      address: "qu.betics...cyt1239wc",
-      bandwidth: "1000 MB",
-      plan: "1000 TICS/month",
-      request: "Link Node",
-    },
-    {
-      org: "Mysterium",
-      email: "sam@gmail.com",
-      location: "China",
-      address: "qu.betics...cyt1239wc",
-      bandwidth: "100 KB",
-      plan: "1000 TICS/month",
-      request: "Unlink Node",
-    },
-  ];
+  const fetchData = async () => {
+    setNodeList([]);
+    setTotalCount(0);
+    const { success, data } = await useGetApi({
+      endpoint: apiUrls.postNodeRequest,
+    });
+
+    if (!success) return;
+
+    setNodeList(data?.data?.nodeList);
+    setTotalCount(data?.data?.count);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [page]);
 
   return (
     <div className="dashboard container">
@@ -90,15 +96,15 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, i) => (
+              {nodeList?.map((row, i) => (
                 <tr key={i}>
-                  <td>{row.org}</td>
-                  <td>{row.email}</td>
-                  <td>{row.location}</td>
-                  <td>{row.address}</td>
-                  <td>{row.bandwidth}</td>
-                  <td>{row.plan}</td>
-                  <td>{row.request}</td>
+                  <td>{row?.orgName}</td>
+                  <td>{row?.email}</td>
+                  <td>{row?.location}</td>
+                  <td>{row?.nodeAddress}</td>
+                  <td>{row?.bandwidth}</td>
+                  <td>{row?.plan}</td>
+                  <td>{row?.requestFor}</td>
                   <td>
                     <div className="action-btns">
                       <button className="approve-btn" onClick={onClick}>
@@ -116,17 +122,12 @@ export default function Dashboard() {
         </div>
 
         {/* Pagination */}
-        <div className="pagination">
-          <div className="page-numbers">
-            <button>{"<"}</button>
-            <button className="active">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>{">"}</button>
-          </div>
-        </div>
-
-        <Modal show={show} onHide={handleClose}>
+        <Pagination
+          currentPage={page}
+          totalPages={totalCount}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
+        <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <div className="modal-overlay">
@@ -140,7 +141,7 @@ export default function Dashboard() {
             </div>
           </Modal.Body>
         </Modal>
-        <Modal show={rejectShow} onHide={handleRejectClose}>
+        <Modal show={rejectShow} onHide={handleRejectClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <div className="modal-overlay">

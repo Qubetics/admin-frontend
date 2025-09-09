@@ -83,12 +83,12 @@
   font-family: "DM Sans", sans-serif !important;
 }
 
-@media (min-width: 1400px) {
-  .container {
-    max-width: 1420px;
-    width: 100%;
-  }
-}
+// @media (min-width: 1400px) {
+//   .container {
+//     max-width: 1420px;
+//     width: 100%;
+//   }
+// }
 .body {
   overflow: auto;
 }
@@ -275,6 +275,7 @@
         font-size: 24px;
         font-weight: 600;
         width: 100%;
+        line-height: 100%;
         }
         .btn-close {
           --bs-btn-close-color: #fff;
@@ -320,6 +321,10 @@
           font-size: 18px;
           font-weight: 600;
         }
+      }
+      .customButton  {
+        max-width: 174px;
+        width: 100%;
       }
       .gradient-btn {
         white-space: nowrap;

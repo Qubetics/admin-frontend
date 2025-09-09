@@ -1,32 +1,50 @@
+"use client";
+
 import axios from "axios";
 import { apiMethods } from "../Constant/constants";
-import { env } from "../Constant/envConstants";
+import { envConstants } from "../Constant/envConstants";
 
-// Define method type
+const useNetworkRequest = () => {
+  // const { updateToast } = useToast();
 
-const useGetApi = async (
-  url: String,
-  method?: any,
-  body?:any,
-  additionalHeaders?: any,
-  isIpfs: boolean = false
-) : Promise<any> => {
-  try {
-    const config = {
-      method: method || apiMethods.GET,
-      url: env.baseApiUrls + url,
-      data: body || undefined,
-      withCredentials: !isIpfs,
-      headers: additionalHeaders,
-    };
+  const useGetApi = async ({
+    endpoint,
+    method,
+    body,
+    url,
+  }: // checktoast,
+  any) => {
+    try {
+      const response = await axios({
+        method: method || apiMethods.GET,
+        url: url ? url : envConstants.baseApiUrls + endpoint,
+        data: body || undefined,
+        withCredentials: true,
+      });
 
-    const result = await axios(config);
-    return result;
-  } catch (error: any) {
-    const { response } = error;
-    const error_message = response?.data?.message || error?.message;
-    console.log("🚀 ~ useGetApi ~ error_message:", error_message)
-  }
+      return {
+        success: true,
+        data: response.data,
+        headers: { totalCount: response.headers["total"] },
+        message: response.data.message || "Success",
+      };
+    } catch (error: any) {
+      // if (checktoast) {
+      //   const hideOn = ![
+      //     "identity.user.already_registered",
+      //     "identity.user.is_pending",
+      //   ].includes(error?.message);
+      //   hideOn && updateToast("error", error?.message);
+      // }
+
+      return {
+        success: false,
+        message: error?.message,
+      };
+    }
+  };
+
+  return useGetApi;
 };
 
-export default useGetApi;
+export default useNetworkRequest;
