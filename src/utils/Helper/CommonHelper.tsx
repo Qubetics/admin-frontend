@@ -1,17 +1,24 @@
 import { Buffer } from "buffer";
-import { keccak_256 } from "js-sha3";
-import { arrayify } from "@ethersproject/bytes";
-import { serializeSignDoc } from "@cosmjs/launchpad";
-import { recoverPublicKey } from "@ethersproject/signing-key";
+import sha3 from "js-sha3";
 import { Registry } from "@cosmjs-evm/proto-signing";
 import {
   SigningStargateClient,
   GasPrice,
   calculateFee,
 } from "@cosmjs-evm/stargate";
+
 import Long from "long";
 import * as _m0 from "protobufjs/minimal";
 import { envConstants } from "../../Constant/envConstants";
+import { arrayify } from "@ethersproject/bytes";
+import { serializeSignDoc } from "@cosmjs/launchpad";
+import { signatureToPubkey } from "@hanchon/signature-to-pubkey";
+
+window.Buffer = Buffer;
+
+declare module "@hanchon/signature-to-pubkey" {
+  export function signatureToPubkey(sig: string, msgHash: Uint8Array): string;
+}
 
 // Common Helpers
 function isSet(value: unknown): boolean {
@@ -24,17 +31,11 @@ function messageToAminoTransaction(signer: string, data: string) {
     account_number: "0",
     sequence: "0",
     fee: { gas: "0", amount: [] },
-    msgs: [
-      {
-        type: "sign/MsgSignData",
-        value: { signer, data },
-      },
-    ],
+    msgs: [{ type: "sign/MsgSignData", value: { signer, data } }],
     memo: "",
   };
 }
 
-// Crypto Utils
 export const computePubKey = (
   address: string,
   signature: string,
@@ -46,16 +47,19 @@ export const computePubKey = (
       Buffer.from(signMessage).toString("base64")
     );
     const serialized = serializeSignDoc(aminoEncoded);
+    const hashed = sha3.keccak_256(arrayify(serialized));
 
-    const hashed = keccak_256(arrayify(serialized)); // hex (no 0x prefix)
-
-    const signatureHex = `0x${Buffer.from(signature, "base64").toString(
+    const signatureToCompare = `0x${Buffer.from(signature, "base64").toString(
       "hex"
     )}`;
+    const pubkeyComputed = signatureToPubkey(
+      signatureToCompare,
+      Buffer.from(hashed, "hex")
+    );
 
-    return { pubKey: recoverPublicKey("0x" + hashed, signatureHex) };
+    return pubkeyComputed;
   } catch (err) {
-    return { error: err };
+    console.error("err", err);
   }
 };
 
@@ -113,8 +117,10 @@ export const MsgLinkNodeRequest = {
   encode(message: any, writer = _m0.Writer.create()) {
     if (message.from !== "") writer.uint32(10).string(message.from);
     if (!message.id.equals(Long.UZERO)) writer.uint32(16).uint64(message.id);
-    if (message.nodeAddress !== "")
+    if (message.nodeAddress !== "") {
       writer.uint32(26).string(message.nodeAddress);
+    }
+
     return writer;
   },
   decode(input: any, length?: number) {
@@ -201,7 +207,6 @@ export async function broadcastTx(ctx: any, messages: any[], memo: string) {
 // Example Flow
 export async function linkNode(authData: string) {
   try {
-    console.log("🚀 ~ linkNode ~ linkNode:", linkNode);
     const ctx: any = await initTx();
 
     ctx.registry.register(TYPE_URLS.LINK_NODE, MsgLinkNodeRequest);

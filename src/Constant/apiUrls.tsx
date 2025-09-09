@@ -1,7 +1,9 @@
 export const apiUrls = {
   getAllPlan: (page: number, limit: number) =>
-    `/api/v1/plans?page=${page}&limit=${limit}`,
-  postNodeRequest: "/api/v1/node",
+    `plans?page=${page}&limit=${limit}`,
+  postNodeRequest: "node",
   logout: `auth/logout`,
   login: `auth/login`,
+  nodeRequestedList: "node",
+  nodelist: "node/prov/:address",
 };

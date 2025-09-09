@@ -1,25 +1,35 @@
-
+import { apiUrls } from "../../Constant/apiUrls";
+import useNetworkRequest from "../../Hooks/useGetApi";
+import Pagination from "../../utils/pagination";
 import "./Node.scss";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 function Node() {
-  const data = [
-    {
-      orgName: "Shinobi Validator",
-      nodeAddress: "0x47685...4c8B145",
-      nodeStatus: <span className="active">Active</span>,
-      requestFor: "Link Node",
-    },
-    {
-      orgName: "Shinobi Validator",
-      nodeAddress: "0x47685...4c8B145",
-      nodeStatus: <span className="inactive">Inactive</span>,
-      requestFor: "Unlink Node",
-    },
-  ];
+  const [nodeList, setNodeList] = useState<any[]>([]);
+  const [page, setPage] = useState(1);
+  const [totalCount, setTotalCount] = useState<number>(0);
+
+  const useGetApi = useNetworkRequest();
 
   const buttons = ["ALL Nodes", "Active", "Inactive"];
   const [active, setActive] = useState("ALL Nodes");
+
+  const fetchData = async () => {
+    setNodeList([]);
+    setTotalCount(0);
+    const { success, data } = await useGetApi({
+      endpoint: apiUrls.nodelist,
+    });
+
+    if (!success) return;
+
+    setNodeList(data?.data?.nodeList);
+    setTotalCount(data?.data?.count);
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, [page]);
 
   return (
     <div className="node container">
@@ -50,12 +60,12 @@ function Node() {
               </tr>
             </thead>
             <tbody>
-              {data.map((row, i) => (
+              {nodeList?.map((row, i) => (
                 <tr key={i}>
-                  <td>{row.orgName}</td>
-                  <td>{row.nodeAddress}</td>
-                  <td>{row.nodeStatus}</td>
-                  <td>{row.requestFor}</td>
+                  <td>{row?.orgName}</td>
+                  <td>{row?.nodeAddress}</td>
+                  <td>{row?.nodeStatus}</td>
+                  <td>{row?.requestFor}</td>
                 </tr>
               ))}
             </tbody>
@@ -63,15 +73,11 @@ function Node() {
         </div>
 
         {/* Pagination */}
-        <div className="pagination">
-          <div className="page-numbers">
-            <button>{"<"}</button>
-            <button className="active">1</button>
-            <button>2</button>
-            <button>3</button>
-            <button>{">"}</button>
-          </div>
-        </div>
+        <Pagination
+          currentPage={page}
+          totalPages={totalCount}
+          onPageChange={(newPage) => setPage(newPage)}
+        />
       </div>
     </div>
   );

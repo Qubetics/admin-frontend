@@ -11,7 +11,7 @@ function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const isLoginPage = location.pathname === Path.LOGIN;
-  const { authData } = useIsLoggedIn();
+  const { authData, setAuthData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
 
   // Function to check if a path is active
@@ -26,6 +26,10 @@ function Header() {
 
   const onLogout = async () => {
     const { success } = await useGetApi({ endpoint: apiUrls.logout });
+    if (!success) return;
+
+    sessionStorage.clear();
+    setAuthData("");
   };
 
   return (
@@ -69,6 +73,12 @@ function Header() {
                   {authData.slice(0, 6)}...{authData.slice(-4)}
                 </span>
               )}
+              <span
+                className="header__wallet-address"
+                onClick={() => onLogout()}
+              >
+                Logout
+              </span>
               {/* <button className="header__wallet" onClick={handleClick}>
                 {authData ? "Connected" : "Connect Wallet"}
               </button>
