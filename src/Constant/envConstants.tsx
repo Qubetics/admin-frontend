@@ -6,4 +6,5 @@ export const envConstants = {
   gas_price: import.meta.env.VITE_GAS_PRICE,
   gas_limit: import.meta.env.VITE_GAS_LIMIT,
   hd_path: import.meta.env.VITE_HD_PATH,
+  swagger_api: import.meta.env.VITE_SWAGGER_HTTP_HOST
 };
