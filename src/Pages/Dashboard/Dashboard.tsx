@@ -1,11 +1,20 @@
 import { useEffect, useState } from "react";
 import "./Dashboard.scss";
 import Modal from "react-bootstrap/Modal";
-import { linkNode } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import Pagination from "../../utils/pagination";
+import Long from "long";
+import { processTransaction } from "../../service/processTransaction/processTransaction";
+import {
+  buildLinkNodeMessage,
+  buildStartLeaseStatusMessage,
+  buildUnlinkNodeMessage,
+} from "../../service/BuildMessage/buildMessage";
+import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import { provWalletPrefix } from "../../Constant/constants";
+// import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
   title: string;
@@ -33,10 +42,13 @@ export default function Dashboard() {
   // const handleShow = () => setShow(true);
 
   const handleRejectClose = () => setRejectShow(false);
-  const handleRejectShow = () => setRejectShow(true);
+  // const handleRejectShow = () => setRejectShow(true);
 
   const { authData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
+
+  // manage this in state
+  const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const CardBox: React.FC<CardBoxProps> = ({ title, value }) => {
     return (
@@ -47,10 +59,55 @@ export default function Dashboard() {
     );
   };
 
-  const onClick = async () => {
-    const result = await linkNode(authData);
-    console.log("🚀 ~ onClick ~ result:", result);
+  const onApproval = async (address: string, type: string) => {
+    if (type === "Unlink") {
+      try {
+        const message = buildUnlinkNodeMessage({
+          from: provAddress,
+          id: Long.fromString("1"),
+          nodeAddress: address, //node address
+        });
+        await processTransaction(message);
+        setShow(true);
+      } catch (err: any) {
+        console.error(err.message);
+        setRejectShow(true);
+      }
+
+      return;
+    }
+
+    try {
+      const leaseMessage = buildStartLeaseStatusMessage({
+        from: provAddress,
+        nodeAddress: address,
+        hours: Long.fromString("620"),
+        denom: "tics",
+        renewalPricePolicy: 0,
+      });
+
+      await processTransaction(leaseMessage);
+      setShow(true);
+    } catch (err: any) {
+      console.error(err.message);
+      setRejectShow(true);
+    }
+
+    try {
+      const message = buildLinkNodeMessage({
+        from: provAddress,
+        id: Long.fromString("1"),
+        nodeAddress: address, //node address
+      });
+      await processTransaction(message);
+      setShow(true);
+    } catch (err: any) {
+      console.error(err.message);
+      setRejectShow(true);
+    }
   };
+
+  const onReject = async () => {};
 
   const fetchData = async () => {
     setNodeList([]);
@@ -107,10 +164,15 @@ export default function Dashboard() {
                   <td>{row?.requestFor}</td>
                   <td>
                     <div className="action-btns">
-                      <button className="approve-btn" onClick={onClick}>
+                      <button
+                        className="approve-btn"
+                        onClick={() =>
+                          onApproval(row?.nodeAddress, row?.requestFor)
+                        }
+                      >
                         Approve
                       </button>
-                      <button className="reject-btn" onClick={handleRejectShow}>
+                      <button className="reject-btn" onClick={() => onReject()}>
                         Reject
                       </button>
                     </div>
