@@ -20,7 +20,7 @@ export type ToastTypeProps = "warning" | "error" | "success";
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
-export const useToast = (p0?: string) => {
+export const useToast = (_p0?: string) => {
   const context = useContext(ToastContext);
   if (!context) {
     throw new Error("useToast must be used within a ToastProvider");

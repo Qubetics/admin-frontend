@@ -1,26 +1,19 @@
 import { useEffect, useState } from "react";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import "./Plans.scss";
-import Modal from "react-bootstrap/Modal";
 import { apiUrls } from "../../Constant/apiUrls";
 import type { Plan } from "../../utils/Interfaces";
 import useNetworkRequest from "../../Hooks/useGetApi";
+import CreatePlanModal from "./createPlanModal";
 
 const Plans = () => {
-  const [show, setShow] = useState(false);
   const [planList, setPlanList] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const useGetApi = useNetworkRequest();
-
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
-
+  
   const [createShow, setCreateShow] = useState(false);
-
-  const handleCreateClose = () => setCreateShow(false);
-  const handleCreateShow = () => setCreateShow(true);
 
   const getAllPlan = async () => {
     setIsLoading(true);
@@ -51,7 +44,7 @@ const Plans = () => {
     <div className="plans container">
       <div className="plans__header">
         <h1>Plans</h1>
-        <ButtonCustom label="Create Plan" onClick={handleCreateShow} />
+        <ButtonCustom label="Create Plan" onClick={() => setCreateShow(true)} />
       </div>
       <div className="custom-table-wrapper commonTable">
         <div className="outerTable">
@@ -128,49 +121,7 @@ const Plans = () => {
           </div>
         </div>
 
-        <Modal show={show} onHide={handleClose} centered>
-          <Modal.Header closeButton></Modal.Header>
-          <Modal.Body>
-            <div className="modal-overlay">
-              <div className="modal-content">
-                <h2>dVPN Plan</h2>
-                <p>Plan Created Successfully!</p>
-                <div className="action-btns">
-                  {/* <button className="gradient-btn">Ok</button> */}
-                  <ButtonCustom label="Ok" />
-                </div>
-              </div>
-            </div>
-          </Modal.Body>
-        </Modal>
-
-        <Modal show={createShow} onHide={handleCreateClose} centered>
-          <Modal.Header closeButton>
-            <h2>Create Plan</h2>
-          </Modal.Header>
-          <Modal.Body>
-            <div className="createPlan">
-              <div className="form-container">
-                <div className="form-group">
-                  <label>Plan Price</label>
-                  <input type="text" placeholder="Enter Plan Price" />
-                </div>
-
-                <div className="form-group">
-                  <label>Plan GB</label>
-                  <input type="text" placeholder="Enter GB" />
-                </div>
-
-                <div className="form-group">
-                  <label>Validity (Hours)</label>
-                  <input type="text" placeholder="Enter Validity (hours)" />
-                </div>
-
-                <ButtonCustom label="Create" onClick={handleShow} />
-              </div>
-            </div>
-          </Modal.Body>
-        </Modal>
+           <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} />
       </div>
     </div>
   );
