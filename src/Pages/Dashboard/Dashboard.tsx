@@ -1,8 +1,12 @@
 import { useState } from "react";
 import "./Dashboard.scss";
 import Modal from "react-bootstrap/Modal";
-import { linkNode } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
+import Long from "long";
+import { processTransaction } from "../../service/processTransaction/processTransaction";
+import { buildLinkNodeMessage, buildStartLeaseStatusMessage, buildUnlinkNodeMessage } from "../../service/BuildMessage/buildMessage";
+import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import { provWalletPrefix } from "../../Constant/constants";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
@@ -31,6 +35,9 @@ export default function Dashboard() {
 
   const { authData } = useIsLoggedIn();
 
+  // manage this in state 
+  const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+
   const CardBox: React.FC<CardBoxProps> = ({ title, value }) => {
     return (
       <div className="card-box">
@@ -40,10 +47,37 @@ export default function Dashboard() {
     );
   };
 
-  const onClick = async () => {
-    const result = await linkNode(authData);
-    console.log("🚀 ~ onClick ~ result:", result);
+  const onApproval = async () => {
+
+    const leaseMessage = buildStartLeaseStatusMessage({
+      from: provAddress,
+      nodeAddress: "qubeticsnode1e73xxsxszm9hwkx7qclr6ul3qy5vued7a80qv7",
+      hours: Long.fromString("620"),
+      denom: "tics",
+      renewalPricePolicy:0
+    });
+
+    await processTransaction(leaseMessage)
+
+    const message = buildLinkNodeMessage({
+      from: provAddress,
+      id: Long.fromString("1"),
+      nodeAddress: "qubeticsnode1e73xxsxszm9hwkx7qclr6ul3qy5vued7a80qv7" //node address
+    });
+      await processTransaction(message)
+  
   };
+  const onReject = async () => {
+    
+    const message = buildUnlinkNodeMessage({
+      from: provAddress,
+      id: Long.fromString("1"),
+      nodeAddress: "qubeticsnode1e73xxsxszm9hwkx7qclr6ul3qy5vued7a80qv7" //node address
+    });
+      await processTransaction(message)
+  
+  };
+
 
   const data: TableRow[] = [
     {
@@ -104,10 +138,10 @@ export default function Dashboard() {
                   <td>{row.request}</td>
                   <td>
                     <div className="action-btns">
-                      <button className="approve-btn" onClick={onClick}>
+                      <button className="approve-btn" onClick={onApproval}>
                         Approve
                       </button>
-                      <button className="reject-btn" onClick={handleRejectShow}>
+                      <button className="reject-btn" onClick={onReject}>
                         Reject
                       </button>
                     </div>
