@@ -1,6 +1,6 @@
 import "./Header.scss";
 import Logo from "../../assets/Logo.svg";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import Path from "../../Routing/Constant/RoutePaths";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { useState } from "react";
@@ -13,6 +13,7 @@ function Header() {
   const isLoginPage = location.pathname === Path.LOGIN;
   const { authData, setAuthData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
+  const navigate = useNavigate();
 
   // Function to check if a path is active
   const isActive = (path: string) => {
@@ -27,7 +28,8 @@ function Header() {
   const onLogout = async () => {
     const { success } = await useGetApi({ endpoint: apiUrls.logout });
     if (!success) return;
-
+    navigate('/login')
+    localStorage.clear();
     sessionStorage.clear();
     setAuthData("");
   };

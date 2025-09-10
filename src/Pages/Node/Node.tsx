@@ -13,8 +13,8 @@ function Node() {
 
   const useGetApi = useNetworkRequest();
 
-  const buttons = ["ALL Nodes", "Active", "Inactive"];
-  const [active, setActive] = useState("ALL Nodes");
+  const buttons = ["All Nodes", "Active", "Inactive"];
+  const [active, setActive] = useState("All Nodes");
 
   const fetchData = async () => {
     setNodeList([]);

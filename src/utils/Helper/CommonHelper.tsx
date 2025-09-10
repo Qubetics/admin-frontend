@@ -13,6 +13,7 @@ import { serializeSignDoc } from "@cosmjs/launchpad";
 import { envConstants } from "../../Constant/envConstants";
 
 import bech32 from "bech32";
+import { DECIMAL_PLACES } from "../../Constant/constants";
 
 function messageToAminoTransaction(signer: string, data: string) {
   return {
@@ -92,3 +93,15 @@ export const convertNodeToWallet = (address: any, walletPrefix: any) => {
   // Re-encode with wallet prefix
   return bech32.encode(walletPrefix, words);
 };
+
+export const ModifyNum = (value:any) => {
+  if (value.includes('.')) {
+    const data = value.split('.')[1]
+    const res = value.replace('.', '')
+    const zeroes = '0'.repeat(DECIMAL_PLACES - data.length)
+    return res + zeroes
+  } else {
+    const zeroes = '0'.repeat(DECIMAL_PLACES)
+    return value + zeroes
+  }
+}
