@@ -36,8 +36,11 @@ export const processTransaction = async (message) => {
           amount: [{ denom: "tics", amount: feeAmount }],
           gas: Math.floor(gasUsed * 1.5).toString(),
         });
+        return res;
       }
-      return res
+      else{
+        return false;
+      }
     } catch (error) {
       console.log(error, "errror while signing transaction");
       return '';

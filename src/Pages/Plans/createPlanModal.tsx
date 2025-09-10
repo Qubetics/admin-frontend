@@ -5,7 +5,7 @@ import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import { ModifyNum, convertNodeToWallet } from "../../utils/Helper/CommonHelper";
 import { provWalletPrefix } from "../../Constant/constants";
 
 const createPlanModal = ({ createShow, setCreateShow }: any) => {
@@ -36,13 +36,23 @@ const createPlanModal = ({ createShow, setCreateShow }: any) => {
       from :provAddress,
       gigabytes: Long.fromString(formData.bytes),
       hours: Long.fromString(formData.hours),
+      prices: [
+        {
+          //make it dynamic
+          denom: "tics",
+          baseValue: ModifyNum(formData.price),
+          quoteValue: formData.price,
+        },
+      ]
     });
     const TxHash=await processTransaction(message)
 
     if(!TxHash){
        console.log("Transaction failed ");
+       return;
     }
-
+    setCreateShow(false);
+    handleClose();
     handleShow();
   };
 
@@ -57,7 +67,7 @@ const createPlanModal = ({ createShow, setCreateShow }: any) => {
               <p>Plan Created Successfully!</p>
               <div className="action-btns">
                 {/* <button className="gradient-btn">Ok</button> */}
-                <ButtonCustom label="Ok" />
+                <ButtonCustom label="Ok" onClick={handleClose} />
               </div>
             </div>
           </div>

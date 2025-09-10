@@ -17,3 +17,4 @@ export const TYPE_URLS = {
 }
 
 export const provWalletPrefix = "qubeticsprov";
+export const DECIMAL_PLACES = 18;
