@@ -48,3 +48,8 @@ export interface FilterOptions {
   text: string;
   name: React.ReactNode;
 }
+
+export interface RejectShowState {
+  show: boolean;
+  nodeAddress: string | null;
+}
