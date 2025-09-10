@@ -10,6 +10,7 @@ import { processTransaction } from "../../service/processTransaction/processTran
 import { buildLinkNodeMessage, buildStartLeaseStatusMessage, buildUnlinkNodeMessage } from "../../service/BuildMessage/buildMessage";
 import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
 import { provWalletPrefix } from "../../Constant/constants";
+import type { RejectShowState } from "../../Interface/CustomComp.interface";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
@@ -28,17 +29,20 @@ interface TableRow {
 }
 
 export default function Dashboard() {
-  const [rejectShow, setRejectShow] = useState(false);
+  const [rejectShow, setRejectShow] = useState<RejectShowState>({ show: false, nodeAddress: null });
   const [show, setShow] = useState(false);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
-  const [limit,setLimit] = useState<number>(5);
+  const [limit, setLimit] = useState<number>(5);
 
   const handleClose = () => setShow(false);
-  // const handleShow = () => setShow(true);
+  const handleShow = () => {
+    setShow(true);
 
-  const handleRejectClose = () => setRejectShow(false);
+  }
+
+  const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
   // const handleRejectShow = () => setRejectShow(true);
 
   const { authData } = useIsLoggedIn();
@@ -56,12 +60,16 @@ export default function Dashboard() {
     );
   };
 
-  const updateStatus = async (nodeAddress:string,status:string) => {
+  const updateStatus = async (nodeAddress: string, status: string) => {
     const { success } = await useGetApi({
       endpoint: apiUrls.nodeStatusAction(nodeAddress, status),
     });
 
-    if (!success) return;
+    if (!success) return false;
+
+    fetchData();
+
+    return true;
   };
 
   const onApproval = async (address: string, type: string) => {
@@ -78,10 +86,10 @@ export default function Dashboard() {
 
       } catch (err: any) {
         console.error(err.message);
-        setRejectShow(true);
-      } 
+        // setRejectShow(true);
+      }
 
-      await updateStatus(address,"REJECTED");
+      await updateStatus(address, "REJECTED");
 
       return;
     }
@@ -99,7 +107,7 @@ export default function Dashboard() {
       setShow(true);
     } catch (err: any) {
       console.error(err.message);
-      setRejectShow(true);
+      // setRejectShow(true);
     }
 
     try {
@@ -112,20 +120,30 @@ export default function Dashboard() {
       setShow(true);
     } catch (err: any) {
       console.error(err.message);
-      setRejectShow(true);
+      // setRejectShow(true);
     }
 
-    await updateStatus(address,"APPROVED");
+    const status = await updateStatus(address, "APPROVED");
+
+    if (!status) return;
+
+    handleShow();
 
   };
 
-  const onReject = async () => {};
+  const onReject = (nodeAddress: string) => {
+    setRejectShow({ show: true, nodeAddress: nodeAddress });
+  };
+
+  const handleRejectCall = async (address: string) => {
+    await updateStatus(address, "REJECTED");
+  }
 
   const fetchData = async () => {
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeRequestedList(page,limit),
+      endpoint: apiUrls.nodeRequestedList(page, limit),
     });
 
     if (!success) return;
@@ -137,7 +155,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchData();
-  }, [page,limit]);
+  }, [page, limit]);
 
   return (
     <div className="dashboard container">
@@ -185,7 +203,7 @@ export default function Dashboard() {
                       >
                         Approve
                       </button>
-                      <button className="reject-btn" onClick={() => onReject()}>
+                      <button className="reject-btn" onClick={() => onReject(row?.nodeAddress)}>
                         Reject
                       </button>
                     </div>
@@ -202,7 +220,7 @@ export default function Dashboard() {
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
           limit={limit}
-          onLimitChange={(limit: number)=> setLimit(limit)}
+          onLimitChange={(limit: number) => setLimit(limit)}
         />
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
@@ -212,13 +230,13 @@ export default function Dashboard() {
                 <h2>Node Request</h2>
                 <p>Node Approved successfully!</p>
                 <div className="action-btns">
-                  <button className="gradient-btn">Ok</button>
+                  <button className="gradient-btn" onClick={handleClose}>Ok</button>
                 </div>
               </div>
             </div>
           </Modal.Body>
         </Modal>
-        <Modal show={rejectShow} onHide={handleRejectClose} centered>
+        <Modal show={rejectShow.show} onHide={handleRejectClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
             <div className="modal-overlay">
@@ -226,8 +244,8 @@ export default function Dashboard() {
                 <h2>Node Request</h2>
                 <p>Are you sure you want to reject the request?</p>
                 <div className="action-btns">
-                  <button className="reject-btn">No</button>
-                  <button className="gradient-btn">Yes</button>
+                  <button className="reject-btn" onClick={handleRejectClose}>No</button>
+                  <button className="gradient-btn" onClick={() => { handleRejectCall(String(rejectShow.nodeAddress)) }}>Yes</button>
                 </div>
               </div>
             </div>
