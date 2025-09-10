@@ -4,6 +4,7 @@ export const apiUrls = {
   postNodeRequest: "node",
   logout: `auth/logout`,
   login: `auth/login`,
-  nodeRequestedList: "node",
+  nodeRequestedList:(page:number,limit:number) => `node?page=${page}&limit=${limit}`,
   nodelist: "node/prov/:address",
+  nodeStatusAction:(nodeAddress:string,status:string)=> `node/action?address=${nodeAddress}&status=${status}`
 };
