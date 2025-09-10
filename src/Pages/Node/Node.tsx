@@ -1,4 +1,5 @@
 import { apiUrls } from "../../Constant/apiUrls";
+import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import Pagination from "../../utils/pagination";
 import "./Node.scss";
@@ -12,6 +13,7 @@ function Node() {
 
 
   const useGetApi = useNetworkRequest();
+  const { authData } = useIsLoggedIn();
 
   const buttons = ["All Nodes", "Active", "Inactive"];
   const [active, setActive] = useState("All Nodes");
@@ -20,7 +22,7 @@ function Node() {
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist,
+      endpoint: apiUrls.nodelist(authData),
     });
 
     if (!success) return;
