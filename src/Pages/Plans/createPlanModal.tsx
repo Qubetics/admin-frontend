@@ -6,9 +6,9 @@ import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage"
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { ModifyNum, convertNodeToWallet } from "../../utils/Helper/CommonHelper";
-import { provWalletPrefix } from "../../Constant/constants";
+import { gbToBytes, provWalletPrefix } from "../../Constant/constants";
 
-const createPlanModal = ({ createShow, setCreateShow }: any) => {
+const createPlanModal = ({ createShow, setCreateShow, getAllPlan }: any) => {
   const [formData, setFormData] = useState({
     hours: "",
     bytes: "",
@@ -28,13 +28,13 @@ const createPlanModal = ({ createShow, setCreateShow }: any) => {
   };
 
   const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
+  const handleClose = () => {getAllPlan();setShow(false)};
   const handleShow = () => setShow(true);
 
   const handleClick = async () => {
     const message = buildCreatePlanMessage({
       from :provAddress,
-      gigabytes: Long.fromString(formData.bytes),
+      gigabytes: Long.fromString(gbToBytes(formData.bytes)),
       hours: Long.fromString(formData.hours),
       prices: [
         {
@@ -52,8 +52,8 @@ const createPlanModal = ({ createShow, setCreateShow }: any) => {
        return;
     }
     setCreateShow(false);
-    handleClose();
-    handleShow();
+    // handleClose();
+    handleShow(); 
   };
 
   return (

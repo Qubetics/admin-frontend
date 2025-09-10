@@ -18,3 +18,19 @@ export const TYPE_URLS = {
 
 export const provWalletPrefix = "qubeticsprov";
 export const DECIMAL_PLACES = 18;
+
+export const  gbToBytes=(gb: any): string =>{
+  return (Number(gb) * 1024 * 1024 * 1024).toString();
+}
+
+export const  bytesToGb=(bytes: number): number=> {
+  return bytes / (1024 * 1024 * 1024);
+}
+
+export const STATUS_ENUM = {
+  STATUS_UNSPECIFIED : 0,
+  STATUS_ACTIVE : 1,
+  STATUS_INACTIVE_PENDING : 2,
+  STATUS_INACTIVE : 3,
+  UNRECOGNIZED : -1,
+};

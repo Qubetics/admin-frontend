@@ -1,6 +1,8 @@
 import { apiUrls } from "../../Constant/apiUrls";
+import { provWalletPrefix } from "../../Constant/constants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
+import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
 import Pagination from "../../utils/pagination";
 import "./Node.scss";
 import { useEffect, useState } from "react";
@@ -19,15 +21,16 @@ function Node() {
   const [active, setActive] = useState("All Nodes");
 
   const fetchData = async () => {
+    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(authData),
+      endpoint: apiUrls.nodelist(provAddress),
     });
 
     if (!success) return;
-
-    setNodeList(data?.data?.nodeList);
+    console.log(data,"nodeListDataa!!!!")
+    setNodeList(data?.data?.response);
     setTotalPages(data?.datda?.total ? Math.ceil(data?.total / limit) : 1);
   };
 
@@ -68,7 +71,7 @@ function Node() {
                 <tr key={i}>
                   <td>{row?.orgName}</td>
                   <td>{row?.nodeAddress}</td>
-                  <td>{row?.nodeStatus}</td>
+                  <td>{row?.status}</td>
                   <td>{row?.requestFor}</td>
                 </tr>
               ))}
