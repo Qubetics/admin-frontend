@@ -7,7 +7,6 @@ import { processTransaction } from "../../service/processTransaction/processTran
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
 import { provWalletPrefix } from "../../Constant/constants";
-import { useToast } from "../../toast/toast.provider";
 
 const createPlanModal = ({ createShow, setCreateShow }: any) => {
   const [formData, setFormData] = useState({
@@ -22,7 +21,6 @@ const createPlanModal = ({ createShow, setCreateShow }: any) => {
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    // console.log(name, value,"dfvknfkvlkeffd")
     setFormData((prev) => ({
       ...prev,
       [name]: value,

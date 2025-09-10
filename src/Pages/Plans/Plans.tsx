@@ -5,40 +5,34 @@ import { apiUrls } from "../../Constant/apiUrls";
 import type { Plan } from "../../utils/Interfaces";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
+import Pagination from "../../utils/pagination";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(5);
   const [totalPages, setTotalPages] = useState<number>(1);
   const useGetApi = useNetworkRequest();
-  
+
   const [createShow, setCreateShow] = useState(false);
 
   const getAllPlan = async () => {
     setIsLoading(true);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.getAllPlan(page, 2),
+      endpoint: apiUrls.getAllPlan(page, limit),
     });
     setIsLoading(false);
 
     if (!success) return;
 
     setPlanList(data?.data || []);
-    setTotalPages(data?.total ? Math.ceil(data?.total / 2) : 1);
-  };
-
-  const handlePrev = () => {
-    if (page > 1) setPage(page - 1);
-  };
-
-  const handleNext = () => {
-    if (page < totalPages) setPage(page + 1);
+    setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
   };
 
   useEffect(() => {
     getAllPlan();
-  }, []);
+  }, [page,limit]);
 
   return (
     <div className="plans container">
@@ -99,29 +93,15 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        <div className="pagination">
-          <div className="page-numbers">
-            <button onClick={handlePrev} disabled={page === 1}>
-              {"<"}
-            </button>
+        <Pagination
+          currentPage={page}
+          totalPages={totalPages}
+          onPageChange={(newPage: any) => setPage(newPage)}
+          limit={limit}
+          onLimitChange={(limit: number) => setLimit(limit)}
+        />
 
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i + 1}
-                className={page === i + 1 ? "active" : ""}
-                onClick={() => setPage(i + 1)}
-              >
-                {i + 1}
-              </button>
-            ))}
-
-            <button onClick={handleNext} disabled={page === totalPages}>
-              {">"}
-            </button>
-          </div>
-        </div>
-
-           <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} />
+        <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} />
       </div>
     </div>
   );

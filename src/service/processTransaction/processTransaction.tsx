@@ -29,7 +29,9 @@ export const processTransaction = async (message) => {
 
       if (gasUsed > 0) {
         const gasLimit = Math.floor(gasUsed * 1.3); //Buffer added
-        const feeAmount = Math.ceil(envConstants.gas_limit * gasPrice).toString();
+        const feeAmount = Math.ceil(
+          envConstants.gas_limit * gasPrice
+        ).toString();
         const res = await sendMsgs(window.keplr, key.bech32Address, [message], {
           amount: [{ denom: "tics", amount: feeAmount }],
           gas: Math.floor(gasUsed * 1.5).toString(),

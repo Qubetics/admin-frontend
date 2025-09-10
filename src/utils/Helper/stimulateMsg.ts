@@ -21,12 +21,9 @@ export const simulateMsgs = async (
   memo
 ) => {
   const account = await fetchAccountInfo(sender);
-  console.log("🚀 ~ simulateMsgs ~ account:", account)
-
 
   const { pubKey } = await keplr.getKey(chainId);
-  console.log("🚀 ~ simulateMsgs ~ pubKey:", pubKey)
-  
+
   if (account) {
     const unsignedTx = TxRaw.encode({
       bodyBytes: TxBody.encode(
@@ -58,7 +55,7 @@ export const simulateMsgs = async (
           }),
         ],
         fee: Fee.fromPartial({
-          amount: fee.map((coin:any) => {
+          amount: fee.map((coin: any) => {
             return {
               denom: coin.denom,
               amount: coin.amount.toString(),

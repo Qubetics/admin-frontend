@@ -31,14 +31,15 @@ export default function Dashboard() {
   const [rejectShow, setRejectShow] = useState(false);
   const [show, setShow] = useState(false);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [limit,setLimit] = useState<number>(5);
 
   const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // const handleShow = () => setShow(true);
 
   const handleRejectClose = () => setRejectShow(false);
-  const handleRejectShow = () => setRejectShow(true);
+  // const handleRejectShow = () => setRejectShow(true);
 
   const { authData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
@@ -55,63 +56,88 @@ export default function Dashboard() {
     );
   };
 
-  const onApproval = async () => {
-
-    const leaseMessage = buildStartLeaseStatusMessage({
-      from: provAddress,
-      nodeAddress: "qubeticsnode1e73xxsxszm9hwkx7qclr6ul3qy5vued7a80qv7",
-      hours: Long.fromString("620"),
-      denom: "tics",
-      renewalPricePolicy: 0
+  const updateStatus = async (nodeAddress:string,status:string) => {
+    const { success } = await useGetApi({
+      endpoint: apiUrls.nodeStatusAction(nodeAddress, status),
     });
 
-    await processTransaction(leaseMessage)
+    if (!success) return;
+  };
 
-    const message = buildLinkNodeMessage({
-      from: provAddress,
-      id: Long.fromString("1"),
-      nodeAddress: "qubeticsnode1e73xxsxszm9hwkx7qclr6ul3qy5vued7a80qv7" //node address
-    });
-    const txHash = await processTransaction(message)
-    if (!txHash) {
-      console.log("Transaction failed ");
+  const onApproval = async (address: string, type: string) => {
+    if (type === "Unlink") {
+      try {
+        const message = buildUnlinkNodeMessage({
+          from: provAddress,
+          id: Long.fromString("1"),
+          nodeAddress: address, //node address
+        });
+        await processTransaction(message);
+        setShow(true);
+
+
+      } catch (err: any) {
+        console.error(err.message);
+        setRejectShow(true);
+      } 
+
+      await updateStatus(address,"REJECTED");
+
+      return;
     }
 
-    handleShow();
+    try {
+      const leaseMessage = buildStartLeaseStatusMessage({
+        from: provAddress,
+        nodeAddress: address,
+        hours: Long.fromString("620"),
+        denom: "tics",
+        renewalPricePolicy: 0,
+      });
 
-  };
-  const onReject = async () => {
-
-    const message = buildUnlinkNodeMessage({
-      from: provAddress,
-      id: Long.fromString("1"),
-      nodeAddress: "qubeticsnode1e73xxsxszm9hwkx7qclr6ul3qy5vued7a80qv7" //node address
-    });
-    const txHash = await processTransaction(message)
-    if (!txHash) {
-      console.log("Transaction failed ");
+      await processTransaction(leaseMessage);
+      setShow(true);
+    } catch (err: any) {
+      console.error(err.message);
+      setRejectShow(true);
     }
 
-    handleRejectShow();
+    try {
+      const message = buildLinkNodeMessage({
+        from: provAddress,
+        id: Long.fromString("1"),
+        nodeAddress: address, //node address
+      });
+      await processTransaction(message);
+      setShow(true);
+    } catch (err: any) {
+      console.error(err.message);
+      setRejectShow(true);
+    }
+
+    await updateStatus(address,"APPROVED");
 
   };
+
+  const onReject = async () => {};
 
   const fetchData = async () => {
     setNodeList([]);
-    setTotalCount(0);
+    setTotalPages(0);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.postNodeRequest,
+      endpoint: apiUrls.nodeRequestedList(page,limit),
     });
 
     if (!success) return;
 
     setNodeList(data?.data?.nodeList);
-    setTotalCount(data?.data?.count);
+    // setTotalCount(data?.data?.count);
+    setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
   };
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page,limit]);
 
   return (
     <div className="dashboard container">
@@ -151,10 +177,15 @@ export default function Dashboard() {
                   <td>{row?.requestFor}</td>
                   <td>
                     <div className="action-btns">
-                      <button className="approve-btn" onClick={onApproval}>
+                      <button
+                        className="approve-btn"
+                        onClick={() =>
+                          onApproval(row?.nodeAddress, row?.requestFor)
+                        }
+                      >
                         Approve
                       </button>
-                      <button className="reject-btn" onClick={onReject}>
+                      <button className="reject-btn" onClick={() => onReject()}>
                         Reject
                       </button>
                     </div>
@@ -168,8 +199,10 @@ export default function Dashboard() {
         {/* Pagination */}
         <Pagination
           currentPage={page}
-          totalPages={totalCount}
+          totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
+          limit={limit}
+          onLimitChange={(limit: number)=> setLimit(limit)}
         />
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>

@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 
 function Node() {
   const [nodeList, setNodeList] = useState<any[]>([]);
-  const [page, setPage] = useState(1);
-  const [totalCount, setTotalCount] = useState<number>(0);
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [limit,setLimit]=useState<number>(5);
+
 
   const useGetApi = useNetworkRequest();
 
@@ -16,7 +18,7 @@ function Node() {
 
   const fetchData = async () => {
     setNodeList([]);
-    setTotalCount(0);
+    setTotalPages(0);
     const { success, data } = await useGetApi({
       endpoint: apiUrls.nodelist,
     });
@@ -24,12 +26,12 @@ function Node() {
     if (!success) return;
 
     setNodeList(data?.data?.nodeList);
-    setTotalCount(data?.data?.count);
+    setTotalPages(data?.datda?.total ? Math.ceil(data?.total / limit) : 1);
   };
 
   useEffect(() => {
     fetchData();
-  }, [page]);
+  }, [page,limit]);
 
   return (
     <div className="node container">
@@ -75,8 +77,10 @@ function Node() {
         {/* Pagination */}
         <Pagination
           currentPage={page}
-          totalPages={totalCount}
-          onPageChange={(newPage) => setPage(newPage)}
+          totalPages={totalPages}
+          onPageChange={(newPage: any) => setPage(newPage)}
+          limit={limit}
+          onLimitChange={(limit: number)=> setLimit(limit)}
         />
       </div>
     </div>

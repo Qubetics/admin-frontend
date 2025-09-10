@@ -11,8 +11,8 @@ declare module "@hanchon/signature-to-pubkey" {
 import { arrayify } from "@ethersproject/bytes";
 import { serializeSignDoc } from "@cosmjs/launchpad";
 import { envConstants } from "../../Constant/envConstants";
-import   bech32  from'bech32';
 
+import bech32 from "bech32";
 
 function messageToAminoTransaction(signer: string, data: string) {
   return {
@@ -62,16 +62,14 @@ export const api = async (url: string, init?: RequestInit) => {
         throw new Error(errorMessage);
       }
 
-      return data ;
+      return data;
     })
     .catch((error) => {
       throw error;
     });
 };
 
-export const fetchAccountInfo = async (
-  address:string
-) => {
+export const fetchAccountInfo = async (address: string) => {
   try {
     const uri = `${envConstants.swagger_api}/cosmos/auth/v1beta1/accounts/${address}`;
     const response = await api(uri);
@@ -84,14 +82,13 @@ export const fetchAccountInfo = async (
 
     return undefined;
   }
-}
+};
 
-
-export const convertNodeToWallet=(address:any, walletPrefix:any)=> {
+export const convertNodeToWallet = (address: any, walletPrefix: any) => {
   // Decode node address
   const decoded = bech32.decode(address);
   const words = decoded.words;
 
   // Re-encode with wallet prefix
   return bech32.encode(walletPrefix, words);
-}
+};

@@ -11,16 +11,14 @@ import { Buffer } from "buffer";
 import { fetchAccountInfo } from "./CommonHelper";
 import { envConstants } from "../../Constant/envConstants";
 
-
 export const sendMsgs = async (
-  keplr:any,
+  keplr: any,
   sender: string,
   proto: any,
-  fee:any,
+  fee: any,
   memo = ""
 ) => {
-  const account = await fetchAccountInfo( sender);
-  console.log("🚀 ~ sendMsgs ~ account:", account)
+  const account = await fetchAccountInfo(sender);
   const { pubKey } = await keplr.getKey(envConstants.chainId);
 
   if (account) {
@@ -50,7 +48,7 @@ export const sendMsgs = async (
           },
         ],
         fee: Fee.fromPartial({
-          amount: fee.amount.map((coin:any) => {
+          amount: fee.amount.map((coin: any) => {
             return {
               denom: coin.denom,
               amount: coin.amount.toString(),
@@ -62,11 +60,12 @@ export const sendMsgs = async (
       chainId: envConstants.chainId,
       accountNumber: Long.fromString(account.base_account.account_number),
     };
-    console.log("🚀 ~ sendMsgs ~ signDoc:", envConstants.chainId, sender, signDoc)
-    
 
-    const signed = await keplr.signDirect(envConstants.chainId, sender, signDoc);
-    console.log("🚀 ~ sendMsgs ~ signed:", signed)
+    const signed = await keplr.signDirect(
+      envConstants.chainId,
+      sender,
+      signDoc
+    );
 
     const signedTx = {
       tx: TxRaw.encode({
@@ -76,10 +75,12 @@ export const sendMsgs = async (
       }).finish(),
       signDoc: signed.signed,
     };
-    console.log("🚀 ~ sendMsgs ~ signedTx:", signedTx)
 
-    const txHash = await broadcastTxSync(keplr, envConstants.chainId, signedTx.tx);
-    console.log("🚀 ~ sendMsgs ~ txHash:", txHash)
+    const txHash = await broadcastTxSync(
+      keplr,
+      envConstants.chainId,
+      signedTx.tx
+    );
     // const txTracer = new TendermintTxTracer(envConstants.rpc_endpoint, "/websocket");
     // txTracer.traceTx(txHash).then((tx) => {
     //   console.log("Transaction commit successfully");
@@ -89,18 +90,10 @@ export const sendMsgs = async (
   }
 };
 
-export const broadcastTxSync = async (
-  keplr:any ,
-  chainId:any,
-  tx:any
-) => {
-try{
-
-    console.log(`🚀 ~ broadcastTxSync ~ hainId, tx, "sync":`, chainId, tx.toString(), "sync")
-    return keplr.sendTx(chainId, tx, "sync" );
-}
-catch(errr)
-{
-    console.log(errr,"<<<<<<<<<<<<<<<<<<<<<<<<errr!!!!!")
-}
+export const broadcastTxSync = async (keplr: any, chainId: any, tx: any) => {
+  try {
+    return keplr.sendTx(chainId, tx, "sync");
+  } catch (errr) {
+    console.log(errr, "<<<<<<<<<<<<<<<<<<<<<<<<errr!!!!!");
+  }
 };
