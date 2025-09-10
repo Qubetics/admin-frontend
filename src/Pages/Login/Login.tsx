@@ -32,18 +32,13 @@ export default function Login() {
         console.error("No accounts found in Keplr");
         return;
       }
-      setAuthData(accounts[0]?.address);
       await handleSign(accounts[0]?.address);
-
-      navigate("/dashboard");
     } catch (error: any) {
       return;
     }
   };
 
-  const handleSign = async (
-    address: string = "sent1q6dw49xcfg2jz5cvw8dx3ah008rkh0235mnnlh"
-  ) => {
+  const handleSign = async (address: string) => {
     try {
       const message = address;
 
@@ -69,9 +64,11 @@ export default function Login() {
 
       if (!success) return;
 
+      setAuthData(address);
+      navigate("/dashboard");
+    } catch (error: any) {
       sessionStorage.clear();
       setAuthData("");
-    } catch (error: any) {
       console.error("Signing failed: " + error?.message);
     }
   };
