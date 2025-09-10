@@ -6,6 +6,10 @@ import type { Plan } from "../../utils/Interfaces";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import Pagination from "../../utils/pagination";
+// import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
+// import { STATUS_ENUM } from "../../Constant/constants";
+// import { processTransaction } from "../../service/processTransaction/processTransaction";
+// import Long from "long";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
@@ -29,6 +33,23 @@ const Plans = () => {
     setPlanList(data?.data || []);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
   };
+
+  const handleClick = async (val:any)=> {
+    // console.log(val,"Called!!!!")
+    // const message = buildUpdatePlanStatusMessage({
+    //   id: Long.fromString(val?.id),   //paln Id
+    //   status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE: STATUS_ENUM.STATUS_ACTIVE 
+    // });
+
+    // const TxHash=await processTransaction(message)
+    // console.log(TxHash,"<<<<<<<<<<<<<<<TxHash!!!!!!")
+
+    // if(!TxHash){
+    //    console.log("Transaction failed ");
+    //    return;
+    // }
+
+  }
 
   useEffect(() => {
     getAllPlan();
@@ -67,12 +88,12 @@ const Plans = () => {
                   </td>
                 </tr>
               ) : (
-                planList.map((row) => (
+                planList.map((row:any) => (
                   <tr key={row.id}>
                     <td>{row.id}</td>
                     <td>
                       {row.prices.length > 0
-                        ? `${row.prices[0].amount} ${row.prices[0].denom}`
+                        ? `${row.prices[0]?.quote_value} ${row.prices[0].denom}`
                         : "-"}
                     </td>
                     <td>{row.gigabytes}</td>
@@ -80,7 +101,7 @@ const Plans = () => {
                     <td>{row.status}</td>
                     <td>
                       <div className="action-btns">
-                        <button className="approve-btn">
+                        <button className="approve-btn" onClick={()=>handleClick(row)}>
                           {row.status === "active" ? "Deactivate" : "Activate"}
                         </button>
                       </div>
@@ -101,7 +122,7 @@ const Plans = () => {
           onLimitChange={(limit: number) => setLimit(limit)}
         />
 
-        <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} />
+        <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} />
       </div>
     </div>
   );

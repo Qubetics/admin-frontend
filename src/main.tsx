@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ToastProvider>
       <App />
-      <BaseToast />
+      {/* <BaseToast /> */}
     </ToastProvider>
   </StrictMode>
 );
