@@ -11,7 +11,7 @@ function Node() {
   const [nodeList, setNodeList] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [limit,setLimit]=useState<number>(1);
+  const [limit,setLimit]=useState<number>(5);
 
   const useGetApi = useNetworkRequest();
   const { authData } = useIsLoggedIn();

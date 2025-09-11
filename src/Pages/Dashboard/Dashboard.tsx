@@ -33,14 +33,13 @@ export default function Dashboard() {
   const [show, setShow] = useState(false);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
-
-  }
+  };
 
   const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
   // const handleRejectShow = () => setRejectShow(true);
@@ -65,10 +64,11 @@ export default function Dashboard() {
       endpoint: apiUrls.nodeStatusAction(nodeAddress, status),
     });
 
-    if (!success) return false;
-
+    if (!success){
+      console.log("Server Error");
+      return false;
+    }
     fetchData();
-
     return true;
   };
 
@@ -80,17 +80,17 @@ export default function Dashboard() {
           id: Long.fromString("1"),
           nodeAddress: address, //node address
         });
-        await processTransaction(message);
+        const TxHash = await processTransaction(message);
+        if (!TxHash) {
+          console.log("Transaction failed");
+          return;
+        }
         setShow(true);
-
-
+        await updateStatus(address, "REJECTED");
       } catch (err: any) {
         console.error(err.message);
         // setRejectShow(true);
       }
-
-      await updateStatus(address, "REJECTED");
-
       return;
     }
 
@@ -104,7 +104,6 @@ export default function Dashboard() {
       });
 
       await processTransaction(leaseMessage);
-      setShow(true);
     } catch (err: any) {
       console.error(err.message);
       // setRejectShow(true);
@@ -116,19 +115,18 @@ export default function Dashboard() {
         id: Long.fromString("1"),
         nodeAddress: address, //node address
       });
-      await processTransaction(message);
-      setShow(true);
+      const TxHash = await processTransaction(message);
+      if (!TxHash) {
+        console.log("Transaction failed");
+        return;
+      }
+      const status = await updateStatus(address, "APPROVED");
+      if (!status) return;
+      handleShow();
     } catch (err: any) {
       console.error(err.message);
       // setRejectShow(true);
     }
-
-    const status = await updateStatus(address, "APPROVED");
-
-    if (!status) return;
-
-    handleShow();
-
   };
 
   const onReject = (nodeAddress: string) => {
@@ -215,7 +213,7 @@ export default function Dashboard() {
         </div>
 
         {/* Pagination */}
-        {totalPages>1 && <Pagination
+        {totalPages > 1 && <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
