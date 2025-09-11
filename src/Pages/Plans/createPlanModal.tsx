@@ -4,20 +4,17 @@ import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
-import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { ModifyNum, convertNodeToWallet } from "../../utils/Helper/CommonHelper";
-import { gbToBytes, provWalletPrefix } from "../../Constant/constants";
+import { ModifyNum} from "../../utils/Helper/CommonHelper";
+import { gbToBytes } from "../../Constant/constants";
 
-const createPlanModal = ({ createShow, setCreateShow, getAllPlan }: any) => {
-  const [formData, setFormData] = useState({
+const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }: any) => {
+  const initialFormData = {
     hours: "",
     bytes: "",
     price: "",
-  });
-  const { authData } = useIsLoggedIn();
-
-  // manage this in state 
-  const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+  };
+  const [formData, setFormData] = useState(initialFormData);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -32,6 +29,11 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan }: any) => {
   const handleShow = () => setShow(true);
 
   const handleClick = async () => {
+    if(!formData.bytes ||!formData.hours ||!formData.price ){
+      console.log("All fields are required")
+      return;
+    }
+    setIsLoading(true)
     const message = buildCreatePlanMessage({
       from :provAddress,
       gigabytes: Long.fromString(gbToBytes(formData.bytes)),
@@ -46,11 +48,12 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan }: any) => {
       ]
     });
     const TxHash=await processTransaction(message)
-
+    setIsLoading(false)
     if(!TxHash){
-       console.log("Transaction failed ");
+       console.log("Transaction failed");
        return;
     }
+    setFormData(initialFormData)
     setCreateShow(false);
     // handleClose();
     handleShow(); 
@@ -114,7 +117,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan }: any) => {
                 />
               </div>
 
-              <ButtonCustom label="Create" onClick={handleClick} />
+              <ButtonCustom label="Create" onClick={handleClick} disabled={isLoading} />
             </div>
           </div>
         </Modal.Body>

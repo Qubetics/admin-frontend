@@ -35,6 +35,7 @@ export default function Dashboard() {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
+  
 
   const handleClose = () => setShow(false);
   const handleShow = () => {

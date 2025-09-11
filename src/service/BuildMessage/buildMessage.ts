@@ -3,7 +3,7 @@ import {
   MsgCreatePlanRequest,
   MsgLinkNodeRequest,
   MsgUnlinkNodeRequest,
-  // MsgUpdatePlanStatusRequest,
+  MsgUpdatePlanStatusRequest,
 } from "../../proto-gen/src/codec/qubetics/plan/v3/msg";
 import { MsgStartLeaseRequest } from "../../proto-gen/src/codec/qubetics/lease/v1/msg";
 
@@ -80,18 +80,18 @@ export function buildUnlinkNodeMessage(params: {
     };
   }
 
-  // export function buildUpdatePlanStatusMessage(params: {
-  //   from?: any;
-  //   id: any;
-  //   status: number;
-  // }) {
-  //   return {
-  //     typeUrl: TYPE_URLS.UPDATE_PLAN_STATUS,
-  //     value: MsgUpdatePlanStatusRequest.encode({
-  //       from: params?.from,
-  //       id: params?.id,
-  //       status: params?.status,
-  //     }).finish(),
-  //   };
-  // }
+  export function buildUpdatePlanStatusMessage(params: {
+    from?: any;
+    id: any;
+    status: number;
+  }) {
+    return {
+      typeUrl: TYPE_URLS.UPDATE_PLAN_STATUS,
+      value: MsgUpdatePlanStatusRequest.encode({
+        from: params?.from,
+        id: params?.id,
+        status: params?.status,
+      }).finish(),
+    };
+  }
   

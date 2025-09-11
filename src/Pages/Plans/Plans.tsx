@@ -6,11 +6,12 @@ import type { Plan } from "../../utils/Interfaces";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import Pagination from "../../utils/pagination";
-import { Timestamp } from "../../utils/Helper/CommonHelper";
-// import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
-// import { STATUS_ENUM } from "../../Constant/constants";
-// import { processTransaction } from "../../service/processTransaction/processTransaction";
-// import Long from "long";
+import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
+import { STATUS_ENUM, provWalletPrefix } from "../../Constant/constants";
+import { processTransaction } from "../../service/processTransaction/processTransaction";
+import Long from "long";
+import { useIsLoggedIn } from "../../Context/LoggedInContext";
+import { Timestamp, convertNodeToWallet } from "../../utils/Helper/CommonHelper";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
@@ -19,8 +20,11 @@ const Plans = () => {
   const [limit, setLimit] = useState<number>(5);
   const [totalPages, setTotalPages] = useState<number>(0);
   const useGetApi = useNetworkRequest();
-
+  const { authData } = useIsLoggedIn();
   const [createShow, setCreateShow] = useState(false);
+
+  // manage this in state 
+  const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const getAllPlan = async () => {
     setIsLoading(true);
@@ -32,24 +36,23 @@ const Plans = () => {
     if (!success) return;
 
     setPlanList(data?.data || []);
-    setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
+    setTotalPages(data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1);
   };
 
-  const handleClick = async ()=> {
-    // console.log(val,"Called!!!!")
-    // const message = buildUpdatePlanStatusMessage({
-    //   id: Long.fromString(val?.id),   //paln Id
-    //   status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE: STATUS_ENUM.STATUS_ACTIVE 
-    // });
+  const handleClick = async (val:any)=> {
+    const message = buildUpdatePlanStatusMessage({
+      from :provAddress,
+      id: Long.fromString(val?.id),   //paln Id
+      status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE: STATUS_ENUM.STATUS_ACTIVE 
+    });
 
-    // const TxHash=await processTransaction(message)
-    // console.log(TxHash,"<<<<<<<<<<<<<<<TxHash!!!!!!")
+    const TxHash=await processTransaction(message)
 
-    // if(!TxHash){
-    //    console.log("Transaction failed ");
-    //    return;
-    // }
-
+    if(!TxHash){
+       console.log("Transaction failed ");
+       return;
+    }
+    getAllPlan();
   }
 
   useEffect(() => {
@@ -89,21 +92,21 @@ const Plans = () => {
                   </td>
                 </tr>
               ) : (
-                planList.map((row:any) => (
-                  <tr key={row.id}>
-                    <td>{row.id}</td>
+                planList?.map((row:any) => (
+                  <tr key={row?.id}>
+                    <td>{row?.id}</td>
                     <td>
-                      {row.prices.length > 0
-                        ? `${row.prices[0]?.quote_value} ${row.prices[0].denom}`
+                      {row?.prices?.length > 0
+                        ? `${row?.prices[0]?.quote_value} ${row?.prices[0]?.denom}`
                         : "-"}
                     </td>
-                    <td>{row.gigabytes}</td>
-                    <td>{Timestamp(row.status_at)}</td>
-                    <td>{row.hours}</td>
+                    <td>{row?.gigabytes}</td>
+                    <td>{Timestamp(row?.status_at)}</td>
+                    <td>{row?.hours}</td>
                     <td>
                       <div className="action-btns">
-                        <button className="approve-btn" onClick={()=>handleClick()}>
-                          {row.status === "active" ? "Deactivate" : "Activate"}
+                        <button className="approve-btn" onClick={()=>handleClick(row)} disabled={row.status === "active"}>
+                          {row.status === "active" ? "Activated" : "Activate"}
                         </button>
                       </div>
                     </td>
@@ -123,7 +126,7 @@ const Plans = () => {
           onLimitChange={(limit: number) => setLimit(limit)}
         />}
 
-        <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} />
+        <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} provAddress={provAddress} />
       </div>
     </div>
   );

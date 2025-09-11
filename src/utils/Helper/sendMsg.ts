@@ -10,6 +10,7 @@ import Long from "long";
 import { Buffer } from "buffer";
 import { fetchAccountInfo } from "./CommonHelper";
 import { envConstants } from "../../Constant/envConstants";
+import { TendermintTxTracer } from "@keplr-wallet/cosmos";
 
 export const sendMsgs = async (
   keplr: any,
@@ -81,10 +82,10 @@ export const sendMsgs = async (
       envConstants.chainId,
       signedTx.tx
     );
-    // const txTracer = new TendermintTxTracer(envConstants.rpc_endpoint, "/websocket");
-    // txTracer.traceTx(txHash).then((tx) => {
-    //   console.log("Transaction commit successfully");
-    // });
+    const txTracer = new TendermintTxTracer(envConstants.rpc_endpoint, "/websocket");
+    await txTracer.traceTx(txHash).then((tx:any) => {
+      console.log(tx,"Transaction commit successfully");
+    });
 
     return txHash;
   }
@@ -94,6 +95,6 @@ export const broadcastTxSync = async (keplr: any, chainId: any, tx: any) => {
   try {
     return keplr.sendTx(chainId, tx, "sync");
   } catch (errr) {
-    console.log(errr, "<<<<<<<<<<<<<<<<<<<<<<<<errr!!!!!");
+    console.log(errr, "error while broadcast");
   }
 };
