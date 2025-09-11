@@ -6,6 +6,7 @@ import type { Plan } from "../../utils/Interfaces";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import Pagination from "../../utils/pagination";
+import { Timestamp } from "../../utils/Helper/CommonHelper";
 // import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
 // import { STATUS_ENUM } from "../../Constant/constants";
 // import { processTransaction } from "../../service/processTransaction/processTransaction";
@@ -16,7 +17,7 @@ const Plans = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(5);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const useGetApi = useNetworkRequest();
 
   const [createShow, setCreateShow] = useState(false);
@@ -97,8 +98,8 @@ const Plans = () => {
                         : "-"}
                     </td>
                     <td>{row.gigabytes}</td>
+                    <td>{Timestamp(row.status_at)}</td>
                     <td>{row.hours}</td>
-                    <td>{row.status}</td>
                     <td>
                       <div className="action-btns">
                         <button className="approve-btn" onClick={()=>handleClick()}>
@@ -114,13 +115,13 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        <Pagination
+        {totalPages>1 && <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
           limit={limit}
           onLimitChange={(limit: number) => setLimit(limit)}
-        />
+        />}
 
         <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} />
       </div>

@@ -163,7 +163,7 @@ export default function Dashboard() {
         <h1>Dashboard</h1>
       </div>
       <div className="cardSection">
-        <CardBox title="Total Earnings" value="2000 TICS" />
+        {/* <CardBox title="Total Earnings" value="2000 TICS" /> */}
         <CardBox title="Active Nodes" value="100" />
       </div>
 
@@ -215,13 +215,13 @@ export default function Dashboard() {
         </div>
 
         {/* Pagination */}
-        <Pagination
+        {totalPages>1 && <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
           limit={limit}
           onLimitChange={(limit: number) => setLimit(limit)}
-        />
+        />}
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
