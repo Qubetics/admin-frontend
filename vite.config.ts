@@ -29,4 +29,14 @@ export default defineConfig({
   optimizeDeps: {
     include: ["buffer", "process"],
   },
+  // server:{
+  //   proxy: {
+  //     '/api': { // Proxy requests starting with /api
+  //       target: 'http://localhost:4003', // Your backend server address
+  //       // changeOrigin: true, // Needed for virtual hosted sites
+  //       secure: process.env.VITE_PLATFORM_ENVIROMENT =="production" ? true:false,
+  //       ws: true, 
+  //     },
+  //   },
+  // },
 });
