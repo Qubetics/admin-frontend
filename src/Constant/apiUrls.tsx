@@ -1,6 +1,6 @@
 export const apiUrls = {
   getAllPlan: (page: number, limit: number) =>
-    `/api/v1/plans?page=${page}&limit=${limit}`,
+    `/api/v1/plans?page=${page}&limit=${limit}&reverse=true`,
   postNodeRequest: "/api/v1/node",
   logout: `/api/v1/auth/logout`,
   login: `/api/v1/auth/login`,

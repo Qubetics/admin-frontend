@@ -43,7 +43,7 @@ export const processTransaction = async (message) => {
       }
     } catch (error) {
       console.log(error, "errror while signing transaction");
-      return '';
+      return false;
     }
   }
 };

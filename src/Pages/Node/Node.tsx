@@ -29,7 +29,6 @@ function Node() {
     });
 
     if (!success) return;
-    console.log(data,"nodeListDataa!!!!")
     setNodeList(data?.data?.response);
     setTotalPages(data?.datda?.total ? Math.ceil(data?.total / limit) : 1);
   };
