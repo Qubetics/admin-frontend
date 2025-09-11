@@ -104,4 +104,22 @@ export const ModifyNum = (value:any) => {
     const zeroes = '0'.repeat(DECIMAL_PLACES)
     return value + zeroes
   }
-}
+};
+
+// Timestamp.tsx
+export const Timestamp = (value: string | number | Date): string => {
+  // Convert input to Date
+  const date = new Date(value);
+
+  // Format options
+  const options: Intl.DateTimeFormatOptions = { 
+    year: "numeric", 
+    month: "numeric", 
+    day: "numeric", 
+    hour: "numeric", 
+    minute: "2-digit", 
+    hour12: true 
+  };
+
+  return date.toLocaleString("en-US", options);
+};

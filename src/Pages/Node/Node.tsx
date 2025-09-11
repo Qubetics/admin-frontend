@@ -10,33 +10,33 @@ import { useEffect, useState } from "react";
 function Node() {
   const [nodeList, setNodeList] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const [limit,setLimit]=useState<number>(5);
-
 
   const useGetApi = useNetworkRequest();
   const { authData } = useIsLoggedIn();
 
-  const buttons = ["All Nodes", "Active", "Inactive"];
-  const [active, setActive] = useState("All Nodes");
+  const buttons = [
+    { label: "All Nodes", value: "allnodes" },
+    { label: "Active", value: "active" },
+    { label: "Inactive", value: "inactive" },
+  ];
+  const [active, setActive] = useState("allnodes");
 
   const fetchData = async () => {
     const provAddress = convertNodeToWallet(authData, provWalletPrefix);
-    setNodeList([]);
-    setTotalPages(0);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(provAddress),
+      endpoint: apiUrls.nodelist(provAddress,active,page,limit),
     });
 
     if (!success) return;
-    console.log(data,"nodeListDataa!!!!")
     setNodeList(data?.data?.response);
-    setTotalPages(data?.datda?.total ? Math.ceil(data?.total / limit) : 1);
+    setTotalPages(data?.data?.total ? Math.ceil(data?.data?.total / limit) : 1);
   };
 
   useEffect(() => {
     fetchData();
-  }, [page,limit]);
+  }, [page,limit,active]);
 
   return (
     <div className="node container">
@@ -44,11 +44,11 @@ function Node() {
         <h1>Node List</h1>
       </div>
       <div className="node__btns">
-        {buttons.map((label) => (
+        {buttons.map(({label,value}) => (
           <button
-            key={label}
-            className={active === label ? "active" : "dashboardBtn"}
-            onClick={() => setActive(label)}
+            key={value}
+            className={active === value ? "active" : "dashboardBtn"}
+            onClick={() => setActive(value)}
           >
             {label}
           </button>
@@ -71,7 +71,7 @@ function Node() {
                 <tr key={i}>
                   <td>{row?.orgName}</td>
                   <td>{row?.nodeAddress}</td>
-                  <td>{row?.status}</td>
+                  <td>{row?.nodeStatus}</td>
                   <td>{row?.requestFor}</td>
                 </tr>
               ))}
@@ -80,13 +80,13 @@ function Node() {
         </div>
 
         {/* Pagination */}
-        <Pagination
+        {totalPages>1 && <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
           limit={limit}
           onLimitChange={(limit: number)=> setLimit(limit)}
-        />
+        />}
       </div>
     </div>
   );

@@ -12,7 +12,7 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  limit=10,
+  limit=5,
   onLimitChange=(()=>{})
 }) => {
   // Helper: generate page numbers
