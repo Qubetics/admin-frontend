@@ -1,5 +1,9 @@
 .dashboard {
+  max-width: 1640px;
+  width: 100%;
+  margin: auto;
   margin-top: 140px;
+
   @media screen and (max-width: 767px) {
     margin-top: 100px;
   }
@@ -7,7 +11,7 @@
   &__header {
     h1 {
       color: #fff;
-      padding-bottom: 74px;
+      padding-bottom: 14px;
       font-weight: 600;
       font-size: 24px;
     }
@@ -16,7 +20,11 @@
   .card-box {
     width: 100%;
     border: 1px solid rgba(255, 255, 255, 0.1490196078);
-    background: linear-gradient(157.79deg, rgba(29, 29, 29, 0.54) -0.65%, rgba(29, 29, 29, 0.9) 99.59%);
+    background: linear-gradient(
+      157.79deg,
+      rgba(29, 29, 29, 0.54) -0.65%,
+      rgba(29, 29, 29, 0.9) 99.59%
+    );
 
     border-radius: 14px;
     max-width: 264px;
@@ -30,31 +38,31 @@
     @media screen and (max-width: 767px) {
       max-width: initial;
     }
-  
+
     &:hover {
       transform: translateY(-4px);
     }
-  
+
     .card-title {
       font-size: 16px;
-      color: #A0A0A0;
+      color: #a0a0a0;
       margin-bottom: 10px;
     }
-  
+
     .card-value {
       font-size: 20px;
-      font-weight:400;
+      font-weight: 400;
       color: #fff;
     }
   }
-  .cardSection{
+  .cardSection {
     display: flex;
     gap: 20px;
     @media screen and (max-width: 767px) {
       flex-direction: column;
     }
   }
-  .commonTable{
-    margin-top: 88px;
+  .commonTable {
+    margin-top: 40px;
   }
 }

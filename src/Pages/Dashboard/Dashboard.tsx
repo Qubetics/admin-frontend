@@ -7,10 +7,18 @@ import { apiUrls } from "../../Constant/apiUrls";
 import Pagination from "../../utils/pagination";
 import Long from "long";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
-import { buildLinkNodeMessage, buildStartLeaseStatusMessage, buildUnlinkNodeMessage } from "../../service/BuildMessage/buildMessage";
-import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import {
+  buildLinkNodeMessage,
+  buildStartLeaseStatusMessage,
+  buildUnlinkNodeMessage,
+} from "../../service/BuildMessage/buildMessage";
+import {
+  convertNodeToWallet,
+  truncateValue,
+} from "../../utils/Helper/CommonHelper";
 import { provWalletPrefix } from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
+import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
@@ -29,13 +37,17 @@ interface TableRow {
 }
 
 export default function Dashboard() {
-  const [rejectShow, setRejectShow] = useState<RejectShowState>({ show: false, nodeAddress: null });
+  const [rejectShow, setRejectShow] = useState<RejectShowState>({
+    show: false,
+    nodeAddress: null,
+  });
   const [show, setShow] = useState(false);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [activeAccount,setActiveAccount]=useState<number>(0);
+  const [isLoading,setIsLoading]=useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -48,7 +60,7 @@ export default function Dashboard() {
   const { authData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
 
-  // manage this in state 
+  // manage this in state
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const CardBox: React.FC<CardBoxProps> = ({ title, value }) => {
@@ -65,7 +77,7 @@ export default function Dashboard() {
       endpoint: apiUrls.nodeStatusAction(nodeAddress, status),
     });
 
-    if (!success){
+    if (!success) {
       console.log("Server Error");
       return false;
     }
@@ -136,20 +148,22 @@ export default function Dashboard() {
 
   const handleRejectCall = async (address: string) => {
     await updateStatus(address, "REJECTED");
-  }
+  };
 
   const fetchData = async () => {
+    setIsLoading(true)
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
       endpoint: apiUrls.nodeRequestedList(page, limit),
     });
 
+    setIsLoading(false)
     if (!success) return;
-
     setNodeList(data?.data?.nodeList);
     // setTotalCount(data?.data?.count);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
+
   };
 
   const fetchNodeNumber = async () => {
@@ -163,6 +177,7 @@ export default function Dashboard() {
       return;
     }
     setActiveAccount(data?.data?.total);
+    
   }
 
   useEffect(() => {
@@ -174,7 +189,7 @@ export default function Dashboard() {
   },[]);
 
   return (
-    <div className="dashboard container">
+    <div className="dashboard">
       <div className="dashboard__header">
         <h1>Dashboard</h1>
       </div>
@@ -200,12 +215,18 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {nodeList?.map((row, i) => (
+              {isLoading ? (
+                <tr>
+                  <td colSpan={100}>
+                 <InnerLoader/>
+                  </td>
+                </tr>
+              ):nodeList?.map((row, i) => (
                 <tr key={i}>
                   <td>{row?.orgName}</td>
                   <td>{row?.email}</td>
                   <td>{row?.location}</td>
-                  <td>{row?.nodeAddress}</td>
+                  <td>{truncateValue(row?.nodeAddress)}</td>
                   <td>{row?.bandwidth}</td>
                   <td>{row?.plan}</td>
                   <td>{row?.requestFor}</td>
@@ -217,10 +238,13 @@ export default function Dashboard() {
                           onApproval(row?.nodeAddress, row?.requestFor)
                         }
                       >
-                        Approve
+                        Add
                       </button>
-                      <button className="reject-btn" onClick={() => onReject(row?.nodeAddress)}>
-                        Reject
+                      <button
+                        className="reject-btn"
+                        onClick={() => onReject(row?.nodeAddress)}
+                      >
+                        Remove
                       </button>
                     </div>
                   </td>
@@ -231,13 +255,15 @@ export default function Dashboard() {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: any) => setPage(newPage)}
-          limit={limit}
-          onLimitChange={(limit: number) => setLimit(limit)}
-        />}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: any) => setPage(newPage)}
+            limit={limit}
+            onLimitChange={(limit: number) => setLimit(limit)}
+          />
+        )}
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
@@ -246,7 +272,9 @@ export default function Dashboard() {
                 <h2>Node Request</h2>
                 <p>Node Approved successfully!</p>
                 <div className="action-btns">
-                  <button className="gradient-btn" onClick={handleClose}>Ok</button>
+                  <button className="gradient-btn" onClick={handleClose}>
+                    Ok
+                  </button>
                 </div>
               </div>
             </div>
@@ -260,8 +288,17 @@ export default function Dashboard() {
                 <h2>Node Request</h2>
                 <p>Are you sure you want to reject the request?</p>
                 <div className="action-btns">
-                  <button className="reject-btn" onClick={handleRejectClose}>No</button>
-                  <button className="gradient-btn" onClick={() => { handleRejectCall(String(rejectShow.nodeAddress)) }}>Yes</button>
+                  <button className="reject-btn" onClick={handleRejectClose}>
+                    No
+                  </button>
+                  <button
+                    className="gradient-btn"
+                    onClick={() => {
+                      handleRejectCall(String(rejectShow.nodeAddress));
+                    }}
+                  >
+                    Yes
+                  </button>
                 </div>
               </div>
             </div>

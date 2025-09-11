@@ -33,3 +33,30 @@ export function ToggleIcon() {
     </svg>
   );
 }
+
+export function CopyIcon() {
+  return (
+    <svg
+      width="23"
+      height="23"
+      viewBox="0 0 23 23"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M9.00788 22.1111H19.1995C20.8076 22.1111 22.1113 20.8074 22.1113 19.1992V9.00766C22.1113 7.39948 20.8076 6.09578 19.1995 6.09578H9.00788C7.39969 6.09578 6.096 7.39948 6.096 9.00766V19.1992C6.096 20.8074 7.39969 22.1111 9.00788 22.1111Z"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M2.81992 16.8042C1.75272 16.3718 1 15.3264 1 14.1034V3.91188C1 2.30307 2.30307 1 3.91188 1H14.1034C15.325 1 16.3718 1.75272 16.8042 2.81992"
+        stroke="white"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+}
