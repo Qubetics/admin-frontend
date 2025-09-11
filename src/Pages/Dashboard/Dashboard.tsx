@@ -35,7 +35,7 @@ export default function Dashboard() {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
-  
+  const [activeAccount,setActiveAccount]=useState<number>(0);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -152,9 +152,26 @@ export default function Dashboard() {
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
   };
 
+  const fetchNodeNumber = async () => {
+    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+    const { success, data } = await useGetApi({
+      endpoint: apiUrls.nodelist(provAddress,"active",page,limit),
+    });
+
+    if(!success){
+      console.log("unable to fetch the active account");
+      return;
+    }
+    setActiveAccount(data?.data?.total);
+  }
+
   useEffect(() => {
     fetchData();
   }, [page, limit]);
+
+  useEffect(()=>{
+    fetchNodeNumber();
+  },[]);
 
   return (
     <div className="dashboard container">
@@ -163,7 +180,7 @@ export default function Dashboard() {
       </div>
       <div className="cardSection">
         {/* <CardBox title="Total Earnings" value="2000 TICS" /> */}
-        <CardBox title="Active Nodes" value="100" />
+        <CardBox title="Active Nodes" value={activeAccount} />
       </div>
 
       <div className="custom-table-wrapper commonTable">
