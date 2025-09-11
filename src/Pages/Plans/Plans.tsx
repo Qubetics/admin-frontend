@@ -36,7 +36,7 @@ const Plans = () => {
     if (!success) return;
 
     setPlanList(data?.data || []);
-    setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
+    setTotalPages(data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1);
   };
 
   const handleClick = async (val:any)=> {
