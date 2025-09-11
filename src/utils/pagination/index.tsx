@@ -26,6 +26,21 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="pagination">
+        <div className="pagination_left">
+          <span>Show rows</span>
+        <select
+          id="limit"
+          value={limit}
+          onChange={(e) => onLimitChange(Number(e.target.value))}
+          className="border rounded px-2 py-1"
+        >
+          {[5, 10, 20].map((size) => (
+            <option key={size} value={size}>
+              {size}
+            </option>
+          ))}
+        </select>
+      </div>
       {/* Prev button */}
       <div className="page-numbers">
         <button
@@ -56,20 +71,7 @@ const Pagination: React.FC<PaginationProps> = ({
           {">"}
         </button>
       </div>
-      <div className="flex items-center gap-2">
-        <select
-          id="limit"
-          value={limit}
-          onChange={(e) => onLimitChange(Number(e.target.value))}
-          className="border rounded px-2 py-1"
-        >
-          {[5, 10, 20].map((size) => (
-            <option key={size} value={size}>
-              {size}
-            </option>
-          ))}
-        </select>
-      </div>
+    
     </div>
   );
 };

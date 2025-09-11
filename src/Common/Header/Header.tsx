@@ -6,6 +6,10 @@ import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { useState } from "react";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
+import {
+  copyToClipboard,
+} from "../../utils/Helper/CommonHelper";
+import { CopyIcon } from "../../assets/StoreAsset/StoreAsset";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -28,7 +32,7 @@ function Header() {
   const onLogout = async () => {
     const { success } = await useGetApi({ endpoint: apiUrls.logout });
     if (!success) return;
-    navigate('/login')
+    navigate("/login");
     localStorage.clear();
     sessionStorage.clear();
     setAuthData("");
@@ -71,14 +75,17 @@ function Header() {
             {/* Right Section: Wallet */}
             <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
               {authData && (
-                <span className="header__wallet-address">
-                  {authData.slice(0, 6)}...{authData.slice(-4)}
+                <span
+                  className="header__wallet-address customButton"
+                  onClick={() => copyToClipboard(authData)}
+                >
+                  <span>
+                    {authData.slice(0, 6)}...{authData.slice(-4)}
+                  </span>{" "}
+                  <CopyIcon />
                 </span>
               )}
-              <span
-                className="header__wallet-address"
-                onClick={() => onLogout()}
-              >
+              <span className="customButton" onClick={() => onLogout()}>
                 Logout
               </span>
               {/* <button className="header__wallet" onClick={handleClick}>
