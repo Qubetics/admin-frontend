@@ -9,7 +9,7 @@ function ButtonCustom(props: ButtonCustomProps) {
     <button
       className={`customButton ${className ? className : ""} ${
         bordered ? "customButton-bordered" : ""
-      }`}
+      } ${disabled? "disabled" : ""}`}
       onClick={onClick}
       type={type}
       disabled={disabled}

@@ -87,7 +87,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }:
               <div className="form-group">
                 <label>Plan Price</label>
                 <input
-                  type="text"
+                  type="number"
                   name="price"
                   placeholder="Enter Plan Price"
                   value={formData.price}
@@ -98,7 +98,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }:
               <div className="form-group">
                 <label>Plan GB</label>
                 <input
-                  type="text"
+                  type="number"
                   name="bytes"
                   placeholder="Enter GB"
                   value={formData.bytes}
@@ -109,7 +109,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }:
               <div className="form-group">
                 <label>Validity (Hours)</label>
                 <input
-                  type="text"
+                  type="number"
                   name="hours"
                   placeholder="Enter Validity (hours)"
                   value={formData.hours}

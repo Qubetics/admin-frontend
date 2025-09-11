@@ -19,23 +19,23 @@
     justify-content: space-between;
     padding: 25px 0;
     gap: 30px;
-    
+
     @media (max-width: 1299px) {
       justify-content: unset;
       gap: 20px;
     }
-    
+
     @media (max-width: 1200px) {
       justify-content: space-between;
     }
-    
+
     @media screen and (max-width: 676px) {
       width: 100%;
     }
 
     .mob__List {
       align-items: center;
-      
+
       @media screen and (max-width: 1200px) {
         display: none;
       }
@@ -58,7 +58,7 @@
   @media (max-width: 991px) {
     padding: 0 40px;
   }
-  
+
   &__container {
     width: 100%;
     display: flex;
@@ -88,7 +88,7 @@
       position: relative;
       padding: 8px 0;
 
-      &:hover, 
+      &:hover,
       &.active {
         color: #ffffff;
       }
@@ -153,11 +153,14 @@
   }
 
   &__wallet-address {
-    background: rgba(255, 255, 255, 0.1);
-    padding: 5px 10px;
-    border-radius: 12px;
+    display: flex !important;
+    align-items: center;
+    gap: 20px;
     font-size: 14px;
     color: #fff;
+    svg {
+      width: 20px;
+    }
   }
 
   // Mobile styles
@@ -209,7 +212,7 @@
     &__nav {
       display: flex !important;
     }
-    
+
     &__menu-toggle {
       display: none;
     }

@@ -94,19 +94,19 @@ export const convertNodeToWallet = (address: any, walletPrefix: any) => {
   return bech32.encode(walletPrefix, words);
 };
 
-export const ModifyNum = (value:any) => {
-  if (value.includes('.')) {
-    const data = value.split('.')[1]
-    const res = value.replace('.', '')
-    const zeroes = '0'.repeat(DECIMAL_PLACES - data.length)
-    return res + zeroes
+export const ModifyNum = (value: any) => {
+  if (value.includes(".")) {
+    const data = value.split(".")[1];
+    const res = value.replace(".", "");
+    const zeroes = "0".repeat(DECIMAL_PLACES - data.length);
+    return res + zeroes;
   } else {
-    const zeroes = '0'.repeat(DECIMAL_PLACES)
-    return value + zeroes
+    const zeroes = "0".repeat(DECIMAL_PLACES);
+    return value + zeroes;
   }
-}
+};
 
-export const formatTimestamp=(timestamp: string)=> {
+export const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
 
   // Extract date components
@@ -121,22 +121,39 @@ export const formatTimestamp=(timestamp: string)=> {
 
   hours = hours % 12 || 12; // Convert to 12-hour format
 
-  return `${year}-${month}-${day} ${String(hours).padStart(2, "0")}:${minutes}${ampm}`;
-}
+  return `${year}-${month}-${day} ${String(hours).padStart(
+    2,
+    "0"
+  )}:${minutes}${ampm}`;
+};
 
 export const Timestamp = (value: string | number | Date): string => {
   // Convert input to Date
   const date = new Date(value);
 
   // Format options
-  const options: Intl.DateTimeFormatOptions = { 
-    year: "numeric", 
-    month: "numeric", 
-    day: "numeric", 
-    hour: "numeric", 
-    minute: "2-digit", 
-    hour12: true 
+  const options: Intl.DateTimeFormatOptions = {
+    year: "numeric",
+    month: "numeric",
+    day: "numeric",
+    hour: "numeric",
+    minute: "2-digit",
+    hour12: true,
   };
 
   return date.toLocaleString("en-US", options);
+};
+
+export const truncateValue = (
+  value: string,
+  start: number = 6,
+  end: number = 4
+) => {
+  if (!value) return "";
+  if (value.length <= start + end) return value; // no need to truncate if too short
+  return `${value.slice(0, start)}...${value.slice(-end)}`;
+};
+
+export const copyToClipboard = (text: any) => {
+  return navigator.clipboard.writeText(text)
 };

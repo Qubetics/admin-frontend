@@ -12,6 +12,7 @@ import { processTransaction } from "../../service/processTransaction/processTran
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { Timestamp, convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import InnerLoader from "../../Common/Loader/InnerLoader";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
@@ -49,6 +50,7 @@ const Plans = () => {
     const TxHash=await processTransaction(message)
 
     if(!TxHash){
+      
        console.log("Transaction failed ");
        return;
     }
@@ -62,7 +64,7 @@ const Plans = () => {
   return (
     <div className="plans container">
       <div className="plans__header">
-        <h1>Plans</h1>
+        <h1>Plans List</h1>
         <ButtonCustom label="Create Plan" onClick={() => setCreateShow(true)} />
       </div>
       <div className="custom-table-wrapper commonTable">
@@ -81,8 +83,8 @@ const Plans = () => {
             <tbody>
               {isLoading ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center" }}>
-                    Loading...
+                  <td colSpan={100}>
+                 <InnerLoader/>
                   </td>
                 </tr>
               ) : planList.length === 0 ? (
@@ -105,7 +107,7 @@ const Plans = () => {
                     <td>{row?.hours}</td>
                     <td>
                       <div className="action-btns">
-                        <button className="approve-btn" onClick={()=>handleClick(row)} disabled={row.status === "active"}>
+                        <button className={`approve-btn ${row.status === "active" ? "disabled" : ""}`}  onClick={()=>handleClick(row)} disabled={row.status === "active"}>
                           {row.status === "active" ? "Activated" : "Activate"}
                         </button>
                       </div>
