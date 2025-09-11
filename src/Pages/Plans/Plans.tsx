@@ -11,14 +11,14 @@ import { STATUS_ENUM, provWalletPrefix } from "../../Constant/constants";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { convertNodeToWallet, formatTimestamp } from "../../utils/Helper/CommonHelper";
+import { Timestamp, convertNodeToWallet } from "../../utils/Helper/CommonHelper";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [page, setPage] = useState<number>(1);
   const [limit, setLimit] = useState<number>(5);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(0);
   const useGetApi = useNetworkRequest();
   const { authData } = useIsLoggedIn();
   const [createShow, setCreateShow] = useState(false);
@@ -92,7 +92,7 @@ const Plans = () => {
                   </td>
                 </tr>
               ) : (
-                planList.map((row:any) => (
+                planList?.map((row:any) => (
                   <tr key={row?.id}>
                     <td>{row?.id}</td>
                     <td>
@@ -101,7 +101,7 @@ const Plans = () => {
                         : "-"}
                     </td>
                     <td>{row?.gigabytes}</td>
-                    <td>{formatTimestamp(row?.status_at)}</td>
+                    <td>{Timestamp(row?.status_at)}</td>
                     <td>{row?.hours}</td>
                     <td>
                       <div className="action-btns">
@@ -118,13 +118,13 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        <Pagination
+        {totalPages>1 && <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
           limit={limit}
           onLimitChange={(limit: number) => setLimit(limit)}
-        />
+        />}
 
         <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} provAddress={provAddress} />
       </div>

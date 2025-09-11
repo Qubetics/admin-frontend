@@ -123,3 +123,20 @@ export const formatTimestamp=(timestamp: string)=> {
 
   return `${year}-${month}-${day} ${String(hours).padStart(2, "0")}:${minutes}${ampm}`;
 }
+
+export const Timestamp = (value: string | number | Date): string => {
+  // Convert input to Date
+  const date = new Date(value);
+
+  // Format options
+  const options: Intl.DateTimeFormatOptions = { 
+    year: "numeric", 
+    month: "numeric", 
+    day: "numeric", 
+    hour: "numeric", 
+    minute: "2-digit", 
+    hour12: true 
+  };
+
+  return date.toLocaleString("en-US", options);
+};
