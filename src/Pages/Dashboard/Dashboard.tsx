@@ -18,7 +18,7 @@ import {
 } from "../../utils/Helper/CommonHelper";
 import { provWalletPrefix } from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
-import InnerLoader from "../../Common/Loader/InnerLoader";
+// import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
@@ -215,13 +215,23 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {
+              // isLoading ? (
+              //   <tr>
+              //     <td colSpan={100}>
+              //    <InnerLoader/>
+              //     </td>
+              //   </tr>
+
+              // ) :  
+              nodeList.length === 0 ? (
                 <tr>
-                  <td colSpan={100}>
-                 <InnerLoader/>
+                  <td colSpan={8} style={{ textAlign: "center" }}>
+                    No data found
                   </td>
                 </tr>
-              ):nodeList?.map((row, i) => (
+              ):
+              nodeList?.map((row, i) => (
                 <tr key={i}>
                   <td>{row?.orgName}</td>
                   <td>{row?.email}</td>

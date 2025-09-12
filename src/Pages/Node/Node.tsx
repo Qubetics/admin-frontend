@@ -1,3 +1,4 @@
+import InnerLoader from "../../Common/Loader/InnerLoader";
 import { apiUrls } from "../../Constant/apiUrls";
 import { provWalletPrefix } from "../../Constant/constants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
@@ -69,7 +70,24 @@ function Node() {
               </tr>
             </thead>
             <tbody>
-              {nodeList?.map((row, i) => (
+
+              {
+              // isLoading ? (
+              //   <tr>
+              //     <td colSpan={100}>
+              //    <InnerLoader/>
+              //     </td>
+              //   </tr>
+
+              // ):
+                nodeList.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: "center" }}>
+                    No data found
+                  </td>
+                </tr>
+              ):
+              nodeList?.map((row, i) => (
                 <tr key={i}>
                   <td>{row?.orgName}</td>
                   <td>{row?.nodeAddress}</td>
