@@ -29,7 +29,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ["buffer", "process"],
   },
-  // server:{
+ // server:{
   //   proxy: {
   //     '/api': { // Proxy requests starting with /api
   //       target: 'http://localhost:4003', // Your backend server address

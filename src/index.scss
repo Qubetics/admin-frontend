@@ -130,6 +130,7 @@
     border-radius: 14px;
     border: 1px solid #3b393c;
     overflow: auto;
+    scrollbar-width: none;
   }
   .custom-table {
     width: 100%;
@@ -179,8 +180,8 @@
 
       position: relative;
       display: inline-block;
-      padding: 12.5px 20px;
-      font-size: 12px;
+      padding: 13.5px 20px;
+      // font-size: 12px;
       font-weight: 600;
       color: #fff;
       background-color: #000;

@@ -18,7 +18,7 @@ import {
 } from "../../utils/Helper/CommonHelper";
 import { provWalletPrefix } from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
-import InnerLoader from "../../Common/Loader/InnerLoader";
+// import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
@@ -47,7 +47,7 @@ export default function Dashboard() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [activeAccount,setActiveAccount]=useState<number>(0);
-  const [isLoading,setIsLoading]=useState(false);
+  // const [isLoading,setIsLoading]=useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -151,14 +151,14 @@ export default function Dashboard() {
   };
 
   const fetchData = async () => {
-    setIsLoading(true)
+    // setIsLoading(true)
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
       endpoint: apiUrls.nodeRequestedList(page, limit),
     });
 
-    setIsLoading(false)
+    // setIsLoading(false)
     if (!success) return;
     setNodeList(data?.data?.nodeList);
     // setTotalCount(data?.data?.count);
@@ -215,13 +215,23 @@ export default function Dashboard() {
               </tr>
             </thead>
             <tbody>
-              {isLoading ? (
+              {
+              // isLoading ? (
+              //   <tr>
+              //     <td colSpan={100}>
+              //    <InnerLoader/>
+              //     </td>
+              //   </tr>
+
+              // ) :  
+              nodeList.length === 0 ? (
                 <tr>
-                  <td colSpan={100}>
-                 <InnerLoader/>
+                  <td colSpan={8} style={{ textAlign: "center" }}>
+                    No data found
                   </td>
                 </tr>
-              ):nodeList?.map((row, i) => (
+              ):
+              nodeList?.map((row, i) => (
                 <tr key={i}>
                   <td>{row?.orgName}</td>
                   <td>{row?.email}</td>
@@ -238,13 +248,13 @@ export default function Dashboard() {
                           onApproval(row?.nodeAddress, row?.requestFor)
                         }
                       >
-                        Add
+                        Approve 
                       </button>
                       <button
                         className="reject-btn"
                         onClick={() => onReject(row?.nodeAddress)}
                       >
-                        Remove
+                        Reject
                       </button>
                     </div>
                   </td>
