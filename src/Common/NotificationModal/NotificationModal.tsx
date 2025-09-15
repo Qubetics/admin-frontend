@@ -14,6 +14,7 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
   heading,
   description,
 }) => {
+  if (!show) return null;
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
@@ -23,7 +24,6 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
     }
   }, [show, handleClose]);
 
-  if (!show) return null;
 
   return (
     <div className="notification-toast">

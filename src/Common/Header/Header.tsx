@@ -88,7 +88,8 @@ function Header() {
                   <CopyIcon />
                 </span>
               )}
-              <span className="customButton">100.00 tics</span>
+              {/* to be implemented */}
+              {/* <span className="customButton">100.00 tics</span> */} 
               <span className="customButton" onClick={() => onLogout()}>
                 Logout
               </span>

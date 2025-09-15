@@ -16,8 +16,14 @@ import {
   convertNodeToWallet,
   truncateValue,
 } from "../../utils/Helper/CommonHelper";
-import { provWalletPrefix } from "../../Constant/constants";
+import {
+  DESCRIPTION,
+  HEADING,
+  UNDEFINED,
+  provWalletPrefix,
+} from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
+import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
@@ -41,12 +47,14 @@ export default function Dashboard() {
     show: false,
     nodeAddress: null,
   });
+  const [lease, setLease] = useState(false);
+  const [unLease, setUnLease] = useState(false);
   const [show, setShow] = useState(false);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
-  const [activeAccount, setActiveAccount] = useState<number>(0);
+  const [activeAccount, setActiveAccount] = useState<any>();
   // const [isLoading,setIsLoading]=useState(false);
 
   const handleClose = () => setShow(false);
@@ -85,12 +93,12 @@ export default function Dashboard() {
     return true;
   };
 
-  const onApproval = async (address: string, type: string) => {
+  const onApproval = async (address: string, type: string, val?: any) => {
     if (type === "Unlink") {
       try {
         const message = buildUnlinkNodeMessage({
           from: provAddress,
-          id: Long.fromString("1"),
+          id: Long.fromString(val?.planId),
           nodeAddress: address, //node address
         });
         const TxHash = await processTransaction(message);
@@ -99,7 +107,7 @@ export default function Dashboard() {
           return;
         }
         setShow(true);
-        await updateStatus(address, "REJECTED");
+        await updateStatus(address, "APPROVED");
       } catch (err: any) {
         console.error(err.message);
         // setRejectShow(true);
@@ -116,16 +124,24 @@ export default function Dashboard() {
         renewalPricePolicy: 0,
       });
 
-      await processTransaction(leaseMessage);
+     const res = await processTransaction(leaseMessage);
+     if(!res)
+      {
+        setUnLease(true)
+      }
+      else{
+        setLease(true)
+
+      }
     } catch (err: any) {
-      console.error(err.message);
+      console.error(err.message,"err");
       // setRejectShow(true);
     }
 
     try {
       const message = buildLinkNodeMessage({
         from: provAddress,
-        id: Long.fromString("1"),
+        id: Long.fromString(val?.planId),
         nodeAddress: address, //node address
       });
       const TxHash = await processTransaction(message);
@@ -147,6 +163,7 @@ export default function Dashboard() {
   };
 
   const handleRejectCall = async (address: string) => {
+    handleRejectClose();
     await updateStatus(address, "REJECTED");
   };
 
@@ -168,14 +185,14 @@ export default function Dashboard() {
   const fetchNodeNumber = async () => {
     const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(provAddress, "active", page, limit),
+      endpoint: apiUrls.nodeCount(provAddress),
     });
 
     if (!success) {
       console.log("unable to fetch the active account");
       return;
     }
-    setActiveAccount(data?.data?.total);
+    setActiveAccount(data?.data);
   };
 
   useEffect(() => {
@@ -186,11 +203,12 @@ export default function Dashboard() {
     fetchNodeNumber();
   }, []);
 
+
   const cards: CardBoxProps[] = [
-    { title: "Total Earnings", value: "2000 TICS" },
-    { title: "All Nodes", value: activeAccount + (nodeList?.length || 0) },
-    { title: "Active Nodes", value: activeAccount },
-    { title: "Inactive Nodes", value: nodeList?.length || 0 },
+    // { title: "Total Earnings", value: "2000 TICS" },
+    { title: "All Nodes", value: activeAccount?.totalCount || 0 },
+    { title: "Active Nodes", value: activeAccount?.activeCount || 0  },
+    { title: "Inactive Nodes", value: activeAccount?.inactiveCount || 0 },
   ];
 
   return (
@@ -210,13 +228,13 @@ export default function Dashboard() {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>Org Name</th>
+                <th>Opt Name</th>
                 <th>Email Address</th>
                 <th>Location</th>
                 <th>Node Address</th>
                 <th>Bandwidth</th>
                 <th>Plan</th>
-                <th>Request For</th>
+                <th>Request Type</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -230,7 +248,7 @@ export default function Dashboard() {
                 //   </tr>
 
                 // ) :
-                nodeList.length === 0 ? (
+                nodeList?.length === 0 ? (
                   <tr>
                     <td colSpan={8} style={{ textAlign: "center" }}>
                       No data found
@@ -239,19 +257,19 @@ export default function Dashboard() {
                 ) : (
                   nodeList?.map((row, i) => (
                     <tr key={i}>
-                      <td>{row?.orgName}</td>
-                      <td>{row?.email}</td>
-                      <td>{row?.location}</td>
+                      <td>{row?.orgName !== UNDEFINED ? row?.orgName : "-"}</td>
+                      <td>{row?.orgName !== UNDEFINED ? row?.email : "-"}</td>
+                      <td>{row?.location || "-"}</td>
                       <td>{truncateValue(row?.nodeAddress)}</td>
                       <td>{row?.bandwidth}</td>
-                      <td>{row?.plan}</td>
+                      <td>{row?.plan || "-"}</td>
                       <td>{row?.requestFor}</td>
                       <td>
                         <div className="action-btns">
                           <button
                             className="approve-btn"
                             onClick={() =>
-                              onApproval(row?.nodeAddress, row?.requestFor)
+                              onApproval(row?.nodeAddress, row?.requestFor, row)
                             }
                           >
                             Approve
@@ -291,7 +309,7 @@ export default function Dashboard() {
                 <p>Node Approved successfully!</p>
                 <div className="action-btns">
                   <button className="gradient-btn" onClick={handleClose}>
-                    Ok
+                    OK
                   </button>
                 </div>
               </div>
@@ -323,6 +341,18 @@ export default function Dashboard() {
           </Modal.Body>
         </Modal>
       </div>
+      <NotificationToast
+        show={unLease}
+        handleClose={() => setUnLease(false)}
+        heading={HEADING.EXIST_LEASE}
+        description={DESCRIPTION.EXIST_LEASE}
+      />
+      <NotificationToast
+        show={lease}
+        handleClose={() => setLease(false)}
+        heading={HEADING.LEASE_NODE}
+        description={DESCRIPTION.LEASE_NODE}
+      />
     </div>
   );
 }

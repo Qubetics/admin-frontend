@@ -1,5 +1,5 @@
 import { apiUrls } from "../../Constant/apiUrls";
-import { provWalletPrefix } from "../../Constant/constants";
+import { UNDEFINED, provWalletPrefix } from "../../Constant/constants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
@@ -79,10 +79,11 @@ function Node() {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>Org Name</th>
+                <th>Opt Name</th>
                 <th>Node Address</th>
-                <th> Status</th>
-                <th>Request For</th>
+                {active!=="active" && active!=='inactive'&& <th>Node Status</th>}
+                <th>Request Type</th>
+                <th>Request Status</th>
               </tr>
             </thead>
             <tbody>
@@ -104,14 +105,19 @@ function Node() {
                 ) : (
                   nodeList?.map((row, i) => (
                     <tr key={i}>
-                      <td>{row?.orgName}</td>
-                      <td>{row?.nodeAddress}</td>
-                      <td>
+                      <td>{row?.orgName!== UNDEFINED ?row?.orgName :'-'}</td>
+                      <td>{row?.nodeAddress|| '-'}</td>
+                      {active!=="active" && active!=='inactive'&&<td>
                         <span className={getStatusClass(row?.nodeStatus)}>
-                          {row?.nodeStatus}
+                          {row?.nodeStatus || '-'}
                         </span>
-                      </td>
+                      </td>}
                       <td>{row?.requestFor}</td>
+                      <td><span className={getStatusClass(row?.status)}>
+                          {row?.status || '-'}
+                        </span></td>
+
+                      
                     </tr>
                   ))
                 )

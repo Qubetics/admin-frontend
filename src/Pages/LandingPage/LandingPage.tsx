@@ -35,7 +35,7 @@ const LandingPage = () => {
       <section className="hero_ecosystem">
         <div className="container">
           <div className="hero__content">
-            <h1 className="hero__title">Secure Your Digital Freedom</h1>
+            <h1 className="hero__title">Qubetics Ecosystem</h1>
             <p>
               Join the Qubetics ecosystem by running your own dVPN node. Lease
               your node, earn rewards, or launch your own provider service all

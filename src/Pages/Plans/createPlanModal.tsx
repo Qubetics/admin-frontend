@@ -70,7 +70,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }:
               <p>Plan Created Successfully!</p>
               <div className="action-btns">
                 {/* <button className="gradient-btn">Ok</button> */}
-                <ButtonCustom label="Ok" onClick={handleClose} />
+                <ButtonCustom label="OK" onClick={handleClose} />
               </div>
             </div>
           </div>

@@ -76,7 +76,7 @@ const Plans = () => {
                 <th>Price</th>
                 <th>Bytes</th>
                 <th>Creation Date</th>
-                <th>Hours</th>
+                <th>Duration</th>
                 <th>Action</th>
               </tr>
             </thead>
