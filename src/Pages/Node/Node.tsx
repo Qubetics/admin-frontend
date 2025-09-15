@@ -11,7 +11,7 @@ function Node() {
   const [nodeList, setNodeList] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
-  const [limit,setLimit]=useState<number>(5);
+  const [limit, setLimit] = useState<number>(5);
   // const [isLoading, setIsLoading] = useState(false);
 
   const useGetApi = useNetworkRequest();
@@ -28,7 +28,7 @@ function Node() {
     // setIsLoading(true)
     const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(provAddress,active,page,limit),
+      endpoint: apiUrls.nodelist(provAddress, active, page, limit),
     });
     // setIsLoading(false)
     if (!success) return;
@@ -38,7 +38,24 @@ function Node() {
 
   useEffect(() => {
     fetchData();
-  }, [page,limit,active]);
+  }, [page, limit, active]);
+
+  const getStatusClass = (status: string) => {
+    switch (status?.toLowerCase()) {
+      case "active":
+        return "status-badge active";
+      case "inactive":
+        return "status-badge inactive";
+      case "pending":
+        return "status-badge pending";
+      case "approved":
+        return "status-badge approved";
+      case "rejected":
+        return "status-badge rejected";
+      default:
+        return "status-badge default";
+    }
+  };
 
   return (
     <div className="node container">
@@ -46,7 +63,7 @@ function Node() {
         <h1>Node List</h1>
       </div>
       <div className="node__btns">
-        {buttons.map(({label,value}) => (
+        {buttons.map(({ label, value }) => (
           <button
             key={value}
             className={active === value ? "active" : "dashboardBtn"}
@@ -69,43 +86,50 @@ function Node() {
               </tr>
             </thead>
             <tbody>
-
               {
-              // isLoading ? (
-              //   <tr>
-              //     <td colSpan={100}>
-              //    <InnerLoader/>
-              //     </td>
-              //   </tr>
+                // isLoading ? (
+                //   <tr>
+                //     <td colSpan={100}>
+                //    <InnerLoader/>
+                //     </td>
+                //   </tr>
 
-              // ):
+                // ):
                 nodeList.length === 0 ? (
-                <tr>
-                  <td colSpan={8} style={{ textAlign: "center" }}>
-                    No data found
-                  </td>
-                </tr>
-              ):
-              nodeList?.map((row, i) => (
-                <tr key={i}>
-                  <td>{row?.orgName}</td>
-                  <td>{row?.nodeAddress}</td>
-                  <td>{row?.nodeStatus}</td>
-                  <td>{row?.requestFor}</td>
-                </tr>
-              ))}
+                  <tr>
+                    <td colSpan={8} style={{ textAlign: "center" }}>
+                      No data found
+                    </td>
+                  </tr>
+                ) : (
+                  nodeList?.map((row, i) => (
+                    <tr key={i}>
+                      <td>{row?.orgName}</td>
+                      <td>{row?.nodeAddress}</td>
+                      <td>
+                        <span className={getStatusClass(row?.nodeStatus)}>
+                          {row?.nodeStatus}
+                        </span>
+                      </td>
+                      <td>{row?.requestFor}</td>
+                    </tr>
+                  ))
+                )
+              }
             </tbody>
           </table>
         </div>
 
         {/* Pagination */}
-        {totalPages>1 && <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: any) => setPage(newPage)}
-          limit={limit}
-          onLimitChange={(limit: number)=> setLimit(limit)}
-        />}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: any) => setPage(newPage)}
+            limit={limit}
+            onLimitChange={(limit: number) => setLimit(limit)}
+          />
+        )}
       </div>
     </div>
   );

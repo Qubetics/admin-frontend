@@ -7,7 +7,8 @@ const Private = () => {
 
   if (loading) return null;
 
-  return authData ? <Outlet /> : <Navigate to={Path.LOGIN} replace={true} />;
+  // return !authData ? <Outlet /> : <Navigate to={Path.LOGIN} replace={true} />;
+  return <Outlet /> ;
 };
 
 export default Private;

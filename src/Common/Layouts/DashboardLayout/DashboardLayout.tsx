@@ -1,6 +1,7 @@
-import { Outlet } from 'react-router-dom';
-import './DashboardLayout.scss';
-import Header from '../../Header/Header';
+import { Outlet } from "react-router-dom";
+import "./DashboardLayout.scss";
+import Header from "../../Header/Header";
+import Footer from "../../Footer/Footer";
 
 function DashboardLayout() {
   return (
@@ -9,10 +10,10 @@ function DashboardLayout() {
         <Header />
       </div>
       <div className="dashLayout_content">
-       
         <div className="dashLayout_content_body">
           <Outlet />
         </div>
+        <Footer />
       </div>
     </div>
   );

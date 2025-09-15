@@ -1,13 +1,181 @@
-import "./Footer.scss"
+import "./Footer.scss";
+import LogoFooter from "../../assets/Logo.svg";
+import x from "../../assets/x.svg";
+import Telegram from "../../assets/Telegram.svg";
+import Discord from "../../assets/Discord.svg";
+import YouTube from "../../assets/YouTube.svg";
+import Instagram from "../../assets/Instagram.svg";
+import TickTok from "../../assets/TickTok.svg";
+import coinmarketcap from "../../assets/coinmarketcap.svg";
 
-function Footer() {
+const Footer = () => {
   return (
-    <div className="footer">
-      <p className="footernew_year">
-      ©2025 Copyright Qubetics. All rights reserved.
-      </p>
-    </div>
+    <footer className="footer">
+      <div className="footer__container">
+        <div className="footer__content">
+          {/* Brand */}
+          <div className="footer__brand">
+            <div className="footer__logo">
+              <img src={LogoFooter} alt="" />
+            </div>
+            <p className="footer__description">
+              Build without limits. Qubetics an interoperable <br /> ecosystem
+              uniting all leading networks.
+            </p>
+          </div>
+
+          {/* About Us */}
+          <div className="footer__section">
+            <h3 className="footer__section-title">About Us</h3>
+            <ul className="footer__links">
+              <li>
+                <a
+                  target="blank" href="https://www.qubetics.com/privacy-policy"
+                  className="footer__link"
+                >
+                  Privacy Policy
+                </a>
+              </li>
+              <li>
+                <a
+                  target="blank" href="https://www.qubetics.com/terms-of-use"
+                  className="footer__link"
+                >
+                  Terms of Service
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Products & Services */}
+          <div className="footer__section">
+            <h3 className="footer__section-title">Products & Services</h3>
+            <ul className="footer__links">
+              <li>
+                <a
+                  target="blank" href="https://validator.qubetics.com/"
+                  className="footer__link"
+                >
+                  Qubetics Validator App
+                </a>
+              </li>
+              <li>
+                <a
+                  target="blank" href="https://delegator.qubetics.com/"
+                  className="footer__link"
+                >
+                  Qubetics Delegator App
+                </a>
+              </li>
+              {/* <li>
+                <a target="blank" href="#" className="footer__link">
+                  Qubetics DEX
+                </a>
+              </li>
+              <li>
+                <a target="blank" href="#" className="footer__link">
+                  Qubetics App
+                </a>
+              </li> */}
+              <li>
+                <a target="blank" href="https://ide.qubetics.com" className="footer__link">
+                  Qubetics IDE
+                </a>
+              </li>
+              <li>
+                <a
+                  target="blank" href="https://qubeqode.qubetics.com"
+                  className="footer__link"
+                >
+                  QubeQode
+                </a>
+              </li>
+            </ul>
+          </div>
+
+          {/* Resources */}
+          <div className="footer__section">
+            <h3 className="footer__section-title">Resources</h3>
+            <ul className="footer__links">
+              <li>
+                <a target="blank" href="https://www.qubetics.com/" className="footer__link">
+                  Official Web
+                </a>
+              </li>
+              <li>
+                <a target="blank" href="https://docs.qubetics.com/" className="footer__link">
+                  Qubetics Network Documentation
+                </a>
+              </li>
+              <li>
+                <a
+                  target="blank" href="https://qubetics.gitbook.io/qubetics-docs"
+                  className="footer__link"
+                >
+                  Qubetics Documentation
+                </a>
+              </li>
+              <li>
+                <a target="blank" href="https://github.com/Qubetics" className="footer__link">
+                  GitHub
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div className="footer__social">
+          <h4>Get in touch!</h4>
+          <div className="footer__social__items">
+            <a
+              target="blank" href="https://x.com/qubetics?mx=2"
+              className="footer__social-link"
+            >
+              <img src={x} alt="" />
+            </a>
+            <a target="blank" href="https://t.me/qubetics" className="footer__social-link">
+              <img src={Telegram} alt="" />
+            </a>
+            <a
+              target="blank" href="https://discord.com/invite/KHfSNbzdSE"
+              className="footer__social-link"
+            >
+              <img src={Discord} alt="" />
+            </a>
+            <a
+              target="blank" href="https://www.youtube.com/@Qubetics"
+              className="footer__social-link"
+            >
+              <img src={YouTube} alt="" />
+            </a>
+            <a
+              target="blank" href="https://www.instagram.com/qubetics"
+              className="footer__social-link"
+            >
+              <img src={Instagram} alt="" />
+            </a>{" "}
+            <a
+              target="blank" href="https://www.tiktok.com/@qubetics"
+              className="footer__social-link"
+            >
+              <img src={TickTok} alt="" />
+            </a>{" "}
+            <a
+              target="blank" href="https://coinmarketcap.com/currencies/qubetics/"
+              className="footer__social-link"
+            >
+              <img src={coinmarketcap} alt="" />
+            </a>
+          </div>
+        </div>
+
+        <div className="footer__bottom">
+          <p className="footer__copyright">
+            ©2025 Copyright Qubetics. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
   );
-}
+};
 
 export default Footer;

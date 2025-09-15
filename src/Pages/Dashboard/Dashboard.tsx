@@ -46,7 +46,7 @@ export default function Dashboard() {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
-  const [activeAccount,setActiveAccount]=useState<number>(0);
+  const [activeAccount, setActiveAccount] = useState<number>(0);
   // const [isLoading,setIsLoading]=useState(false);
 
   const handleClose = () => setShow(false);
@@ -163,30 +163,35 @@ export default function Dashboard() {
     setNodeList(data?.data?.nodeList);
     // setTotalCount(data?.data?.count);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
-
   };
 
   const fetchNodeNumber = async () => {
     const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(provAddress,"active",page,limit),
+      endpoint: apiUrls.nodelist(provAddress, "active", page, limit),
     });
 
-    if(!success){
+    if (!success) {
       console.log("unable to fetch the active account");
       return;
     }
     setActiveAccount(data?.data?.total);
-    
-  }
+  };
 
   useEffect(() => {
     fetchData();
   }, [page, limit]);
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchNodeNumber();
-  },[]);
+  }, []);
+
+  const cards: CardBoxProps[] = [
+    { title: "Total Earnings", value: "2000 TICS" },
+    { title: "All Nodes", value: activeAccount + (nodeList?.length || 0) },
+    { title: "Active Nodes", value: activeAccount },
+    { title: "Inactive Nodes", value: nodeList?.length || 0 },
+  ];
 
   return (
     <div className="dashboard">
@@ -194,8 +199,9 @@ export default function Dashboard() {
         <h1>Dashboard</h1>
       </div>
       <div className="cardSection">
-        {/* <CardBox title="Total Earnings" value="2000 TICS" /> */}
-        <CardBox title="Active Nodes" value={activeAccount} />
+        {cards.map((card, index) => (
+          <CardBox key={index} title={card.title} value={card.value} />
+        ))}
       </div>
 
       <div className="custom-table-wrapper commonTable">
@@ -216,50 +222,52 @@ export default function Dashboard() {
             </thead>
             <tbody>
               {
-              // isLoading ? (
-              //   <tr>
-              //     <td colSpan={100}>
-              //    <InnerLoader/>
-              //     </td>
-              //   </tr>
+                // isLoading ? (
+                //   <tr>
+                //     <td colSpan={100}>
+                //    <InnerLoader/>
+                //     </td>
+                //   </tr>
 
-              // ) :  
-              nodeList.length === 0 ? (
-                <tr>
-                  <td colSpan={8} style={{ textAlign: "center" }}>
-                    No data found
-                  </td>
-                </tr>
-              ):
-              nodeList?.map((row, i) => (
-                <tr key={i}>
-                  <td>{row?.orgName}</td>
-                  <td>{row?.email}</td>
-                  <td>{row?.location}</td>
-                  <td>{truncateValue(row?.nodeAddress)}</td>
-                  <td>{row?.bandwidth}</td>
-                  <td>{row?.plan}</td>
-                  <td>{row?.requestFor}</td>
-                  <td>
-                    <div className="action-btns">
-                      <button
-                        className="approve-btn"
-                        onClick={() =>
-                          onApproval(row?.nodeAddress, row?.requestFor)
-                        }
-                      >
-                        Approve 
-                      </button>
-                      <button
-                        className="reject-btn"
-                        onClick={() => onReject(row?.nodeAddress)}
-                      >
-                        Reject
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                // ) :
+                nodeList.length === 0 ? (
+                  <tr>
+                    <td colSpan={8} style={{ textAlign: "center" }}>
+                      No data found
+                    </td>
+                  </tr>
+                ) : (
+                  nodeList?.map((row, i) => (
+                    <tr key={i}>
+                      <td>{row?.orgName}</td>
+                      <td>{row?.email}</td>
+                      <td>{row?.location}</td>
+                      <td>{truncateValue(row?.nodeAddress)}</td>
+                      <td>{row?.bandwidth}</td>
+                      <td>{row?.plan}</td>
+                      <td>{row?.requestFor}</td>
+                      <td>
+                        <div className="action-btns">
+                          <button
+                            className="approve-btn"
+                            onClick={() =>
+                              onApproval(row?.nodeAddress, row?.requestFor)
+                            }
+                          >
+                            Approve
+                          </button>
+                          <button
+                            className="reject-btn"
+                            onClick={() => onReject(row?.nodeAddress)}
+                          >
+                            Reject
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))
+                )
+              }
             </tbody>
           </table>
         </div>

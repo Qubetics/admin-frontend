@@ -1,3 +1,5 @@
+@import "../../utils/functions.scss";
+
 :root {
   --bg-background: #111827;
   --clr-card: rgb(168, 219, 215);
@@ -19,19 +21,19 @@
     @media (max-width: 1199px) {
       display: flex !important;
       justify-content: center;
-      height: 50px;
+      height: s(50);
     }
   
     position: relative;
     display: inline-block;
-    padding: 12.5px 20px;
-    font-size: 16px;
+    padding: s(12.5) s(20);
+    font-size: s(16);
     font-weight: bold;
     color: #fff;
     background-color: #000;
     text-decoration: none;
     border: none;
-    border-radius: 30px;
+    border-radius: s(30);
     overflow: hidden;
     cursor: pointer;
   
@@ -39,8 +41,8 @@
       content: "";
       position: absolute;
       inset: 0;
-      padding: 2px;
-      border-radius: 30px;
+      padding: s(2);
+      border-radius: s(30);
       background: conic-gradient(
         from var(--gradient-angle),
         var(--clr-card),

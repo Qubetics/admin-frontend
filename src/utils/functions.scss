@@ -1,0 +1,11 @@
+@function s($value) {
+  @return calc(var(--1) * $value);
+}
+
+@function mobile() {
+  @return "(max-width: 991.98px)";
+}
+
+@function desktop() {
+  @return "(min-width: 991.98px)";
+}

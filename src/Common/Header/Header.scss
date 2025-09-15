@@ -1,3 +1,5 @@
+@import "../../utils/functions.scss";
+
 // Login header styles
 .header-main {
   position: fixed;
@@ -6,7 +8,7 @@
   transition: 0.3s all;
   border-bottom: 1px solid #3b393c;
   background-color: #121212;
-  height: 100px;
+  height: s(100);
 
   @media screen and (max-width: 676px) {
     display: flex;
@@ -17,12 +19,12 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 25px 0;
-    gap: 30px;
+    padding: s(25) 0;
+    gap: s(30);
 
     @media (max-width: 1299px) {
       justify-content: unset;
-      gap: 20px;
+      gap: s(20);
     }
 
     @media (max-width: 1200px) {
@@ -50,13 +52,13 @@
   width: 100%;
   transition: 0.3s all;
   border-bottom: 1px solid #3b393c;
-  padding: 0 98px;
+  padding: s(20) s(98);
   background-color: #121212;
-  height: 80px;
+  height: s(80);
   display: flex;
   align-items: center;
   @media (max-width: 991px) {
-    padding: 0 40px;
+    padding: 0 s(40);
   }
 
   &__container {
@@ -69,24 +71,27 @@
   &__left {
     display: flex;
     align-items: center;
-    gap: 43px;
+    gap: s(43);
     position: relative;
+    img {
+      max-width: s(253);
+    }
   }
 
   &__nav {
     display: flex;
     align-items: center;
-    gap: 28px;
+    gap: s(28);
     transition: all 0.3s ease-in-out;
 
     a {
-      font-size: 16px;
+      font-size: s(16);
       font-weight: 700;
       color: #a0a0a0;
       text-decoration: none;
       transition: color 0.3s;
       position: relative;
-      padding: 8px 0;
+      padding: s(8) 0;
 
       &:hover,
       &.active {
@@ -96,7 +101,7 @@
   }
 
   &__wallet {
-    padding: 6px 14px;
+    padding: s(6) s(14);
     font-size: 14px;
     border-radius: 20px;
     background: #000000;
@@ -115,8 +120,8 @@
     display: none;
     flex-direction: column;
     justify-content: space-between;
-    width: 30px;
-    height: 21px;
+    width: s(30);
+    height: s(21);
     background: transparent;
     border: none;
     cursor: pointer;
@@ -126,7 +131,7 @@
     span {
       display: block;
       width: 100%;
-      height: 3px;
+      height: s(3);
       background: #fff;
       border-radius: 3px;
       transition: all 0.3s ease-in-out;
@@ -149,40 +154,40 @@
   &__right {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: s(20);
   }
 
   &__wallet-address {
     display: flex !important;
     align-items: center;
-    gap: 20px;
-    font-size: 14px;
+    gap: s(20);
+    font-size: s(14);
     color: #fff;
     svg {
-      width: 20px;
+      width: s(20);
     }
   }
 
   // Mobile styles
   @media (max-width: 767px) {
-    padding: 0 15px;
-    height: 70px;
+    padding: 0 s(15);
+    height: s(70);
 
     &__left {
-      gap: 20px;
+      gap: s(20);
       width: 100%;
       justify-content: space-between;
     }
 
     &__nav {
       position: fixed;
-      top: 70px;
+      top: s(70);
       left: 0;
       width: 100%;
       background: #121212;
       flex-direction: column;
-      padding: 20px 0;
-      gap: 15px;
+      padding: s(20) 0;
+      gap: s(15);
       transform: translateY(-150%);
       opacity: 0;
       z-index: 999;
@@ -197,8 +202,8 @@
       a {
         width: 100%;
         text-align: center;
-        padding: 12px 0;
-        font-size: 18px;
+        padding: s(12) 0;
+        font-size: s(18);
       }
     }
 

@@ -1,23 +1,14 @@
+@import "../../../utils/functions.scss";
+
 .dashLayout {
   min-height: 100vh;
-  background-color: #080808;
-  background-image: url("../../../assets/mainBg.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: center;
   display: flex;
   flex-direction: column;
   &_content {
-    display: flex;
-    gap: 16px;
-    flex: 1;
-    margin: 0 16px;
-    @media (max-width: 991px) {
-      margin: 0 8px;
-      gap: 8px;
-    }
+    padding: 0 s(20);
     &_body {
-    width: 100%;
+      width: 100%;
+      min-height: calc(100vh - 139px);
     }
   }
 }

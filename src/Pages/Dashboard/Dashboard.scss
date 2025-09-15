@@ -1,19 +1,21 @@
+@import "../../utils/functions.scss";
+
 .dashboard {
-  max-width: 1640px;
+  max-width: s(1640);
   width: 100%;
   margin: auto;
-  margin-top: 140px;
+  margin-top: s(140);
 
   @media screen and (max-width: 767px) {
-    margin-top: 100px;
+    margin-top: s(100);
   }
 
   &__header {
     h1 {
       color: #fff;
-      padding-bottom: 14px;
+      padding-bottom: s(14);
       font-weight: 600;
-      font-size: 24px;
+      font-size: s(24);
     }
   }
 
@@ -26,11 +28,11 @@
       rgba(29, 29, 29, 0.9) 99.59%
     );
 
-    border-radius: 14px;
-    max-width: 264px;
+    border-radius: s(14);
+    max-width: s(264);
     width: 100%;
     color: #fff;
-    padding: 20px;
+    padding: s(20);
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -50,19 +52,19 @@
     }
 
     .card-value {
-      font-size: 20px;
+      font-size: s(20);
       font-weight: 400;
       color: #fff;
     }
   }
   .cardSection {
     display: flex;
-    gap: 20px;
+    gap: s(20);
     @media screen and (max-width: 767px) {
       flex-direction: column;
     }
   }
   .commonTable {
-    margin-top: 40px;
+    margin-top: s(40);
   }
 }

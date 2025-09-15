@@ -2,7 +2,6 @@ import { useNavigate } from "react-router-dom";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import { envConstants } from "../../Constant/envConstants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import "./Login.scss";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { computePubKey } from "../../utils/Helper/CommonHelper";
@@ -75,16 +74,11 @@ export default function Login() {
 
   // Login form handling using formik
   return (
-    <div className="loginForm">
-      <h3>Login</h3>
-      <div className="connectBtn">
-        <ButtonCustom
-          label="Connect Wallet"
-          type="submit"
-          tabIndex={3}
-          onClick={() => handleClick()}
-        />
-      </div>
-    </div>
+    <ButtonCustom
+      label="Connect Wallet"
+      type="submit"
+      tabIndex={3}
+      onClick={() => handleClick()}
+    />
   );
 }

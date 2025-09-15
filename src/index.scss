@@ -1,3 +1,13 @@
+@import "./utils/functions.scss";
+
+:root {
+  --1: min(1px, 0.052083vw);
+
+  @media only screen and (max-width: 991.98px) {
+    --1: min(0.24vw);
+  }
+}
+
 @import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap");
 @font-face {
   font-family: "DM Sans";
@@ -85,29 +95,36 @@
 
 @media (min-width: 1400px) {
   .container {
-    max-width: 1640px;
+    max-width: s(1640);
     width: 100%;
   }
 }
 .body {
   overflow: auto;
 }
+body {
+  background-color: #000000;
+  background-image: url("./assets/mainBg.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+}
 
 .container {
   position: relative;
   margin-left: auto;
   margin-right: auto;
-  padding-right: 15px;
-  padding-left: 15px;
+  padding-right: s(15);
+  padding-left: s(15);
 
   @media (max-width: 1550px) {
-    padding-left: 60px;
-    padding-right: 60px;
+    padding-left: s(60);
+    padding-right: s(60);
   }
 
   @media (max-width: 1399px) {
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: s(15);
+    padding-left: s(15);
   }
 }
 
@@ -120,8 +137,8 @@
 }
 .commonTable {
   .table-title {
-    margin-bottom: 30px;
-    font-size: 24px;
+    margin-bottom: s(30);
+    font-size: s(24);
     font-weight: 600;
     color: #ffffff;
   }
@@ -138,13 +155,13 @@
 
     th,
     td {
-      padding: 12px 15px;
+      padding: s(12) s(15);
       text-align: left;
-      font-size: 16px;
+      font-size: s(16);
       font-weight: 300;
       white-space: nowrap;
       &:first-child {
-        padding-left: 30px;
+        padding-left: s(30);
       }
     }
 
@@ -167,7 +184,7 @@
   /* Action buttons */
   .action-btns {
     display: flex;
-    gap: 8px;
+    gap: s(8);
 
     .approve-btn {
       white-space: nowrap;
@@ -175,27 +192,27 @@
       @media (max-width: 1199px) {
         display: flex !important;
         justify-content: center;
-        height: 50px;
+        height: s(50);
       }
 
       position: relative;
       display: inline-block;
-      padding: 13.5px 20px;
+      padding: s(13.5) s(20);
       // font-size: 12px;
       font-weight: 600;
       color: #fff;
       background-color: #000;
       text-decoration: none;
       border: none;
-      border-radius: 30px;
+      border-radius: s(30);
       overflow: hidden;
       cursor: pointer;
       &::before {
         content: "";
         position: absolute;
         inset: 0;
-        padding: 2px;
-        border-radius: 30px;
+        padding: s(2);
+        border-radius: s(30);
         background: conic-gradient(
           var(--clr-card),
           var(--clr-1),
@@ -222,12 +239,12 @@
       background: #000000;
       border: 1px solid #000000;
       color: #ffffff;
-      padding: 6px 12px;
-      border-radius: 30px;
+      padding: s(6) s(12);
+      border-radius: s(30);
       cursor: pointer;
       transition: 0.2s;
-      width: 103px;
-      font-size: 12px;
+      width: s(103);
+      font-size: s(12);
       font-weight: 600;
     }
   }
@@ -236,15 +253,15 @@
   .pagination {
     display: flex;
     justify-content: space-evenly;
-    margin-top: 15px;
+    margin-top: s(15);
     // flex-direction: row-reverse;
 
     &_left {
       display: flex;
       flex: 1;
       align-items: center;
-      gap: 20px;
-      margin-left: 20px;
+      gap: s(20);
+      margin-left: s(20);
       span {
         color: #fff;
         font-size: 13px;
@@ -253,7 +270,7 @@
         border: 1px solid #3b393c !important;
         background: #121212;
         color: #ffffff;
-        // padding: 4px 20px !important;
+        // padding: 4px s(20) !important;
       }
     }
 
@@ -267,9 +284,9 @@
         color: #fff;
         border: 0;
         opacity: 0.5;
-        font-size: 16px;
+        font-size: s(16);
         font-weight: 600;
-        padding: 4px 10px;
+        padding: s(4) s(10);
         border-radius: 8px;
         cursor: pointer;
         transition: 0.2s;
@@ -322,58 +339,58 @@
       text-align: center;
 
       h2 {
-        font-size: 32px;
+        font-size: s(32);
         color: #fff;
-        margin-bottom: 30px;
+        margin-bottom: s(30);
         font-weight: 600;
       }
 
       p {
-        font-size: 17px;
+        font-size: s(17);
         color: #a0a0a0;
-        margin-bottom: 34px;
+        margin-bottom: s(34);
       }
       .action-btns {
         display: flex;
-        gap: 20px;
+        gap: s(20);
         justify-content: center;
         .reject-btn {
           background-color: #000000;
           border: 0;
           color: #fff;
-          padding: 6px 12px;
-          border-radius: 30px;
+          padding: s(6) s(12);
+          border-radius: s(30);
           cursor: pointer;
           transition: 0.2s;
-          width: 174px;
-          font-size: 18px;
+          width: s(174);
+          font-size: s(18);
           font-weight: 600;
         }
       }
       .customButton {
-        max-width: 174px;
+        max-width: s(174);
         width: 100%;
       }
       .gradient-btn {
         white-space: nowrap;
-        max-width: 174px;
+        max-width: s(174);
         width: 100%;
         @media (max-width: 1199px) {
           display: flex !important;
           justify-content: center;
-          height: 50px;
+          height: s(50);
         }
 
         position: relative;
         display: inline-block;
-        padding: 12.5px 20px;
-        font-size: 18px;
+        padding: s(12.5) s(20);
+        font-size: s(18);
         font-weight: 600;
         color: #fff;
         background-color: #000;
         text-decoration: none;
         border: none;
-        border-radius: 30px;
+        border-radius: s(30);
         overflow: hidden;
         cursor: pointer;
         &::before {
@@ -381,7 +398,7 @@
           position: absolute;
           inset: 0;
           padding: 2px;
-          border-radius: 30px;
+          border-radius: s(30);
           background: conic-gradient(
             var(--clr-card),
             var(--clr-1),
@@ -412,28 +429,28 @@
 .nav-tabs {
   border: 0;
   background-color: #121212;
-  padding: 4px;
-  border-radius: 30px;
-  gap: 8px;
+  padding: s(4);
+  border-radius: s(30);
+  gap: s(8);
   max-width: fit-content;
   .nav-item {
     .nav-link {
       color: #a0a0a0;
-      font-size: 16px;
+      font-size: s(16);
       font-weight: 600;
-      border-radius: 28px;
-      padding: 12.5px 20px;
+      border-radius: s(28);
+      padding: s(12.5) s(20);
       &:hover {
         white-space: nowrap;
         position: relative;
         display: inline-block;
-        font-size: 16px;
+        font-size: s(16);
         font-weight: 600;
         color: #fff;
         background-color: #000;
         text-decoration: none;
         border: 2px solid #3b393c;
-        border-radius: 30px;
+        border-radius: s(30);
         overflow: hidden;
         cursor: pointer;
         &::before {
@@ -441,7 +458,7 @@
           position: absolute;
           inset: 0;
           padding: 2px;
-          border-radius: 30px;
+          border-radius: s(30);
           background: conic-gradient(
             var(--clr-card),
             var(--clr-1),
@@ -471,19 +488,19 @@
       @media (max-width: 1199px) {
         display: flex !important;
         justify-content: center;
-        height: 50px;
+        height: s(50);
       }
 
       position: relative;
       display: inline-block;
-      padding: 12.5px 20px;
+      padding: s(12.5) s(20);
       font-size: 18px;
       font-weight: 600;
       color: #fff;
       background-color: #000;
       text-decoration: none;
       border: none;
-      border-radius: 30px;
+      border-radius: s(30);
       overflow: hidden;
       cursor: pointer;
       &::before {
@@ -491,7 +508,7 @@
         position: absolute;
         inset: 0;
         padding: 2px;
-        border-radius: 30px;
+        border-radius: s(30);
         background: conic-gradient(
           var(--clr-card),
           var(--clr-1),

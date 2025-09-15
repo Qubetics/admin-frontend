@@ -6,15 +6,15 @@ import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { useState } from "react";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
-import {
-  copyToClipboard,
-} from "../../utils/Helper/CommonHelper";
+import { copyToClipboard } from "../../utils/Helper/CommonHelper";
 import { CopyIcon } from "../../assets/StoreAsset/StoreAsset";
+import Login from "../../Pages/Login/Login";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
-  const isLoginPage = location.pathname === Path.LOGIN;
+  const isLoginPage = location.pathname === Path.LANDING;
+  console.log(isLoginPage,"isLoginPage");
   const { authData, setAuthData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
@@ -32,7 +32,7 @@ function Header() {
   const onLogout = async () => {
     const { success } = await useGetApi({ endpoint: apiUrls.logout });
     if (!success) return;
-    navigate("/login");
+    navigate("/landing");
     localStorage.clear();
     sessionStorage.clear();
     setAuthData("");
@@ -48,6 +48,9 @@ function Header() {
               <Link to={""}>
                 <img src={Logo} alt="Logo" />
               </Link>
+            </div>
+            <div>
+              <Login />
             </div>
           </div>
         </div>
@@ -85,6 +88,7 @@ function Header() {
                   <CopyIcon />
                 </span>
               )}
+              <span className="customButton">100.00 tics</span>
               <span className="customButton" onClick={() => onLogout()}>
                 Logout
               </span>

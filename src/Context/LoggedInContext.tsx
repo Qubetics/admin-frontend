@@ -16,7 +16,7 @@ export const LoggedInProvider = ({
 }: {
   children: React.ReactNode;
 }) => {
-  const [authData, setAuthData] = useState<string>("");
+  const [authData, setAuthData] = useState<string>("qubetics1djhyth236yyktwv285axmmjlj9hfetvhpmtzer");
   const [loading, setLoading] = useState<boolean>(true);
 
   // Load from localStorage on mount
