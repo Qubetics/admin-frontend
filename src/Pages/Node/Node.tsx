@@ -74,7 +74,7 @@ function Node() {
         ))}
       </div>
 
-      <div className="custom-table-wrapper commonTable">
+      <div className="custom-table-wrapper commonTable node-table">
         <div className="outerTable">
           <table className="custom-table">
             <thead>

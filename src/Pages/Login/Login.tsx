@@ -75,7 +75,7 @@ export default function Login() {
   // Login form handling using formik
   return (
     <ButtonCustom
-      label="Connect Wallet"
+      label="Connect Keplr Wallet"
       type="submit"
       tabIndex={3}
       onClick={() => handleClick()}

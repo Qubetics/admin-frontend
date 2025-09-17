@@ -2,10 +2,12 @@
 
 .plans {
   margin-top: s(140);
+
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+
     h1 {
       color: #fff;
       font-weight: 600;
@@ -13,8 +15,46 @@
       margin-bottom: 0;
     }
   }
+
   .commonTable {
     margin-top: s(20);
+
+
+  }
+
+  .plans-table {
+    thead {
+      tr {
+        th {
+          &:last-child {
+            width: 200px;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          &:last-child {
+            width: 200px;
+          }
+
+          .action-btns {
+            justify-content: center;
+
+            .approve-btn {
+              height: 32px;
+              width: 100px;
+              display: flex;
+              justify-content: center;
+              align-items: center;
+            }
+          }
+        }
+      }
+    }
   }
 }
 
@@ -22,6 +62,7 @@
   .form-container {
     padding: s(20);
     margin: auto;
+
     @media screen and (max-width: 767px) {
       padding: 0px;
     }
@@ -57,11 +98,12 @@
       }
     }
   }
-  .customButton  {
+
+  .customButton {
     margin: 0 auto;
     max-width: s(174);
     width: 100%;
     display: flex;
-  justify-content: center;
+    justify-content: center;
   }
 }

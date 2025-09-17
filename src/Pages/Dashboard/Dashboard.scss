@@ -22,11 +22,9 @@
   .card-box {
     width: 100%;
     border: 1px solid rgba(255, 255, 255, 0.1490196078);
-    background: linear-gradient(
-      157.79deg,
-      rgba(29, 29, 29, 0.54) -0.65%,
-      rgba(29, 29, 29, 0.9) 99.59%
-    );
+    background: linear-gradient(157.79deg,
+        rgba(29, 29, 29, 0.54) -0.65%,
+        rgba(29, 29, 29, 0.9) 99.59%);
 
     border-radius: s(14);
     max-width: s(264);
@@ -37,6 +35,7 @@
     flex-direction: column;
     justify-content: center;
     transition: transform 0.2s ease-in-out;
+
     @media screen and (max-width: 767px) {
       max-width: initial;
     }
@@ -57,14 +56,53 @@
       color: #fff;
     }
   }
+
   .cardSection {
     display: flex;
     gap: s(20);
+
     @media screen and (max-width: 767px) {
       flex-direction: column;
     }
   }
+
   .commonTable {
     margin-top: s(40);
+  }
+}
+
+.dashboard-table {
+  thead {
+    tr {
+      th {
+        &:last-child {
+          text-align: center;
+          width: 250px;
+        }
+      }
+    }
+  }
+
+  tbody {
+    tr {
+      td {
+        &:last-child {
+          width: 250px;
+        }
+
+        .action-btns {
+          justify-content: center;
+
+          .approve-btn {
+            height: 32px;
+            width: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+        }
+
+      }
+    }
   }
 }
