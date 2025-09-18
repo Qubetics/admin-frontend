@@ -90,6 +90,14 @@ const Footer = () => {
                   QubeQode
                 </a>
               </li>
+              <li>
+                <a
+                  target="blank" href="https://qubeqode.qubetics.com"
+                  className="footer__link"
+                >
+                  Quebetics dVPN
+                </a>
+              </li>
             </ul>
           </div>
 

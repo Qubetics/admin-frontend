@@ -3,29 +3,35 @@ import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import { envConstants } from "../../Constant/envConstants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
+import { toast } from "react-toastify";
 import { apiUrls } from "../../Constant/apiUrls";
 import { computePubKey } from "../../utils/Helper/CommonHelper";
 import { apiMethods } from "../../Constant/constants";
 
 export default function Login() {
-  const { setAuthData } = useIsLoggedIn();
+  const { authData,setAuthData } = useIsLoggedIn();
   const navigate = useNavigate();
   const useGetApi = useNetworkRequest();
 
   const handleClick = async () => {
+    console.log("Ererer");
     if (!window?.keplr) {
-      console.error("Install Keplr Wallet extension");
+      toast.error("Install Keplr Wallet extension");
+      console.log("sdfser");
       return;
     }
 
     const chainId = envConstants.chainId;
+    console.log("🚀 ~ handleClick ~ chainId:", chainId)
 
     try {
       await window.keplr.disable(chainId);
       await window.keplr.enable(chainId);
 
       const offlineSigner = window.keplr.getOfflineSigner(chainId);
+      console.log("🚀 ~ handleClick ~ offlineSigner:", offlineSigner)
       const accounts = await offlineSigner.getAccounts();
+      console.log("🚀 ~ handleClick ~ accounts:", accounts)
 
       if (!accounts?.length) {
         console.error("No accounts found in Keplr");
@@ -74,8 +80,9 @@ export default function Login() {
 
   // Login form handling using formik
   return (
+    
     <ButtonCustom
-      label="Connect Wallet"
+      label={authData ? "Logout":"Connect Wallet"}
       type="submit"
       tabIndex={3}
       onClick={() => handleClick()}

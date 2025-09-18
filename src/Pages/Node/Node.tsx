@@ -81,7 +81,7 @@ function Node() {
               <tr>
                 <th>Opt Name</th>
                 <th>Node Address</th>
-                {active!=="active" && active!=='inactive'&& <th>Node Status</th>}
+                {active !== "active" && active !== 'inactive' && <th>Node Status</th>}
                 <th>Request Type</th>
                 <th>Request Status</th>
               </tr>
@@ -105,19 +105,19 @@ function Node() {
                 ) : (
                   nodeList?.map((row, i) => (
                     <tr key={i}>
-                      <td>{row?.orgName!== UNDEFINED ?row?.orgName :'-'}</td>
-                      <td>{row?.nodeAddress|| '-'}</td>
-                      {active!=="active" && active!=='inactive'&&<td>
+                      <td>{row?.orgName ? row?.orgName : '-'}</td>
+                      <td>{row?.nodeAddress || '-'}</td>
+                      {active !== "active" && active !== 'inactive' && <td>
                         <span className={getStatusClass(row?.nodeStatus)}>
                           {row?.nodeStatus || '-'}
                         </span>
                       </td>}
                       <td>{row?.requestFor}</td>
                       <td><span className={getStatusClass(row?.status)}>
-                          {row?.status || '-'}
-                        </span></td>
+                        {row?.status || '-'}
+                      </span></td>
 
-                      
+
                     </tr>
                   ))
                 )

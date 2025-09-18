@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@ant-design/icons": "^6.0.2",
     "@cosmjs-evm/proto-signing": "^0.0.6",
     "@cosmjs-evm/stargate": "^0.0.6",
     "@cosmjs/crypto": "^0.28.13",
@@ -23,6 +24,7 @@
     "@keplr-wallet/cosmos": "^0.12.271",
     "@keplr-wallet/proto-types": "^0.12.270",
     "@noble/secp256k1": "^3.0.0",
+    "antd": "^5.27.4",
     "assert": "^2.1.0",
     "axios": "^1.11.0",
     "bootstrap": "^5.3.8",
@@ -39,6 +41,7 @@
     "react-dom": "^19.1.1",
     "react-modern-drawer": "^1.4.0",
     "react-router-dom": "^7.8.2",
+    "react-toastify": "^11.0.5",
     "sass": "^1.92.0",
     "secp256k1": "^5.0.1",
     "stream-browserify": "^3.0.0",

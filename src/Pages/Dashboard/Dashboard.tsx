@@ -24,6 +24,7 @@ import {
 } from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
+import CopyText from "../../Common/Copy/CopyText";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
@@ -55,12 +56,21 @@ export default function Dashboard() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [activeAccount, setActiveAccount] = useState<any>();
+  const [countAccount, setCountAccount] = useState<any>();
   // const [isLoading,setIsLoading]=useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
   };
+
+  const buttons = [
+    { label: "All Requests", value: "allrequest", count: countAccount?.totalCount || 0 },
+    { label: "Link Requests", value: "Link", count: countAccount?.linkCount || 0 },
+    { label: "Unlink Requests", value: "Unlink", count: countAccount?.UnlinkCount || 0 },
+  ];
+
+  const [active, setActive] = useState("allrequest");
 
   const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
   // const handleRejectShow = () => setRejectShow(true);
@@ -93,12 +103,12 @@ export default function Dashboard() {
     return true;
   };
 
-  const onApproval = async (address: string, type: string, val?: any) => {
+  const onApproval = async (address: string, type: string, planId: string,hours: string) => {
     if (type === "Unlink") {
       try {
         const message = buildUnlinkNodeMessage({
           from: provAddress,
-          id: Long.fromString(val?.planId),
+          id: Long.fromString(planId),
           nodeAddress: address, //node address
         });
         const TxHash = await processTransaction(message);
@@ -119,29 +129,28 @@ export default function Dashboard() {
       const leaseMessage = buildStartLeaseStatusMessage({
         from: provAddress,
         nodeAddress: address,
-        hours: Long.fromString("620"),
+        hours: Long.fromString(hours),
         denom: "tics",
         renewalPricePolicy: 0,
       });
 
-     const res = await processTransaction(leaseMessage);
-     if(!res)
-      {
+      const res = await processTransaction(leaseMessage);
+      if (!res) {
         setUnLease(true)
       }
-      else{
+      else {
         setLease(true)
 
       }
     } catch (err: any) {
-      console.error(err.message,"err");
+      console.error(err.message, "err");
       // setRejectShow(true);
     }
 
     try {
       const message = buildLinkNodeMessage({
         from: provAddress,
-        id: Long.fromString(val?.planId),
+        id: Long.fromString(planId),
         nodeAddress: address, //node address
       });
       const TxHash = await processTransaction(message);
@@ -172,7 +181,7 @@ export default function Dashboard() {
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeRequestedList(page, limit),
+      endpoint: apiUrls.nodeRequestedList(page, limit, active),
     });
 
     // setIsLoading(false)
@@ -195,19 +204,39 @@ export default function Dashboard() {
     setActiveAccount(data?.data);
   };
 
+  const fetchNodeRequestNumber = async () => {
+    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+    const { success, data } = await useGetApi({
+      endpoint: apiUrls.nodeRequestCount(provAddress),
+    });
+
+    if (!success) {
+      console.log("unable to fetch the active account");
+      return;
+    }
+    setCountAccount(data?.data);
+  };
+
+  const handleTabChange = (value: string) => {
+    setActive(value);
+    setPage(1);
+    setLimit(5);
+  }
+
   useEffect(() => {
     fetchData();
-  }, [page, limit]);
+  }, [page, limit, active]);
 
   useEffect(() => {
     fetchNodeNumber();
+    fetchNodeRequestNumber();
   }, []);
 
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
     { title: "All Nodes", value: activeAccount?.totalCount || 0 },
-    { title: "Active Nodes", value: activeAccount?.activeCount || 0  },
+    { title: "Active Nodes", value: activeAccount?.activeCount || 0 },
     { title: "Inactive Nodes", value: activeAccount?.inactiveCount || 0 },
   ];
 
@@ -224,6 +253,17 @@ export default function Dashboard() {
 
       <div className="custom-table-wrapper commonTable">
         <h2 className="table-title">Node Requests</h2>
+        <div className="node__btns">
+          {buttons.map(({ label, value, count }) => (
+            <button
+              key={value}
+              className={active === value ? "active" : "dashboardBtn"}
+              onClick={() => handleTabChange(value)}
+            >
+              {label} ({count})
+            </button>
+          ))}
+        </div>
         <div className="outerTable">
           <table className="custom-table">
             <thead>
@@ -234,7 +274,7 @@ export default function Dashboard() {
                 <th>Node Address</th>
                 <th>Bandwidth</th>
                 <th>Plan</th>
-                <th>Request Type</th>
+                {active === "allrequest" && <th>Request Type</th>}
                 <th>Action</th>
               </tr>
             </thead>
@@ -255,35 +295,31 @@ export default function Dashboard() {
                     </td>
                   </tr>
                 ) : (
-                  nodeList?.map((row, i) => (
-                    <tr key={i}>
-                      <td>{row?.orgName !== UNDEFINED ? row?.orgName : "-"}</td>
-                      <td>{row?.orgName !== UNDEFINED ? row?.email : "-"}</td>
+                  nodeList?.map((row, i) => {
+                    return (<tr key={i}>
+                      <td>{row?.orgName  ? row?.orgName : "-"}</td>
+                      <td>{row?.orgName  ? row?.email : "-"}</td>
                       <td>{row?.location || "-"}</td>
-                      <td>{truncateValue(row?.nodeAddress)}</td>
-                      <td>{row?.bandwidth}</td>
+                      <td>
+                        {truncateValue(row?.nodeAddress)}
+                        {/* @ts-ignore */}
+                        <CopyText text={row?.nodeAddress} />
+                      </td>
+                      <td>{Math.round(Number(row?.bandwidth) / (1024 * 1024 * 1024)) + " GB" || ""}</td>
                       <td>{row?.plan || "-"}</td>
-                      <td>{row?.requestFor}</td>
+                      {active === "allrequest" && <td>{row?.requestFor}</td>}
                       <td>
                         <div className="action-btns">
-                          <button
-                            className="approve-btn"
-                            onClick={() =>
-                              onApproval(row?.nodeAddress, row?.requestFor, row)
-                            }
-                          >
+                          <button className="approve-btn" onClick={() => onApproval(row?.nodeAddress, row?.requestFor, row?.planId,row?.hours)}>
                             Approve
                           </button>
-                          <button
-                            className="reject-btn"
-                            onClick={() => onReject(row?.nodeAddress)}
-                          >
+                          <button className="reject-btn" onClick={() => onReject(row?.nodeAddress)}>
                             Reject
                           </button>
                         </div>
                       </td>
-                    </tr>
-                  ))
+                    </tr>);
+                  })
                 )
               }
             </tbody>
