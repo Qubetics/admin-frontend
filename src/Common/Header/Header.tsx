@@ -10,12 +10,12 @@ import { api, copyToClipboard } from "../../utils/Helper/CommonHelper";
 import { CopyIcon } from "../../assets/StoreAsset/StoreAsset";
 import Login from "../../Pages/Login/Login";
 import { envConstants } from "../../Constant/envConstants";
+import { toast } from "react-toastify";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const isLoginPage = location.pathname === Path.LANDING;
-  console.log(isLoginPage,"isLoginPage");
   const { authData, setAuthData } = useIsLoggedIn();
   const [balance,setBalance] = useState<any>("");
   const useGetApi = useNetworkRequest();
@@ -44,7 +44,10 @@ function Header() {
 
   const onLogout = async () => {
     const { success } = await useGetApi({ endpoint: apiUrls.logout });
-    if (!success) return;
+    if (!success) {
+      toast.error("Failed to Logout");
+      return;
+    }
     navigate("/landing");
     localStorage.clear();
     sessionStorage.clear();

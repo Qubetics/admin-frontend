@@ -69,7 +69,7 @@ const Plans = () => {
       </div>
       <div className="custom-table-wrapper commonTable">
         <div className="outerTable">
-          <table className="custom-table">
+          <table className="custom-table plans-table ">
             <thead>
               <tr>
                 <th>Plan ID</th>

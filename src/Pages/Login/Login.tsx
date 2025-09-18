@@ -14,24 +14,19 @@ export default function Login() {
   const useGetApi = useNetworkRequest();
 
   const handleClick = async () => {
-    console.log("Ererer");
     if (!window?.keplr) {
       toast.error("Install Keplr Wallet extension");
-      console.log("sdfser");
       return;
     }
 
     const chainId = envConstants.chainId;
-    console.log("🚀 ~ handleClick ~ chainId:", chainId)
 
     try {
       await window.keplr.disable(chainId);
       await window.keplr.enable(chainId);
 
       const offlineSigner = window.keplr.getOfflineSigner(chainId);
-      console.log("🚀 ~ handleClick ~ offlineSigner:", offlineSigner)
       const accounts = await offlineSigner.getAccounts();
-      console.log("🚀 ~ handleClick ~ accounts:", accounts)
 
       if (!accounts?.length) {
         console.error("No accounts found in Keplr");
@@ -67,7 +62,10 @@ export default function Login() {
         },
       });
 
-      if (!success) return;
+      if (!success){
+        toast.error("Failed to Login");
+        return;
+      } 
 
       setAuthData(address);
       navigate("/dashboard");

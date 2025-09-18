@@ -25,6 +25,7 @@ import {
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import CopyText from "../../Common/Copy/CopyText";
+import { toast } from "react-toastify";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
@@ -185,7 +186,10 @@ export default function Dashboard() {
     });
 
     // setIsLoading(false)
-    if (!success) return;
+    if (!success){
+      toast.error("Unable to fetch the node list");
+      return;
+    } 
     setNodeList(data?.data?.nodeList);
     // setTotalCount(data?.data?.count);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
@@ -211,7 +215,7 @@ export default function Dashboard() {
     });
 
     if (!success) {
-      console.log("unable to fetch the active account");
+      toast.error("unable to fetch the active account");
       return;
     }
     setCountAccount(data?.data);
@@ -265,7 +269,7 @@ export default function Dashboard() {
           ))}
         </div>
         <div className="outerTable">
-          <table className="custom-table">
+          <table className="custom-table dashboard-table">
             <thead>
               <tr>
                 <th>Opt Name</th>

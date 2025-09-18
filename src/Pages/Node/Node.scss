@@ -2,15 +2,18 @@
 
 .node {
   margin-top: s(140);
+
   &__header {
     display: flex;
     justify-content: space-between;
+
     h1 {
       color: #fff;
       font-weight: 600;
       font-size: s(24);
     }
   }
+
   .node__btns {
     display: flex;
     margin-top: s(20);
@@ -19,6 +22,7 @@
     padding: s(4);
     width: 100%;
     max-width: s(500);
+
     button {
       max-width: s(172);
       width: 100%;
@@ -34,9 +38,11 @@
       justify-content: center;
       font-size: s(16);
       font-weight: 500;
+
       &:hover {
         background-color: #333;
       }
+
       &.active {
         white-space: nowrap;
         max-width: s(172);
@@ -49,24 +55,23 @@
         border-radius: s(28);
         overflow: hidden;
         cursor: pointer;
+
         &::before {
           content: "";
           position: absolute;
           inset: 0;
           padding: s(2);
           border-radius: s(30);
-          background: conic-gradient(
-            var(--clr-card),
-            var(--clr-1),
-            var(--clr-2),
-            var(--clr-3),
-            var(--clr-4),
-            var(--clr-5),
-            var(--clr-6),
-            var(--clr-2),
-            var(--clr-1),
-            var(--clr-card)
-          );
+          background: conic-gradient(var(--clr-card),
+              var(--clr-1),
+              var(--clr-2),
+              var(--clr-3),
+              var(--clr-4),
+              var(--clr-5),
+              var(--clr-6),
+              var(--clr-2),
+              var(--clr-1),
+              var(--clr-card));
           animation: rotate 2.5s linear infinite;
           -webkit-mask: linear-gradient(#fff 0 0) content-box,
             linear-gradient(#fff 0 0);
@@ -78,14 +83,43 @@
       }
     }
   }
+
+  .node-table {
+    thead {
+      tr {
+        th {
+          &:last-child {
+            width: 300px;
+            text-align: center;
+          }
+        }
+      }
+    }
+
+    tbody {
+      tr {
+        td {
+          &:last-child {
+            text-align: center;
+            width: 300px;
+          }
+        }
+      }
+    }
+  }
+
   .commonTable {
     margin-top: s(20);
+
     .active {
       color: #34c759;
     }
+
     .inactive {
       color: #ff3b30;
     }
+
+
   }
 }
 
@@ -98,18 +132,23 @@
   &.active {
     color: #1e8e3e;
   }
+
   &.inactive {
     color: #d93025;
   }
+
   &.pending {
     color: #f9a825;
   }
+
   &.approved {
-    color: #1a73e8;
+    color: #1e8e3e;
   }
+
   &.rejected {
     color: #ea4335;
   }
+
   &.default {
     color: #5f6368;
   }

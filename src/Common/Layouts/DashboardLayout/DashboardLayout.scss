@@ -4,11 +4,24 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  position: relative;
+
   &_content {
     padding: 0 s(20);
+
     &_body {
       width: 100%;
       min-height: calc(100vh - 139px);
     }
   }
+
+}
+
+.bgToMainDiv {
+  width: 100%;
+  min-height: 100vh;
+  background: url("../../../assets/mainbg.avif");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  //  background: red; 
 }
