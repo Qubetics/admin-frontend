@@ -23,7 +23,8 @@ export const gbToBytes = (gb: any): string => {
 };
 
 export const bytesToGb = (bytes: number): number => {
-  return bytes / (1024 * 1024 * 1024);
+  if(!bytes) return 0;
+  return Math.round(bytes / (1024 * 1024 * 1024));
 };
 
 export const STATUS_ENUM = {

@@ -3,19 +3,21 @@ import Logo from "../../assets/Logo.svg";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import Path from "../../Routing/Constant/RoutePaths";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
-import { copyToClipboard } from "../../utils/Helper/CommonHelper";
+import { api, copyToClipboard } from "../../utils/Helper/CommonHelper";
 import { CopyIcon } from "../../assets/StoreAsset/StoreAsset";
 import Login from "../../Pages/Login/Login";
+import { envConstants } from "../../Constant/envConstants";
+import { toast } from "react-toastify";
 
 function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const location = useLocation();
   const isLoginPage = location.pathname === Path.LANDING;
-  console.log(isLoginPage,"isLoginPage");
   const { authData, setAuthData } = useIsLoggedIn();
+  const [balance,setBalance] = useState<any>(0);
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
 
@@ -24,6 +26,17 @@ function Header() {
     return location.pathname === path ? "active" : "";
   };
 
+  const FetchAccontBalance = async (address:string) => {
+    try {
+      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
+      const response = await api(uri);
+      setBalance(response?.balances[0]?.amount/1e18);
+    } catch (e) {
+      console.log("Error in fetching the balance");
+      }
+  };
+  
+
   // Toggle mobile menu
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -31,12 +44,19 @@ function Header() {
 
   const onLogout = async () => {
     const { success } = await useGetApi({ endpoint: apiUrls.logout });
-    if (!success) return;
+    if (!success) {
+      toast.error("Failed to Logout");
+      return;
+    }
     navigate("/landing");
     localStorage.clear();
     sessionStorage.clear();
     setAuthData("");
   };
+
+  useEffect(()=>{
+    if(authData)FetchAccontBalance(authData);
+  },[]);
 
   return (
     <>
@@ -78,6 +98,8 @@ function Header() {
             {/* Right Section: Wallet */}
             <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
               {authData && (
+                <>
+                <span>{balance || 0}</span>
                 <span
                   className="header__wallet-address customButton"
                   onClick={() => copyToClipboard(authData)}
@@ -87,6 +109,7 @@ function Header() {
                   </span>{" "}
                   <CopyIcon />
                 </span>
+                </>
               )}
               {/* to be implemented */}
               {/* <span className="customButton">100.00 tics</span> */} 

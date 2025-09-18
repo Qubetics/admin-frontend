@@ -86,6 +86,9 @@ export const fetchAccountInfo = async (address: string) => {
 };
 
 export const convertNodeToWallet = (address: any, walletPrefix: any) => {
+  if(!address){
+    return "";
+  }
   // Decode node address
   const decoded = bech32.decode(address);
   const words = decoded.words;
@@ -152,6 +155,27 @@ export const truncateValue = (
   if (!value) return "";
   if (value.length <= start + end) return value; // no need to truncate if too short
   return `${value.slice(0, start)}...${value.slice(-end)}`;
+};
+
+export const formatDuration = (hours:any) => {
+  if (!hours && hours !== 0) return "";
+
+  if (hours >= 24) {
+    const days = Math.floor(hours / 24);
+    const remainingHours = hours % 24;
+
+    const dayLabel = days === 1 ? "day" : "days";
+    const hourLabel = remainingHours === 1 ? "hr" : "hrs";
+
+    if (remainingHours > 0) {
+      return `${days} ${dayLabel} ${remainingHours} ${hourLabel}`;
+    } else {
+      return `${days} ${dayLabel}`;
+    }
+  } else {
+    const hourLabel = hours === 1 ? "hr" : "hrs";
+    return `${hours} ${hourLabel}`;
+  }
 };
 
 export const copyToClipboard = (text: any) => {

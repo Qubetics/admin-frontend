@@ -3,18 +3,19 @@ import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import { envConstants } from "../../Constant/envConstants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
+import { toast } from "react-toastify";
 import { apiUrls } from "../../Constant/apiUrls";
 import { computePubKey } from "../../utils/Helper/CommonHelper";
 import { apiMethods } from "../../Constant/constants";
 
 export default function Login() {
-  const { setAuthData } = useIsLoggedIn();
+  const { authData,setAuthData } = useIsLoggedIn();
   const navigate = useNavigate();
   const useGetApi = useNetworkRequest();
 
   const handleClick = async () => {
     if (!window?.keplr) {
-      console.error("Install Keplr Wallet extension");
+      toast.error("Install Keplr Wallet extension");
       return;
     }
 
@@ -61,7 +62,10 @@ export default function Login() {
         },
       });
 
-      if (!success) return;
+      if (!success){
+        toast.error("Failed to Login");
+        return;
+      } 
 
       setAuthData(address);
       navigate("/dashboard");
@@ -74,8 +78,9 @@ export default function Login() {
 
   // Login form handling using formik
   return (
+    
     <ButtonCustom
-      label="Connect Keplr Wallet"
+      label={authData ? "Logout":"Connect Keplr Wallet"}
       type="submit"
       tabIndex={3}
       onClick={() => handleClick()}

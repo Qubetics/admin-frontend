@@ -7,11 +7,11 @@ import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import Pagination from "../../utils/pagination";
 import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
-import { STATUS_ENUM, provWalletPrefix } from "../../Constant/constants";
+import { STATUS_ENUM, bytesToGb, provWalletPrefix } from "../../Constant/constants";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { Timestamp, convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import { Timestamp, convertNodeToWallet, formatDuration } from "../../utils/Helper/CommonHelper";
 import InnerLoader from "../../Common/Loader/InnerLoader";
 
 const Plans = () => {
@@ -40,26 +40,26 @@ const Plans = () => {
     setTotalPages(data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1);
   };
 
-  const handleClick = async (val:any)=> {
+  const handleClick = async (val: any) => {
     const message = buildUpdatePlanStatusMessage({
-      from :provAddress,
+      from: provAddress,
       id: Long.fromString(val?.id),   //paln Id
-      status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE: STATUS_ENUM.STATUS_ACTIVE 
+      status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE
     });
 
-    const TxHash=await processTransaction(message)
+    const TxHash = await processTransaction(message)
 
-    if(!TxHash){
-      
-       console.log("Transaction failed ");
-       return;
+    if (!TxHash) {
+
+      console.log("Transaction failed ");
+      return;
     }
     getAllPlan();
   }
 
   useEffect(() => {
     getAllPlan();
-  }, [page,limit]);
+  }, [page, limit]);
 
   return (
     <div className="plans container">
@@ -84,7 +84,7 @@ const Plans = () => {
               {isLoading ? (
                 <tr>
                   <td colSpan={100}>
-                 <InnerLoader/>
+                    <InnerLoader />
                   </td>
                 </tr>
               ) : planList.length === 0 ? (
@@ -94,20 +94,20 @@ const Plans = () => {
                   </td>
                 </tr>
               ) : (
-                planList?.map((row:any) => (
+                planList?.map((row: any) => (
                   <tr key={row?.id}>
                     <td>{row?.id}</td>
                     <td>
                       {row?.prices?.length > 0
-                        ? `${row?.prices[0]?.quote_value} ${row?.prices[0]?.denom}`
+                        ? `${row?.prices[0]?.quote_value} ${(String(row?.prices[0]?.denom)).toUpperCase()}`
                         : "-"}
                     </td>
-                    <td>{row?.gigabytes}</td>
+                    <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
                     <td>{Timestamp(row?.status_at)}</td>
-                    <td>{row?.hours}</td>
+                    <td>{formatDuration(row?.hours)}</td>
                     <td>
                       <div className="action-btns">
-                        <button className={`approve-btn ${row.status === "active" ? "disabled" : ""}`}  onClick={()=>handleClick(row)} disabled={row.status === "active"}>
+                        <button className={`approve-btn ${row.status === "active" ? "disabled" : ""}`} onClick={() => handleClick(row)} disabled={row.status === "active"}>
                           {row.status === "active" ? "Activated" : "Activate"}
                         </button>
                       </div>
@@ -120,7 +120,7 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        {totalPages>1 && <Pagination
+        {totalPages > 1 && <Pagination
           currentPage={page}
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
