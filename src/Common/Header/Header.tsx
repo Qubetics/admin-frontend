@@ -17,7 +17,7 @@ function Header() {
   const location = useLocation();
   const isLoginPage = location.pathname === Path.LANDING;
   const { authData, setAuthData } = useIsLoggedIn();
-  const [balance,setBalance] = useState<any>("");
+  const [balance,setBalance] = useState<any>(0);
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
 
@@ -30,7 +30,7 @@ function Header() {
     try {
       const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
       const response = await api(uri);
-      setBalance(response.balances[0].amount/1e18);
+      setBalance(response?.balances[0]?.amount/1e18);
     } catch (e) {
       console.log("Error in fetching the balance");
       }
@@ -99,7 +99,7 @@ function Header() {
             <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
               {authData && (
                 <>
-                <span>{balance}</span>
+                <span>{balance || 0}</span>
                 <span
                   className="header__wallet-address customButton"
                   onClick={() => copyToClipboard(authData)}

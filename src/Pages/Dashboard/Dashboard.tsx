@@ -19,7 +19,7 @@ import {
 import {
   DESCRIPTION,
   HEADING,
-  UNDEFINED,
+  bytesToGb,
   provWalletPrefix,
 } from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
@@ -42,6 +42,8 @@ interface TableRow {
   bandwidth: string;
   plan: string;
   requestFor: string;
+  planId: string,
+  hours: string
 }
 
 export default function Dashboard() {
@@ -309,7 +311,7 @@ export default function Dashboard() {
                         {/* @ts-ignore */}
                         <CopyText text={row?.nodeAddress} />
                       </td>
-                      <td>{Math.round(Number(row?.bandwidth) / (1024 * 1024 * 1024)) + " GB" || ""}</td>
+                      <td>{Math.round(bytesToGb(Number(row?.bandwidth))) + " GB" || ""}</td>
                       <td>{row?.plan || "-"}</td>
                       {active === "allrequest" && <td>{row?.requestFor}</td>}
                       <td>

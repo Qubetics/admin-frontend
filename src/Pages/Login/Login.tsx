@@ -80,7 +80,7 @@ export default function Login() {
   return (
     
     <ButtonCustom
-      label={authData ? "Logout":"Connect Wallet"}
+      label={authData ? "Logout":"Connect Keplr Wallet"}
       type="submit"
       tabIndex={3}
       onClick={() => handleClick()}

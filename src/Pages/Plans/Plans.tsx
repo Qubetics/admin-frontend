@@ -7,7 +7,7 @@ import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import Pagination from "../../utils/pagination";
 import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
-import { STATUS_ENUM, provWalletPrefix } from "../../Constant/constants";
+import { STATUS_ENUM, bytesToGb, provWalletPrefix } from "../../Constant/constants";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
@@ -102,7 +102,7 @@ const Plans = () => {
                         ? `${row?.prices[0]?.quote_value} ${(String(row?.prices[0]?.denom)).toUpperCase()}`
                         : "-"}
                     </td>
-                    <td>{Math.round(row?.gigabytes/(1024*1024*1024)) + " GB" || ""}</td>
+                    <td>{Math.round(bytesToGb(Number(row?.gigabytes))) + " GB" || ""}</td>
                     <td>{Timestamp(row?.status_at)}</td>
                     <td>{formatDuration(row?.hours)}</td>
                     <td>

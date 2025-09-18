@@ -1,5 +1,5 @@
 import { apiUrls } from "../../Constant/apiUrls";
-import { UNDEFINED, provWalletPrefix } from "../../Constant/constants";
+import {  provWalletPrefix } from "../../Constant/constants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
