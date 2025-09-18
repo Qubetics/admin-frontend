@@ -225,7 +225,7 @@ export default function Dashboard() {
       <div className="custom-table-wrapper commonTable">
         <h2 className="table-title">Node Requests</h2>
         <div className="outerTable">
-          <table className="custom-table">
+          <table className="custom-table dashboard-table">
             <thead>
               <tr>
                 <th>Opt Name</th>
@@ -263,7 +263,7 @@ export default function Dashboard() {
                       <td>{truncateValue(row?.nodeAddress)}</td>
                       <td>{row?.bandwidth}</td>
                       <td>{row?.plan || "-"}</td>
-                      <td>{row?.requestFor}</td>
+                      <td>{row?.requestFor} Node</td>
                       <td>
                         <div className="action-btns">
                           <button

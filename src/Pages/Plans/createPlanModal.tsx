@@ -4,10 +4,10 @@ import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
-import { ModifyNum} from "../../utils/Helper/CommonHelper";
+import { ModifyNum } from "../../utils/Helper/CommonHelper";
 import { gbToBytes } from "../../Constant/constants";
 
-const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }: any) => {
+const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }: any) => {
   const initialFormData = {
     hours: "",
     bytes: "",
@@ -25,17 +25,17 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }:
   };
 
   const [show, setShow] = useState(false);
-  const handleClose = () => {getAllPlan();setShow(false)};
+  const handleClose = () => { getAllPlan(); setShow(false) };
   const handleShow = () => setShow(true);
 
   const handleClick = async () => {
-    if(!formData.bytes ||!formData.hours ||!formData.price ){
+    if (!formData.bytes || !formData.hours || !formData.price) {
       console.log("All fields are required")
       return;
     }
     setIsLoading(true)
     const message = buildCreatePlanMessage({
-      from :provAddress,
+      from: provAddress,
       gigabytes: Long.fromString(gbToBytes(formData.bytes)),
       hours: Long.fromString(formData.hours),
       prices: [
@@ -47,16 +47,16 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }:
         },
       ]
     });
-    const TxHash=await processTransaction(message)
+    const TxHash = await processTransaction(message)
     setIsLoading(false)
-    if(!TxHash){
-       console.log("Transaction failed");
-       return;
+    if (!TxHash) {
+      console.log("Transaction failed");
+      return;
     }
     setFormData(initialFormData)
     setCreateShow(false);
     // handleClose();
-    handleShow(); 
+    handleShow();
   };
 
   return (
@@ -105,16 +105,18 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan ,provAddress }:
                   onChange={handleChange}
                 />
               </div>
+              <div className="create-form">
 
-              <div className="form-group">
-                <label>Validity (Hours)</label>
-                <input
-                  type="number"
-                  name="hours"
-                  placeholder="Enter Validity (hours)"
-                  value={formData.hours}
-                  onChange={handleChange}
-                />
+                <div className="form-group">
+                  <label>Validity (Hours)</label>
+                  <input
+                    type="number"
+                    name="hours"
+                    placeholder="Enter Validity (hours)"
+                    value={formData.hours}
+                    onChange={handleChange}
+                  />
+                </div>
               </div>
 
               <ButtonCustom label="Create" onClick={handleClick} disabled={isLoading} />

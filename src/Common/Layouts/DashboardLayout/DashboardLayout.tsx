@@ -5,7 +5,7 @@ import Footer from "../../Footer/Footer";
 
 function DashboardLayout() {
   return (
-    <div className="dashLayout">
+    <div className="dashLayout bgToMainDiv">
       <div className="dashLayout_header">
         <Header />
       </div>
