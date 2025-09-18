@@ -311,7 +311,7 @@ export default function Dashboard() {
                         {/* @ts-ignore */}
                         <CopyText text={row?.nodeAddress} />
                       </td>
-                      <td>{Math.round(bytesToGb(Number(row?.bandwidth))) + " GB" || ""}</td>
+                      <td>{bytesToGb(Number(row?.bandwidth)) + " GB" || ""}</td>
                       <td>{row?.plan || "-"}</td>
                       {active === "allrequest" && <td>{row?.requestFor}</td>}
                       <td>

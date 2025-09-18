@@ -102,7 +102,7 @@ const Plans = () => {
                         ? `${row?.prices[0]?.quote_value} ${(String(row?.prices[0]?.denom)).toUpperCase()}`
                         : "-"}
                     </td>
-                    <td>{Math.round(bytesToGb(Number(row?.gigabytes))) + " GB" || ""}</td>
+                    <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
                     <td>{Timestamp(row?.status_at)}</td>
                     <td>{formatDuration(row?.hours)}</td>
                     <td>
