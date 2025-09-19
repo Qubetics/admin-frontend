@@ -18,8 +18,6 @@
 
   .commonTable {
     margin-top: s(20);
-
-
   }
 
   .plans-table {
@@ -60,50 +58,60 @@
 
 .createPlan {
   .form-container {
-    padding: s(20);
+    padding: 20px;
     margin: auto;
-
-    @media screen and (max-width: 767px) {
-      padding: 0px;
-    }
 
     .form-group {
       display: flex;
       flex-direction: column;
-      margin-bottom: s(20);
+      margin-bottom: 20px;
 
       label {
         margin-bottom: 8px;
-        font-size: s(14);
+        font-size: 14px;
         font-weight: 500;
-        color: #FFFFFF;
-      }
-
-      input {
-        background: #080808;
-        border: 1px solid #080808;
-        padding: s(14);
-        border-radius: s(7);
-        font-size: s(16);
-        color: #FFFFFF;
-        outline: none;
-
-        &::placeholder {
-          color: #A0A0A0;
-        }
-
-        &:focus {
-          border: 1px solid rgba(255, 255, 255, 0.2);
-        }
+        color: #ffffff;
       }
     }
-  }
 
-  .customButton {
-    margin: 0 auto;
-    max-width: s(174);
-    width: 100%;
-    display: flex;
-    justify-content: center;
+    .duration-row {
+      display: flex;
+      gap: 10px;
+
+      .duration-select {
+        flex: 1;
+        background: #080808 !important;
+        border: 1px solid #080808 !important;
+        border-radius: 7px;
+        padding: s(20) 8px;
+        height: s(54);
+        color: #ffffff !important;
+        
+        .ant-select-selector {
+          background: #080808 !important;
+          border: none !important;
+          color: #ffffff !important;
+        }
+        .ant-select-selection-placeholder {
+          color: #fff !important;
+        }
+        .ant-select-arrow {
+          color: #ffffff !important;
+        }
+      }
+
+      .custom-input {
+        flex: 2;
+      }
+    }
+
+    .create-btn {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      .customButton {
+        min-width: s(174) !important;
+      }
+    }
   }
 }

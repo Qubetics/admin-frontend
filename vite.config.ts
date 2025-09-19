@@ -32,7 +32,7 @@ export default defineConfig({
   server:{
     proxy: {
       '/api': { // Proxy requests starting with /api
-        target: 'http://172.16.15.29:4003', // Your backend server address
+        target: 'http://localhost:4003', // Your backend server address
         // changeOrigin: true, // Needed for virtual hosted sites
         secure: process.env.VITE_PLATFORM_ENVIROMENT =="production" ? true:false,
         ws: true, 

@@ -186,7 +186,7 @@ export default function Dashboard() {
       console.error(err.message);
       // setRejectShow(true);
     }
-   fetchNodeRequestNumber();
+    fetchNodeRequestNumber();
 
   };
 
@@ -208,10 +208,10 @@ export default function Dashboard() {
     });
 
     // setIsLoading(false)
-    if (!success){
+    if (!success) {
       toast.error("Unable to fetch the node list");
       return;
-    } 
+    }
     setNodeList(data?.data?.nodeList);
     // setTotalCount(data?.data?.count);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
@@ -293,7 +293,7 @@ export default function Dashboard() {
           <table className="custom-table dashboard-table">
             <thead>
               <tr>
-                <th>Opt Name</th>
+                <th>Operator Name</th>
                 <th>Email Address</th>
                 <th>Location</th>
                 <th>Node Address</th>
@@ -328,7 +328,7 @@ export default function Dashboard() {
                         <td>{row?.location || "-"}</td>
                         <td>
                           <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
-                          <CopyText text={row?.nodeAddress} /></span>
+                            <CopyText text={row?.nodeAddress} /></span>
                         </td>
                         <td>
                           {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
@@ -374,7 +374,7 @@ export default function Dashboard() {
             totalPages={totalPages}
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
-            onLimitChange={(limit: number) => setLimit(limit)}
+            onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
           />
         )}
         <Modal show={show} onHide={handleClose} centered>

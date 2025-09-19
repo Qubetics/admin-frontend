@@ -1,0 +1,36 @@
+@import "../../utils/functions.scss";
+
+.custom-input {
+  width: 100%;
+
+  .input-field {
+    background: #080808;
+    border: 1px solid #080808;
+    padding: 14px;
+    border-radius: 7px;
+    font-size: 16px;
+    color: #ffffff;
+    outline: none;
+    width: 100%;
+
+    &::placeholder {
+      color: #a0a0a0;
+    }
+
+    &:focus {
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    // Remove arrows from number input (Chrome, Safari, Edge, Opera)
+    &[type="number"]::-webkit-inner-spin-button,
+    &[type="number"]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    // Remove arrows from Firefox
+    &[type="number"] {
+      -moz-appearance: textfield;
+    }
+  }
+}
