@@ -21,18 +21,37 @@ const createPlanModal = ({
   };
   const [formData, setFormData] = useState(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({
+    price: "",
+    bytes: "",
+    hours: "",
+  });
 
-const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    let errorMsg = "";
     if (!/^[1-9]\d*$/.test(value) && value !== "") {
-      return; 
+      // toast.error("Only number in decimal is allowed");
+
+      errorMsg = "Only positive numbers allowed";
+
+      setErrors((prev) => ({
+        ...prev,
+        [name]: errorMsg,
+      }));
+      return;
     }
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
 
   const [show, setShow] = useState(false);
   const handleClose = () => {
@@ -60,7 +79,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         },
       ],
     });
-   
+
     const TxHash = await processTransaction(message);
     setIsLoading(false);
     if (!TxHash) {
@@ -71,10 +90,10 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     // handleClose();
     handleShow();
   };
-   const handleHide=()=>{
-     setCreateShow(false);
-     setFormData(initialFormData)
-   }
+  const handleHide = () => {
+    setCreateShow(false);
+    setFormData(initialFormData)
+  }
 
   return (
     <>
@@ -110,6 +129,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   value={formData.price}
                   onChange={handleChange}
                 />
+                {errors.price && <p style={{ color: "red", fontSize: "12px" }}>{errors.price}</p>}
               </div>
 
               <div className="form-group">
@@ -121,6 +141,7 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                   value={formData.bytes}
                   onChange={handleChange}
                 />
+                {errors.bytes && <p style={{ color: "red", fontSize: "12px" }}>{errors.bytes}</p>}
               </div>
               <div className="create-form">
                 <div className="form-group">
@@ -132,13 +153,14 @@ const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
                     value={formData.hours}
                     onChange={handleChange}
                   />
+                  {errors.hours && <p style={{ color: "red", fontSize: "12px" }}>{errors.hours}</p>}
                 </div>
               </div>
 
               <ButtonCustom
                 label="Create"
                 onClick={handleClick}
-                disabled={isLoading ||!formData.bytes || !formData.hours || !formData.price}
+                disabled={isLoading || !formData.bytes || !formData.hours || !formData.price}
               />
             </div>
           </div>

@@ -1,3 +1,4 @@
+import CopyText from "../../Common/Copy/CopyText";
 import { apiUrls } from "../../Constant/apiUrls";
 import { provWalletPrefix } from "../../Constant/constants";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
@@ -24,11 +25,11 @@ function Node() {
       value: "allnodes",
       count: activeAccount?.totalCount || 0,
     },
-    { label: "Active", value: "active", count: activeAccount?.totalCount || 0 },
+    { label: "Active", value: "active", count: activeAccount?.activeCount || 0 },
     {
       label: "Inactive",
       value: "inactive",
-      count: activeAccount?.totalCount || 0,
+      count: activeAccount?.inactiveCount || 0,
     },
   ];
   const [active, setActive] = useState("allnodes");
@@ -129,7 +130,10 @@ function Node() {
                   nodeList?.map((row, i) => (
                     <tr key={i}>
                       <td>{row?.orgName ? row?.orgName : "-"}</td>
-                      <td>{row?.nodeAddress || "-"}</td>
+                      <td>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
+                          <CopyText text={row?.nodeAddress} /></span>
+                        </td>
                       {active !== "active" && active !== "inactive" && (
                         <td>
                           <span className={getStatusClass(row?.nodeStatus)}>

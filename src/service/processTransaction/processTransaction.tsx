@@ -49,8 +49,6 @@ export const processTransaction = async (message) => {
         return false;
       } else  if(message.includes("gigabytes cannot be negative")){
         toast.error("Value can be negative");
-      } else{
-        toast.error(message);
       }
 
       console.log(error, "error while signing transaction");

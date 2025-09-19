@@ -176,7 +176,7 @@ export default function Dashboard() {
       });
       const TxHash = await processTransaction(message);
       if (!TxHash) {
-        console.log("Transaction failed");
+        console.error("Transaction failed");
         return;
       }
       const status = await updateStatus(address, "APPROVED");
@@ -256,7 +256,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchNodeNumber();
     fetchNodeRequestNumber();
-  }, []);
+  }, [nodeList]);
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
@@ -327,9 +327,8 @@ export default function Dashboard() {
                         <td>{row?.orgName ? row?.email : "-"}</td>
                         <td>{row?.location || "-"}</td>
                         <td>
-                          {truncateValue(row?.nodeAddress)}
-                          {/* @ts-ignore */}
-                          <CopyText text={row?.nodeAddress} />
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
+                          <CopyText text={row?.nodeAddress} /></span>
                         </td>
                         <td>
                           {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
