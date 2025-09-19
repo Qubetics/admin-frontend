@@ -7,6 +7,7 @@ import { processTransaction } from "../../service/processTransaction/processTran
 import { ModifyNum } from "../../utils/Helper/CommonHelper";
 import { gbToBytes } from "../../Constant/constants";
 import { toast } from "react-toastify";
+import CustomInput from "../../Common/CustomInput/CustomInput";
 
 const createPlanModal = ({
   createShow,
@@ -122,7 +123,7 @@ const createPlanModal = ({
             <div className="form-container">
               <div className="form-group">
                 <label>Plan Price</label>
-                <input
+                <CustomInput
                   type="text"
                   name="price"
                   placeholder="Enter Plan Price"
@@ -134,7 +135,7 @@ const createPlanModal = ({
 
               <div className="form-group">
                 <label>Plan GB</label>
-                <input
+                <CustomInput
                   type="text"
                   name="bytes"
                   placeholder="Enter GB"
@@ -146,7 +147,7 @@ const createPlanModal = ({
               <div className="create-form">
                 <div className="form-group">
                   <label>Validity (Hours)</label>
-                  <input
+                  <CustomInput
                     type="text"
                     name="hours"
                     placeholder="Enter Validity (hours)"
@@ -156,12 +157,14 @@ const createPlanModal = ({
                   {errors.hours && <p style={{ color: "red", fontSize: "12px" }}>{errors.hours}</p>}
                 </div>
               </div>
+              <div className="create-btn">
 
               <ButtonCustom
                 label="Create"
                 onClick={handleClick}
                 disabled={isLoading || !formData.bytes || !formData.hours || !formData.price}
               />
+              </div>
             </div>
           </div>
         </Modal.Body>

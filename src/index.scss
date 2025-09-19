@@ -304,7 +304,12 @@ body {
     }
   }
 }
-
+.ant-select-single.ant-select-open .ant-select-selection-item {
+  color: #fff !important;
+}
+.ant-select-selector{
+  padding: s(10) s(8);
+}
 // Modal css
 
 .modal {

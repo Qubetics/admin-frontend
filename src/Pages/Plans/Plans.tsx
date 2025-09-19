@@ -49,12 +49,12 @@ const Plans = () => {
     });
 
     const TxHash = await processTransaction(message)
- 
+
     if (!TxHash) {
       toast.error("Transaction failed")
       return;
     }
-     toast.success("Sucessfully Activated")
+    toast.success("Sucessfully Activated")
     getAllPlan();
   }
 
@@ -126,7 +126,7 @@ const Plans = () => {
           totalPages={totalPages}
           onPageChange={(newPage: any) => setPage(newPage)}
           limit={limit}
-          onLimitChange={(limit: number) => setLimit(limit)}
+          onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
         />}
 
         <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} provAddress={provAddress} />

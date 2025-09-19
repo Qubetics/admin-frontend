@@ -101,7 +101,7 @@ function Node() {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>Opt Name</th>
+                <th>Operator Name</th>
                 <th>Node Address</th>
                 {active !== "active" && active !== "inactive" && (
                   <th>Node Status</th>
@@ -131,9 +131,9 @@ function Node() {
                     <tr key={i}>
                       <td>{row?.orgName ? row?.orgName : "-"}</td>
                       <td>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
+                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
                           <CopyText text={row?.nodeAddress} /></span>
-                        </td>
+                      </td>
                       {active !== "active" && active !== "inactive" && (
                         <td>
                           <span className={getStatusClass(row?.nodeStatus)}>
@@ -162,7 +162,7 @@ function Node() {
             totalPages={totalPages}
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
-            onLimitChange={(limit: number) => setLimit(limit)}
+            onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
           />
         )}
       </div>
