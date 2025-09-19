@@ -9,6 +9,8 @@ import Long from "long";
 import { calculateFee, GasPrice } from "@cosmjs-evm/stargate";
 import { Dec, DecUtils } from "@keplr-wallet/unit";
 import { buildCreatePlanMessage } from "../BuildMessage/buildMessage";
+import { toast } from "react-toastify";
+import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 
 export const processTransaction = async (message) => {
   if (window?.keplr) {
@@ -24,11 +26,11 @@ export const processTransaction = async (message) => {
         chainId,
         key.bech32Address,
         [message],
-        [{ denom: "tics", amount: "100000000" }] //Dummy payload just to get estimate fee
+        [{ denom: "tics", amount: "100000000" }]
       );
 
       if (gasUsed > 0) {
-        const gasLimit = Math.floor(gasUsed * 1.3); //Buffer added
+        const gasLimit = Math.floor(gasUsed * 1.3);
         const feeAmount = Math.ceil(
           envConstants.gas_limit * gasPrice
         ).toString();
@@ -37,15 +39,22 @@ export const processTransaction = async (message) => {
           gas: Math.floor(gasUsed * 1.5).toString(),
         });
         return res;
-      }
-      else{
+      } else {
         return false;
       }
     } catch (error) {
-      console.log(error, "errror while signing transaction");
+      const message = error?.message || String(error);
+      if (message.includes("Request rejected")) {
+        toast.error("Transaction rejected");
+        return false;
+      } else  if(message.includes("gigabytes cannot be negative")){
+        toast.error("Value can be negative");
+      } else{
+        toast.error(message);
+      }
+
+      console.log(error, "error while signing transaction");
       return false;
     }
   }
 };
-
-

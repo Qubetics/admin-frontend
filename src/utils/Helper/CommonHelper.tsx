@@ -59,6 +59,7 @@ export const api = async (url: string, init?: RequestInit) => {
       const data = await response.json();
 
       if (!response.ok) {
+        
         const errorMessage = data?.message || "Something went wrong!";
         throw new Error(errorMessage);
       }
@@ -179,5 +180,12 @@ export const formatDuration = (hours:any) => {
 };
 
 export const copyToClipboard = (text: any) => {
-  return navigator.clipboard.writeText(text)
+  return navigator.clipboard.writeText(text);
+};
+
+ export const formatBalance = (amount:any) => {
+  return amount.toLocaleString("en-US", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 6,
+  });
 };

@@ -6,8 +6,14 @@ import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage"
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { ModifyNum } from "../../utils/Helper/CommonHelper";
 import { gbToBytes } from "../../Constant/constants";
+import { toast } from "react-toastify";
 
-const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }: any) => {
+const createPlanModal = ({
+  createShow,
+  setCreateShow,
+  getAllPlan,
+  provAddress,
+}: any) => {
   const initialFormData = {
     hours: "",
     bytes: "",
@@ -16,48 +22,59 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
   const [formData, setFormData] = useState(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const { name, value } = e.target;
+    if (!/^[1-9]\d*$/.test(value) && value !== "") {
+      return; 
+    }
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
 
   const [show, setShow] = useState(false);
-  const handleClose = () => { getAllPlan(); setShow(false) };
+  const handleClose = () => {
+    getAllPlan();
+    setShow(false);
+  };
   const handleShow = () => setShow(true);
 
   const handleClick = async () => {
     if (!formData.bytes || !formData.hours || !formData.price) {
-      console.log("All fields are required")
+      // console.log("All fields are required");
+      toast.error("All field are required");
       return;
     }
-    setIsLoading(true)
+    setIsLoading(true);
     const message = buildCreatePlanMessage({
       from: provAddress,
       gigabytes: Long.fromString(gbToBytes(formData.bytes)),
       hours: Long.fromString(formData.hours),
       prices: [
         {
-          //make it dynamic
           denom: "tics",
           baseValue: ModifyNum(formData.price),
           quoteValue: formData.price,
         },
-      ]
+      ],
     });
-    const TxHash = await processTransaction(message)
-    setIsLoading(false)
+   
+    const TxHash = await processTransaction(message);
+    setIsLoading(false);
     if (!TxHash) {
-      console.log("Transaction failed");
       return;
     }
-    setFormData(initialFormData)
+    setFormData(initialFormData);
     setCreateShow(false);
     // handleClose();
     handleShow();
   };
+   const handleHide=()=>{
+     setCreateShow(false);
+     setFormData(initialFormData)
+   }
 
   return (
     <>
@@ -77,7 +94,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
         </Modal.Body>
       </Modal>
 
-      <Modal show={createShow} onHide={() => setCreateShow(false)} centered>
+      <Modal show={createShow} onHide={handleHide} centered>
         <Modal.Header closeButton>
           <h2>Create Plan</h2>
         </Modal.Header>
@@ -87,7 +104,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
               <div className="form-group">
                 <label>Plan Price</label>
                 <input
-                  type="number"
+                  type="text"
                   name="price"
                   placeholder="Enter Plan Price"
                   value={formData.price}
@@ -98,7 +115,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
               <div className="form-group">
                 <label>Plan GB</label>
                 <input
-                  type="number"
+                  type="text"
                   name="bytes"
                   placeholder="Enter GB"
                   value={formData.bytes}
@@ -106,11 +123,10 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                 />
               </div>
               <div className="create-form">
-
                 <div className="form-group">
                   <label>Validity (Hours)</label>
                   <input
-                    type="number"
+                    type="text"
                     name="hours"
                     placeholder="Enter Validity (hours)"
                     value={formData.hours}
@@ -119,7 +135,11 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                 </div>
               </div>
 
-              <ButtonCustom label="Create" onClick={handleClick} disabled={isLoading} />
+              <ButtonCustom
+                label="Create"
+                onClick={handleClick}
+                disabled={isLoading ||!formData.bytes || !formData.hours || !formData.price}
+              />
             </div>
           </div>
         </Modal.Body>
