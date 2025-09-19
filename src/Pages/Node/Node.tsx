@@ -79,7 +79,7 @@ function Node() {
           <table className="custom-table">
             <thead>
               <tr>
-                <th>Opt Name</th>
+                <th>Operator Name</th>
                 <th>Node Address</th>
                 {active !== "active" && active !== 'inactive' && <th>Node Status</th>}
                 <th>Request Type</th>

@@ -27,20 +27,21 @@ const LandingPage = () => {
           <h1 className="hero__title">Secure Your Digital Freedom</h1>
           <p>
             Experience the next generation of decentralized VPN technology.
-            Connect anonymously, browse securely,
-            <br /> and maintain your privacy across the global network.
+            Connect anonymously, <br /> browse securely, and maintain your
+            privacy across the global network.
           </p>
         </div>
       </div>
       <section className="hero_ecosystem">
         <div className="container">
           <div className="hero__content">
-            <h1 className="hero__title">Qubetics Ecosystem</h1>
+            <h1 className="hero__title">Set Up Your Node in 3 Easy Steps</h1>
             <p>
               Join the Qubetics ecosystem by running your own dVPN node. Lease
-              your node, earn rewards, or launch your own provider service all
-              while powering a secure, decentralized network. Setup is simple,
-              rewards are real, and your contribution strengthens global privacy
+              your node, earn rewards, or launch <br /> your own provider
+              service all while powering a secure, decentralized network. Setup
+              is simple, rewards are <br /> real, and your contribution
+              strengthens global privacy
             </p>
           </div>
 

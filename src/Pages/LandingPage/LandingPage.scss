@@ -10,7 +10,6 @@
 
   &__container {
     position: relative;
-    // max-width: s(1580);
     margin: 0 auto;
     padding-top: s(100);
     height: s(970);
@@ -36,19 +35,21 @@
   &__content {
     text-align: center;
     margin-top: s(56);
+    margin-bottom: s(60);
 
     p {
-      color: #fff;
-      font-size: s(22);
+      color: #ffffff;
+      font-size: s(18);
       font-weight: 400;
     }
   }
 
   &__title {
-    font-size: s(60);
+    font-size: s(48);
     font-weight: 600;
     color: white;
     line-height: 1.1;
+    margin-bottom: s(20);
 
     @media #{mobile()} {
       font-size: s(40);
@@ -60,16 +61,20 @@
   display: flex;
   justify-content: center;
   gap: s(40);
-  padding: s(24);
 }
 
 .card {
-  background: linear-gradient(106.97deg, rgba(255, 255, 255, 0.5) 5.84%, rgba(0, 0, 0, 0.25) 70.7%);
+  background: linear-gradient(
+    106.97deg,
+    #29092ee6 5.84%,
+    rgba(0, 0, 0, 0.25) 70.7%
+  );
   background-blend-mode: overlay;
-  border: 2px solid #FFFFFF;
+  background-blend-mode: overlay;
+  border: 1px solid #37003fe6;
   border-radius: s(30);
-  padding: s(20);
-  width: s(250);
+  padding: s(30);
+  width: s(447);
   text-align: center;
   color: #fff;
   transition: all 0.3s ease;

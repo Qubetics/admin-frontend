@@ -99,7 +99,7 @@ function Header() {
             <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
               {authData && (
                 <>
-                <span>{balance || 0}</span>
+                <span className="customButton">{balance || 0}</span>
                 <span
                   className="header__wallet-address customButton"
                   onClick={() => copyToClipboard(authData)}

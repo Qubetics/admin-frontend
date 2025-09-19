@@ -274,7 +274,7 @@ export default function Dashboard() {
           <table className="custom-table dashboard-table">
             <thead>
               <tr>
-                <th>Opt Name</th>
+                <th>Operator Name</th>
                 <th>Email Address</th>
                 <th>Location</th>
                 <th>Node Address</th>
