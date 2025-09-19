@@ -3,9 +3,13 @@
 import axios from "axios";
 import { apiMethods } from "../Constant/constants";
 import { envConstants } from "../Constant/envConstants";
+import { useIsLoggedIn } from "../Context/LoggedInContext";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 const useNetworkRequest = () => {
-  // const { updateToast } = useToast();
+  const { setAuthData } = useIsLoggedIn();
+  const navigate = useNavigate();
 
   const useGetApi = async ({
     endpoint,
@@ -36,10 +40,20 @@ const useNetworkRequest = () => {
       //   ].includes(error?.message);
       //   hideOn && updateToast("error", error?.message);
       // }
-
+      if (error?.response?.status === 401) {
+        localStorage.removeItem("authData");
+        sessionStorage.clear();
+        setAuthData("");
+        toast.error("unauthorized Access");
+        navigate("/landing");
+        return {
+          success: false,
+          message: "Session expired. Please log in again.",
+        };
+      }
       return {
         success: false,
-        message: error?.message,
+        message: error?.response?.data?.message,
       };
     }
   };

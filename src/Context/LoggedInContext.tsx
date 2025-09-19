@@ -5,6 +5,7 @@ interface AuthContextType {
   authData: string;
   setAuthData: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
+  logout: () => void;
 }
 
 export const MyLoggedInContext = createContext<AuthContextType | undefined>(
@@ -41,8 +42,17 @@ export const LoggedInProvider = ({
     }
   }, [authData]);
 
+  const logout = () => {
+    setAuthData("");
+    localStorage.removeItem("authData");
+    sessionStorage.clear();
+    window.location.href = "/landing";
+  };
+
   return (
-    <MyLoggedInContext.Provider value={{ authData, setAuthData, loading }}>
+    <MyLoggedInContext.Provider
+      value={{ authData, setAuthData, loading, logout }}
+    >
       {children}
     </MyLoggedInContext.Provider>
   );

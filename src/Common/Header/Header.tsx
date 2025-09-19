@@ -1,141 +1,345 @@
-import "./Header.scss";
-import Logo from "../../assets/Logo.svg";
+import { useEffect, useState, useCallback } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import Path from "../../Routing/Constant/RoutePaths";
-import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { useEffect, useState } from "react";
-import useNetworkRequest from "../../Hooks/useGetApi";
-import { apiUrls } from "../../Constant/apiUrls";
-import { api, copyToClipboard } from "../../utils/Helper/CommonHelper";
-import { CopyIcon } from "../../assets/StoreAsset/StoreAsset";
-import Login from "../../Pages/Login/Login";
-import { envConstants } from "../../Constant/envConstants";
 import { toast } from "react-toastify";
 
-function Header() {
+import "./Header.scss";
+import Logo from "../../assets/Logo.svg";
+import { CopyIcon } from "../../assets/StoreAsset/StoreAsset";
+import Path from "../../Routing/Constant/RoutePaths";
+import { useIsLoggedIn } from "../../Context/LoggedInContext";
+import useNetworkRequest from "../../Hooks/useGetApi";
+import { apiUrls } from "../../Constant/apiUrls";
+import { envConstants } from "../../Constant/envConstants";
+import { apiMethods } from "../../Constant/constants";
+import {
+  api,
+  computePubKey,
+  copyToClipboard,
+  formatBalance,
+  truncateValue,
+} from "../../utils/Helper/CommonHelper";
+import ButtonCustom from "../ButtonCustom/ButtonCustom";
+
+// Types
+interface KeplrWindow extends Window {
+  keplr?: {
+    enable: (chainId: string) => Promise<void>;
+    disable: (chainId: string) => Promise<void>;
+    getOfflineSigner: (chainId: string) => {
+      getAccounts: () => Promise<Array<{ address: string }>>;
+    };
+    signArbitrary: (
+      chainId: string,
+      address: string,
+      message: string
+    ) => Promise<{
+      signature: string;
+      pub_key: any;
+    }>;
+  };
+}
+
+declare const window: KeplrWindow;
+
+const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [balance, setBalance] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isConnecting, setIsConnecting] = useState(false);
+
   const location = useLocation();
-  const isLoginPage = location.pathname === Path.LANDING;
-  const { authData, setAuthData } = useIsLoggedIn();
-  const [balance,setBalance] = useState<any>(0);
-  const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
+  const { authData, setAuthData } = useIsLoggedIn();
+  const useGetApi = useNetworkRequest();
 
-  // Function to check if a path is active
-  const isActive = (path: string) => {
-    return location.pathname === path ? "active" : "";
-  };
+  const isActive = useCallback(
+    (path: string): string => {
+      return location.pathname === path ? "active" : "";
+    },
+    [location.pathname]
+  );
 
-  const FetchAccontBalance = async (address:string) => {
-    try {
-      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
-      const response = await api(uri);
-      setBalance(response?.balances[0]?.amount/1e18);
-    } catch (e) {
-      console.log("Error in fetching the balance");
+  const toggleMenu = useCallback(() => {
+    setIsMenuOpen((prev) => !prev);
+  }, []);
+
+  const fetchAccountBalance = useCallback(
+    async (address: string): Promise<void> => {
+      if (!address) {
+        console.warn("No address provided for balance fetch");
+        return;
       }
-  };
-  
 
-  // Toggle mobile menu
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+      setIsLoading(true);
+      try {
+        const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
+        const response = await api(uri);
 
-  const onLogout = async () => {
-    const { success } = await useGetApi({ endpoint: apiUrls.logout });
-    if (!success) {
-      toast.error("Failed to Logout");
-      return;
-    }
-    navigate("/landing");
+        if (response?.balances?.[0]?.amount) {
+          const balanceAmount = Number(response.balances[0].amount) / 1e18;
+          setBalance(balanceAmount);
+        } else {
+          setBalance(0);
+        }
+      } catch (error) {
+        console.error("Error fetching account balance:", error);
+        setBalance(0);
+        toast.error("Failed to fetch account balance");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
+
+  const handleLogout = useCallback(async (): Promise<void> => {
+    if (isLoading) return;
     localStorage.clear();
     sessionStorage.clear();
     setAuthData("");
-  };
+    setBalance(0);
+    setIsLoading(true);
+    try {
+      const { success } = await useGetApi({
+        endpoint: apiUrls.logout,
+      });
+      if (!success) {
+        toast.error("Failed to logout. Please try again.");
+        return;
+      }
+      localStorage.clear();
+      sessionStorage.clear();
+      setAuthData("");
+      setBalance(0);
 
-  useEffect(()=>{
-    if(authData)FetchAccontBalance(authData);
-  },[]);
+      navigate("/landing");
+    } catch (error) {
+      console.error("Logout error:", error);
+      toast.error("An error occurred during logout");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [useGetApi, navigate, setAuthData, isLoading]);
+
+  const connectKeplr = useCallback(async (): Promise<string | null> => {
+    if (!window?.keplr) {
+      toast.error("Please install Keplr Wallet extension");
+      return null;
+    }
+
+    const chainId = envConstants.chainId;
+    if (!chainId) {
+      toast.error("Chain ID not configured");
+      return null;
+    }
+
+    try {
+      await window.keplr!.disable(chainId);
+      await window.keplr!.enable(chainId);
+
+      const offlineSigner = window.keplr!.getOfflineSigner(chainId);
+      const accounts = await offlineSigner.getAccounts();
+
+      if (!accounts?.length) {
+        toast.error("No accounts found in Keplr wallet");
+        return null;
+      }
+
+      return accounts[0].address;
+    } catch (error: any) {
+      console.error("Keplr connection error:", error);
+
+      if (error?.message?.includes("rejected")) {
+        toast.error("Connection rejected by user");
+      } else if (error?.message?.includes("not found")) {
+        toast.error("Chain not found in Keplr");
+      } else {
+        toast.error("Failed to connect to Keplr wallet");
+      }
+      return null;
+    }
+  }, []);
+
+  const signMessage = useCallback(
+    async (address: string): Promise<boolean> => {
+      if (!window?.keplr || !address) return false;
+
+      try {
+        const message = address;
+        const chainId = envConstants.chainId;
+
+        const { signature, pub_key } = await window.keplr.signArbitrary(
+          chainId,
+          address,
+          message
+        );
+
+        if (!signature || !pub_key) {
+          toast.error("Failed to sign message");
+          return false;
+        }
+
+        const pubKeyFromSignature = computePubKey(address, signature, message);
+
+        if (!pubKeyFromSignature) {
+          toast.error("Could not compute public key from signature");
+          return false;
+        }
+        const { success, message: errormassage } = await useGetApi({
+          endpoint: apiUrls.login,
+          method: apiMethods.POST,
+          body: {
+            address,
+            pubKey: pubKeyFromSignature,
+            signature: { pub_key, signature },
+          },
+        });
+
+        if (!success) {
+          if (errormassage.includes("role")) {
+            toast.error("Role information missing or invalid");
+          } else {
+            toast.error("Authentication failed. Please try again.");
+          }
+          return false;
+        }
+        setAuthData(address);
+        navigate("/dashboard");
+        return true;
+      } catch (error: any) {
+        if (error?.message?.includes("rejected")) {
+          toast.error("Signing rejected by user");
+        } else {
+          toast.error("Failed to sign message");
+        }
+
+        sessionStorage.clear();
+        setAuthData("");
+        return false;
+      }
+    },
+    [useGetApi, navigate, setAuthData]
+  );
+
+  const handleWalletConnect = useCallback(async (): Promise<void> => {
+    if (isConnecting) return;
+
+    setIsConnecting(true);
+    try {
+      const address = await connectKeplr();
+      if (address) {
+        await signMessage(address);
+      }
+    } catch (error) {
+      console.error("Wallet connection error:", error);
+      toast.error("Failed to connect wallet");
+    } finally {
+      setIsConnecting(false);
+    }
+  }, [connectKeplr, signMessage, isConnecting]);
+
+  const handleCopyAddress = useCallback(async (): Promise<void> => {
+    if (!authData) return;
+    try {
+      await copyToClipboard(authData);
+      toast.success("Address copied to clipboard!");
+    } catch (error) {
+      toast.error("Failed to copy address");
+    }
+  }, [authData]);
+
+  useEffect(() => {
+    if (authData) {
+      fetchAccountBalance(authData);
+    } else {
+      setBalance(0);
+    }
+  }, [authData]);
+
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [location.pathname]);
+
+  const navigationItems = [
+    { path: Path.DASHBOARD, label: "Dashboard" },
+    { path: Path.PLANS, label: "Plans" },
+    { path: Path.NODES, label: "Nodes" },
+  ];
 
   return (
-    <>
-      {isLoginPage ? (
-        // Login Header
-        <div className="header-main">
-          <div className="header-main__bottom container">
-            <div className="">
-              <Link to={""}>
-                <img src={Logo} alt="Logo" />
-              </Link>
-            </div>
-            <div>
-              <Login />
-            </div>
-          </div>
-        </div>
-      ) : (
-        <header className="header">
-          <div className="header__container">
-            {/* Left Section: Logo + Title */}
-            <div className="header__left">
-              <img src={Logo} alt="logo" className="header__logo" />
+    <div className="header-main">
+      <div className="header-main__bottom container">
+        <div className="header__left">
+          <Link to={Path.LANDING}>
+            <img src={Logo} alt="Logo" />
+          </Link>
 
-              {/* Navigation */}
-              <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
-                <a href={Path.DASHBOARD} className={isActive(Path.DASHBOARD)}>
-                  Dashboard
-                </a>
-                <a href={Path.PLANS} className={isActive(Path.PLANS)}>
-                  Plans
-                </a>
-                <a href={Path.NODES} className={isActive(Path.NODES)}>
-                  Nodes
-                </a>
-              </nav>
-            </div>
-
-            {/* Right Section: Wallet */}
-            <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
-              {authData && (
-                <>
-                <span>{balance || 0}</span>
-                <span
-                  className="header__wallet-address customButton"
-                  onClick={() => copyToClipboard(authData)}
+          {authData && (
+            <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
+              {navigationItems.map(({ path, label }) => (
+                <Link
+                  key={path}
+                  to={path}
+                  className={isActive(path)}
+                  onClick={() => setIsMenuOpen(false)}
                 >
-                  <span>
-                    {authData.slice(0, 6)}...{authData.slice(-4)}
-                  </span>{" "}
-                  <CopyIcon />
-                </span>
-                </>
-              )}
-              {/* to be implemented */}
-              {/* <span className="customButton">100.00 tics</span> */} 
-              <span className="customButton" onClick={() => onLogout()}>
-                Logout
+                  {label}
+                </Link>
+              ))}
+            </nav>
+          )}
+        </div>
+
+        {/* Right Section */}
+        <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
+          {!authData ? (
+            <ButtonCustom
+              label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
+              type="button"
+              tabIndex={3}
+              onClick={handleWalletConnect}
+              disabled={isConnecting}
+            />
+          ) : (
+            <>
+              <span className="customButton balance-display">
+                {formatBalance(balance)} TICS
               </span>
-              {/* <button className="header__wallet" onClick={handleClick}>
-                {authData ? "Connected" : "Connect Wallet"}
-              </button>
-             */}
-              {/* Mobile Menu Toggle Button */}
+
               <button
-                className={`header__menu-toggle ${isMenuOpen ? "open" : ""}`}
-                onClick={toggleMenu}
-                aria-label="Toggle menu"
+                className="header__wallet-address customButton"
+                onClick={handleCopyAddress}
+                title="Click to copy address"
+                type="button"
               >
-                <span></span>
-                <span></span>
-                <span></span>
+                <span>{truncateValue(authData)}</span>
+                <CopyIcon />
               </button>
-            </div>
-          </div>
-        </header>
-      )}
-    </>
+
+              <ButtonCustom
+                label={isConnecting ? "Logging out..." : "Logout"}
+                onClick={handleLogout}
+                disabled={isLoading}
+                type="button"
+              />
+            </>
+          )}
+
+          {/* Mobile Menu Toggle */}
+          <button
+            className={`header__menu-toggle ${isMenuOpen ? "open" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Toggle navigation menu"
+            type="button"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </div>
+      </div>
+    </div>
   );
-}
+};
 
 export default Header;

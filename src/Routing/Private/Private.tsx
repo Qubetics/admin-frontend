@@ -1,13 +1,14 @@
-import { Outlet } from "react-router-dom";
+import { Navigate, Outlet } from "react-router-dom";
 import { useIsLoggedIn } from "../../Context/LoggedInContext.tsx";
+import Path from "../Constant/RoutePaths.tsx";
+import Loader from "../../Common/Loader/Loader.tsx";
 
 const Private = () => {
-  const {loading } = useIsLoggedIn();
+  const {loading,authData } = useIsLoggedIn();
 
-  if (loading) return null;
+  if (loading) return <Loader/>;
 
-  // return !authData ? <Outlet /> : <Navigate to={Path.LOGIN} replace={true} />;
-  return <Outlet /> ;
+  return authData!="" ? <Outlet /> : <Navigate to={Path.LANDING} replace={true} />;
 };
 
 export default Private;

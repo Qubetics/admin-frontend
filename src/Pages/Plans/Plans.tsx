@@ -13,6 +13,7 @@ import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { Timestamp, convertNodeToWallet, formatDuration } from "../../utils/Helper/CommonHelper";
 import InnerLoader from "../../Common/Loader/InnerLoader";
+import { toast } from "react-toastify";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
@@ -48,12 +49,12 @@ const Plans = () => {
     });
 
     const TxHash = await processTransaction(message)
-
+ 
     if (!TxHash) {
-
-      console.log("Transaction failed ");
+      toast.error("Transaction failed")
       return;
     }
+     toast.success("Sucessfully Activated")
     getAllPlan();
   }
 

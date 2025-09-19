@@ -1,4 +1,4 @@
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter} from "react-router-dom";
 import PrivateRoute from "./Private/Private";
 import PublicRoute from "./Public/Public";
 import PAGES from "./Pages";

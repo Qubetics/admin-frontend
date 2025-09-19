@@ -42,8 +42,8 @@ interface TableRow {
   bandwidth: string;
   plan: string;
   requestFor: string;
-  planId: string,
-  hours: string
+  planId: string;
+  hours: string;
 }
 
 export default function Dashboard() {
@@ -68,9 +68,21 @@ export default function Dashboard() {
   };
 
   const buttons = [
-    { label: "All Requests", value: "allrequest", count: countAccount?.totalCount || 0 },
-    { label: "Link Requests", value: "Link", count: countAccount?.linkCount || 0 },
-    { label: "Unlink Requests", value: "Unlink", count: countAccount?.UnlinkCount || 0 },
+    {
+      label: "All Requests",
+      value: "allrequest",
+      count: countAccount?.totalCount || 0,
+    },
+    {
+      label: "Link Requests",
+      value: "Link",
+      count: countAccount?.linkCount || 0,
+    },
+    {
+      label: "Unlink Requests",
+      value: "Unlink",
+      count: countAccount?.UnlinkCount || 0,
+    },
   ];
 
   const [active, setActive] = useState("allrequest");
@@ -102,26 +114,32 @@ export default function Dashboard() {
       console.log("Server Error");
       return false;
     }
+    toast.success("Approved");
     fetchData();
     return true;
   };
 
-  const onApproval = async (address: string, type: string, planId: string,hours: string) => {
+  const onApproval = async (
+    address: string,
+    type: string,
+    planId: string,
+    hours: string
+  ) => {
     if (type === "Unlink") {
       try {
         const message = buildUnlinkNodeMessage({
           from: provAddress,
           id: Long.fromString(planId),
-          nodeAddress: address, //node address
+          nodeAddress: address,
         });
         const TxHash = await processTransaction(message);
         if (!TxHash) {
-          console.log("Transaction failed");
           return;
         }
         setShow(true);
         await updateStatus(address, "APPROVED");
       } catch (err: any) {
+        toast.error("Something wentwrong");
         console.error(err.message);
         // setRejectShow(true);
       }
@@ -158,7 +176,7 @@ export default function Dashboard() {
       });
       const TxHash = await processTransaction(message);
       if (!TxHash) {
-        console.log("Transaction failed");
+        console.error("Transaction failed");
         return;
       }
       const status = await updateStatus(address, "APPROVED");
@@ -168,6 +186,8 @@ export default function Dashboard() {
       console.error(err.message);
       // setRejectShow(true);
     }
+   fetchNodeRequestNumber();
+
   };
 
   const onReject = (nodeAddress: string) => {
@@ -236,8 +256,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchNodeNumber();
     fetchNodeRequestNumber();
-  }, []);
-
+  }, [nodeList]);
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
@@ -302,29 +321,45 @@ export default function Dashboard() {
                   </tr>
                 ) : (
                   nodeList?.map((row, i) => {
-                    return (<tr key={i}>
-                      <td>{row?.orgName  ? row?.orgName : "-"}</td>
-                      <td>{row?.orgName  ? row?.email : "-"}</td>
-                      <td>{row?.location || "-"}</td>
-                      <td>
-                        {truncateValue(row?.nodeAddress)}
-                        {/* @ts-ignore */}
-                        <CopyText text={row?.nodeAddress} />
-                      </td>
-                      <td>{bytesToGb(Number(row?.bandwidth)) + " GB" || ""}</td>
-                      <td>{row?.plan || "-"}</td>
-                      {active === "allrequest" && <td>{row?.requestFor}</td>}
-                      <td>
-                        <div className="action-btns">
-                          <button className="approve-btn" onClick={() => onApproval(row?.nodeAddress, row?.requestFor, row?.planId,row?.hours)}>
-                            Approve
-                          </button>
-                          <button className="reject-btn" onClick={() => onReject(row?.nodeAddress)}>
-                            Reject
-                          </button>
-                        </div>
-                      </td>
-                    </tr>);
+                    return (
+                      <tr key={i}>
+                        <td>{row?.orgName ? row?.orgName : "-"}</td>
+                        <td>{row?.orgName ? row?.email : "-"}</td>
+                        <td>{row?.location || "-"}</td>
+                        <td>
+                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
+                          <CopyText text={row?.nodeAddress} /></span>
+                        </td>
+                        <td>
+                          {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
+                        </td>
+                        <td>{row?.plan || "-"}</td>
+                        {active === "allrequest" && <td>{row?.requestFor}</td>}
+                        <td>
+                          <div className="action-btns">
+                            <button
+                              className="approve-btn"
+                              onClick={() =>
+                                onApproval(
+                                  row?.nodeAddress,
+                                  row?.requestFor,
+                                  row?.planId,
+                                  row?.hours
+                                )
+                              }
+                            >
+                              Approve
+                            </button>
+                            <button
+                              className="reject-btn"
+                              onClick={() => onReject(row?.nodeAddress)}
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
                   })
                 )
               }
