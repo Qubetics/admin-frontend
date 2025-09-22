@@ -247,7 +247,7 @@ export default function Dashboard() {
     setActive(value);
     setPage(1);
     setLimit(5);
-  }
+  };
 
   useEffect(() => {
     fetchData();
@@ -256,7 +256,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchNodeNumber();
     fetchNodeRequestNumber();
-  }, [nodeList]);
+  }, [nodeList.length]);
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
