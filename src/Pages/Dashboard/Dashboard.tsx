@@ -218,9 +218,8 @@ export default function Dashboard() {
   };
 
   const fetchNodeNumber = async () => {
-    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeCount(provAddress),
+      endpoint: apiUrls.nodeCount,
     });
 
     if (!success) {
@@ -231,9 +230,8 @@ export default function Dashboard() {
   };
 
   const fetchNodeRequestNumber = async () => {
-    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeRequestCount(provAddress),
+      endpoint: apiUrls.nodeRequestCount,
     });
 
     if (!success) {
