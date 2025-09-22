@@ -17,7 +17,6 @@ function Node() {
   const [activeAccount, setActiveAccount] = useState<any>();
 
   const useGetApi = useNetworkRequest();
-  const { authData } = useIsLoggedIn();
 
   const buttons = [
     {
@@ -35,18 +34,16 @@ function Node() {
   const [active, setActive] = useState("allnodes");
 
   const fetchData = async () => {
-    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(provAddress, active, page, limit),
+      endpoint: apiUrls.nodelist(active, page, limit),
     });
     if (!success) return;
     setNodeList(data?.data?.response);
     setTotalPages(data?.data?.total ? Math.ceil(data?.data?.total / limit) : 1);
   };
   const fetchNodeNumber = async () => {
-    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeCount(provAddress),
+      endpoint: apiUrls.nodeCount,
     });
 
     if (!success) {
