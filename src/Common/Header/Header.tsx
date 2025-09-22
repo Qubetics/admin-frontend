@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
@@ -51,6 +51,21 @@ const Header = () => {
   const navigate = useNavigate();
   const { authData, setAuthData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
+  const menuRef = useRef<HTMLDivElement>(null);
+
+  // Close menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node) && !(event.target as Element).closest('.hamburger')) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
 
   const isActive = useCallback(
     (path: string): string => {
@@ -265,6 +280,7 @@ const Header = () => {
     { path: Path.PLANS, label: "Plans" },
     { path: Path.NODES, label: "Nodes" },
   ];
+  const hasHeaderActions = location.pathname !== '/';
 
   return (
     <div className="header-main">
@@ -273,7 +289,21 @@ const Header = () => {
           <Link to={Path.LANDING}>
             <img src={Logo} alt="Logo" />
           </Link>
+        </div>
 
+        {hasHeaderActions && (
+          <button 
+            className={`hamburger ${isMenuOpen ? 'active' : ''}`} 
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        )}
+        {hasHeaderActions && (
+        <div className={`header__details ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
           {authData && (
             <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
               {navigationItems.map(({ path, label }) => (
@@ -288,55 +318,45 @@ const Header = () => {
               ))}
             </nav>
           )}
-        </div>
 
-        {/* Right Section */}
-        <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
-          {!authData ? (
-            <ButtonCustom
-              label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-              type="button"
-              tabIndex={3}
-              onClick={handleWalletConnect}
-              disabled={isConnecting}
-            />
-          ) : (
-            <>
-              <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
-
-              <button
-                className="header__wallet-address customButton"
-                onClick={handleCopyAddress}
-                title="Click to copy address"
-                type="button"
-              >
-                <span>{truncateValue(authData)}</span>
-                <CopyIcon />
-              </button>
-
+          {/* Right Section */}
+          <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
+            {!authData ? (
               <ButtonCustom
-                label={isConnecting ? "Logging out..." : "Logout"}
-                onClick={handleLogout}
-                disabled={isLoading}
+                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
                 type="button"
+                tabIndex={3}
+                onClick={handleWalletConnect}
+                disabled={isConnecting}
               />
-            </>
-          )}
+            ) : (
+              <>
+                <span className="customButton balance-display">
+                  {formatBalance(balance)} TICS
+                </span>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            className={`header__menu-toggle ${isMenuOpen ? "open" : ""}`}
-            onClick={toggleMenu}
-            aria-label="Toggle navigation menu"
-            type="button"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
+                <button
+                  className="header__wallet-address customButton"
+                  onClick={handleCopyAddress}
+                  title="Click to copy address"
+                  type="button"
+                >
+                  <span>{truncateValue(authData)}</span>
+                  <CopyIcon />
+                </button>
+
+                <ButtonCustom
+                  label={isConnecting ? "Logging out..." : "Logout"}
+                  onClick={handleLogout}
+                  disabled={isLoading}
+                  type="button"
+                />
+              </>
+            )}
+
+          </div>
         </div>
+        )}
       </div>
     </div>
   );
