@@ -7,7 +7,6 @@
   width: 100%;
   transition: 0.3s all;
   background-color: #121212;
-  height: s(100);
 
   @media screen and (max-width: 676px) {
     display: flex;
@@ -75,6 +74,15 @@
     img {
       max-width: s(253);
     }
+  }
+
+  &__details {
+    display: flex;
+    align-items: center;
+    gap: s(28);
+    transition: all 0.3s ease-in-out;
+    justify-content: space-between;
+    width: 100%;
   }
 
   &__nav {
@@ -153,7 +161,7 @@
   &__right {
     display: flex;
     align-items: center;
-    gap: s(20);
+    gap: 10px;
   }
 
   &__wallet-address {
@@ -168,7 +176,7 @@
   }
 
   // Mobile styles
-  @media (max-width: 767px) {
+  @media (max-width: 991px) {
     padding: 0 s(15);
     height: s(70);
 
@@ -178,7 +186,7 @@
       justify-content: space-between;
     }
 
-    &__nav {
+    &__details {
       position: fixed;
       top: s(70);
       left: 0;
@@ -220,5 +228,47 @@
     &__menu-toggle {
       display: none;
     }
+  }
+}
+
+
+// Mobile menu button (hamburger)
+.hamburger {
+  display: none; // Hidden by default on desktop
+  flex-direction: column;
+  justify-content: space-between;
+  width: 30px;
+  height: 21px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  z-index: 100;
+  position: relative;
+  
+  span {
+    display: block;
+    height: 3px;
+    width: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+  }
+
+  // Animation when menu is open
+  &.active {
+    span:nth-child(1) {
+      transform: translateY(9px) rotate(45deg);
+    }
+    span:nth-child(2) {
+      opacity: 0;
+    }
+    span:nth-child(3) {
+      transform: translateY(-9px) rotate(-45deg);
+    }
+  }
+
+  @media (max-width: 991px) {
+    display: flex;
   }
 }
