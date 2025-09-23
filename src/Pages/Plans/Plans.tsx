@@ -105,7 +105,7 @@ const Plans = () => {
                     </td>
                     <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
                     <td>{Timestamp(row?.status_at)}</td>
-                    <td>{formatDuration(row?.hours)}</td>
+                    <td>{formatDuration(Number(row?.hours))}</td>
                     <td>
                       <div className="action-btns">
                         <button className={`approve-btn ${row.status === "active" ? "disabled" : ""}`} onClick={() => handleClick(row)} disabled={row.status === "active"}>

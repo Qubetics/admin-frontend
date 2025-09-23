@@ -114,7 +114,6 @@ export default function Dashboard() {
       console.log("Server Error");
       return false;
     }
-    toast.success("Approved");
     fetchData();
     return true;
   };
@@ -322,7 +321,7 @@ export default function Dashboard() {
                     return (
                       <tr key={i}>
                         <td>{row?.orgName ? row?.orgName : "-"}</td>
-                        <td>{row?.orgName ? row?.email : "-"}</td>
+                        <td>{row?.email ? row?.email : "-"}</td>
                         <td>{row?.location || "-"}</td>
                         <td>
                           <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
