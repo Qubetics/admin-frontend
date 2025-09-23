@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 
 import "./Header.scss";
 import Logo from "../../assets/Logo.svg";
-import { CopyIcon } from "../../assets/StoreAsset/StoreAsset";
 import Path from "../../Routing/Constant/RoutePaths";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
@@ -14,11 +13,11 @@ import { apiMethods } from "../../Constant/constants";
 import {
   api,
   computePubKey,
-  copyToClipboard,
   formatBalance,
   truncateValue,
 } from "../../utils/Helper/CommonHelper";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
+import CopyText from "../Copy/CopyText";
 
 // Types
 interface KeplrWindow extends Window {
@@ -138,7 +137,7 @@ const Header = () => {
 
   const connectKeplr = useCallback(async (): Promise<string | null> => {
     if (!window?.keplr) {
-      toast.error("Please install Keplr Wallet extension");
+      toast.error("Install Keplr wallet first");
       return null;
     }
 
@@ -253,15 +252,6 @@ const Header = () => {
     }
   }, [connectKeplr, signMessage, isConnecting]);
 
-  const handleCopyAddress = useCallback(async (): Promise<void> => {
-    if (!authData) return;
-    try {
-      await copyToClipboard(authData);
-      toast.success("Address copied to clipboard!");
-    } catch (error) {
-      toast.error("Failed to copy address");
-    }
-  }, [authData]);
 
   useEffect(() => {
     if (authData) {
@@ -318,32 +308,31 @@ const Header = () => {
               ))}
             </nav>
           )}
+        </div>)}
 
-          {/* Right Section */}
-          <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
-            {!authData ? (
-              <ButtonCustom
-                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-                type="button"
-                tabIndex={3}
-                onClick={handleWalletConnect}
-                disabled={isConnecting}
-              />
-            ) : (
-              <>
-                <span className="customButton balance-display">
-                  {formatBalance(balance)} TICS
-                </span>
+        {/* Right Section */}
+        <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
+          {!authData ? (
+            <ButtonCustom
+              label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
+              type="button"
+              tabIndex={3}
+              onClick={handleWalletConnect}
+              disabled={isConnecting}
+            />
+          ) : (
+            <>
+              <span className="customButton balance-display">
+                {formatBalance(balance)} TICS
+              </span>
 
-                <button
-                  className="header__wallet-address customButton"
-                  onClick={handleCopyAddress}
-                  title="Click to copy address"
-                  type="button"
-                >
-                  <span>{truncateValue(authData)}</span>
-                  <CopyIcon />
-                </button>
+
+
+              <div className="header__wallet-address customButton">
+                <div>{truncateValue(authData)}</div>
+                <CopyText text={authData} />
+              </div>
+
 
                 <ButtonCustom
                   label={isConnecting ? "Logging out..." : "Logout"}
@@ -355,8 +344,6 @@ const Header = () => {
             )}
 
           </div>
-        </div>
-        )}
       </div>
     </div>
   );

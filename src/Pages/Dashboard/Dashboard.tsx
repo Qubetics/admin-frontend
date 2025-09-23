@@ -218,9 +218,8 @@ export default function Dashboard() {
   };
 
   const fetchNodeNumber = async () => {
-    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeCount(provAddress),
+      endpoint: apiUrls.nodeCount,
     });
 
     if (!success) {
@@ -231,9 +230,8 @@ export default function Dashboard() {
   };
 
   const fetchNodeRequestNumber = async () => {
-    const provAddress = convertNodeToWallet(authData, provWalletPrefix);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeRequestCount(provAddress),
+      endpoint: apiUrls.nodeRequestCount,
     });
 
     if (!success) {
@@ -247,7 +245,7 @@ export default function Dashboard() {
     setActive(value);
     setPage(1);
     setLimit(5);
-  }
+  };
 
   useEffect(() => {
     fetchData();
@@ -256,7 +254,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchNodeNumber();
     fetchNodeRequestNumber();
-  }, [nodeList]);
+  }, [nodeList.length]);
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
