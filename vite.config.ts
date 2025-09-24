@@ -29,13 +29,13 @@ export default defineConfig({
   optimizeDeps: {
     include: ["buffer", "process"],
   },
-  server: {
+  server:{
     proxy: {
       '/api': { // Proxy requests starting with /api
-        target: 'https://dvpn-admin-api.qubetics.work', // Your backend server address
-        changeOrigin: true, // Needed for virtual hosted sites
-        secure: false,
-        ws: true,
+        target: 'http://172.16.15.29:4003', // Your backend server address
+        // changeOrigin: true, // Needed for virtual hosted sites
+        secure: process.env.VITE_PLATFORM_ENVIROMENT =="production" ? true:false,
+        ws: true, 
       },
     },
   },

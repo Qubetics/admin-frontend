@@ -1,6 +1,7 @@
 import CopyText from "../../Common/Copy/CopyText";
 import { apiUrls } from "../../Constant/apiUrls";
 import useNetworkRequest from "../../Hooks/useGetApi";
+import { toFirstCapital } from "../../utils/Helper/CommonHelper";
 import Pagination from "../../utils/pagination";
 import "./Node.scss";
 import { useEffect, useState } from "react";
@@ -139,7 +140,7 @@ function Node() {
                       <td>{row?.requestFor}</td>
                       <td>
                         <span className={getStatusClass(row?.status)}>
-                          {row?.status || "-"}
+                          {toFirstCapital(row?.status) || "-"}
                         </span>
                       </td>
                     </tr>

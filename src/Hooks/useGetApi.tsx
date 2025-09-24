@@ -21,7 +21,7 @@ const useNetworkRequest = () => {
     try {
       const response = await axios({
         method: method || apiMethods.GET,
-        url: endpoint,
+        url: url ? url : envConstants.baseApiUrls + endpoint,
         data: body || undefined,
         withCredentials: true,
       });
