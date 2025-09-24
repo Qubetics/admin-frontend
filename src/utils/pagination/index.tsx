@@ -12,8 +12,8 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   totalPages,
   onPageChange,
-  limit=5,
-  onLimitChange=(()=>{})
+  limit = 5,
+  onLimitChange = (() => { })
 }) => {
   // Helper: generate page numbers
   const getPages = () => {
@@ -26,8 +26,8 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="pagination">
-        <div className="pagination_left">
-          <span>Show rows</span>
+      <div className="pagination_left">
+        <span>Show rows</span>
         <select
           id="limit"
           value={limit}
@@ -54,9 +54,8 @@ const Pagination: React.FC<PaginationProps> = ({
         {getPages().map((page) => (
           <button
             key={page}
-            className={`px-3 py-1 rounded ${
-              page === currentPage ? "active" : ""
-            }`}
+            className={`rounded ${page === currentPage ? "active" : ""
+              }`}
             onClick={() => onPageChange(page)}
           >
             {page}
@@ -71,7 +70,7 @@ const Pagination: React.FC<PaginationProps> = ({
           {">"}
         </button>
       </div>
-    
+
     </div>
   );
 };

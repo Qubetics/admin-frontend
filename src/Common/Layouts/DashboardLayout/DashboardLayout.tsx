@@ -9,12 +9,10 @@ function DashboardLayout() {
       <div className="dashLayout_header">
         <Header />
       </div>
-      <div className="dashLayout_content">
-        <div className="dashLayout_content_body">
-          <Outlet />
-        </div>
-        <Footer />
+      <div className="dashLayout_content container">
+        <Outlet />
       </div>
+      <Footer />
     </div>
   );
 }

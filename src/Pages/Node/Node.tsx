@@ -74,9 +74,9 @@ function Node() {
   };
 
   return (
-    <div className="node container">
+    <div className="node">
       <div className="node__header">
-        <h1>Node List</h1>
+        <h3>Node List</h3>
       </div>
       <div className="node__btns">
         {buttons.map(({ count, label, value }) => (

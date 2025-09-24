@@ -1,4 +1,4 @@
-@import "../../utils/functions.scss";
+@use "../../utils/functions.scss" as *;
 
 .custom-input {
   width: 100%;

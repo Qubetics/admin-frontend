@@ -1,4 +1,4 @@
-@import "../../utils/functions.scss";
+@use "../../utils/functions.scss" as *;
 
 // Login header styles
 .header-main {
@@ -7,8 +7,21 @@
   width: 100%;
   transition: 0.3s all;
   background-color: #121212;
+  padding: 25px 0;
 
-  @media screen and (max-width: 676px) {
+  @media (max-width: 1679px) {
+    padding: 20px 0;
+  }
+
+  @media (max-width: 1399px) {
+    padding: 15px 0;
+  }
+
+  @media (max-width: 1199px) {
+    padding: 10px 0;
+  }
+
+  @media (max-width: 676px) {
     display: flex;
     flex-direction: column-reverse;
   }
@@ -17,16 +30,19 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: s(25) 0;
-    gap: s(30);
+    gap: 20px;
 
     @media (max-width: 1299px) {
       justify-content: unset;
-      gap: s(20);
     }
 
     @media (max-width: 1200px) {
       justify-content: space-between;
+      gap: 15px;
+    }
+
+    @media (max-width: 991px) {
+      gap: 10px;
     }
 
     @media screen and (max-width: 676px) {
@@ -43,6 +59,30 @@
   }
 }
 
+.customButton {
+  &.web-logout {
+    display: none;
+  }
+
+  &.mobile-logout {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  @media (min-width: 992px) {
+    &.web-logout {
+      display: flex;
+    }
+
+    &.mobile-logout {
+      display: none;
+    }
+  }
+}
+
 // Main header styles
 .header {
   position: fixed;
@@ -55,6 +95,7 @@
   height: s(80);
   display: flex;
   align-items: center;
+
   @media (max-width: 991px) {
     padding: 0 s(40);
   }
@@ -69,17 +110,23 @@
   &__left {
     display: flex;
     align-items: center;
-    gap: s(43);
+    gap: 20px;
     position: relative;
+
     img {
-      max-width: s(253);
+      max-width: 200px;
+
+      .mobile-logo {
+        max-width: 40px;
+        height: 40px;
+      }
     }
   }
 
   &__details {
     display: flex;
     align-items: center;
-    gap: s(28);
+    gap: 20px;
     transition: all 0.3s ease-in-out;
     justify-content: space-between;
     width: 100%;
@@ -88,17 +135,36 @@
   &__nav {
     display: flex;
     align-items: center;
-    gap: s(28);
+    gap: 10px;
     transition: all 0.3s ease-in-out;
 
     a {
-      font-size: s(16);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
       font-weight: 700;
       color: #a0a0a0;
       text-decoration: none;
       transition: color 0.3s;
       position: relative;
-      padding: s(8) 0;
+      padding: 5px 20px;
+
+      @media (max-width: 1679px) {
+        height: 50px;
+        padding: 5px 16px;
+      }
+
+      @media (max-width: 1399px) {
+        height: 45px;
+        padding: 5px 12px;
+      }
+
+      @media (max-width: 1199px) {
+        height: 40px;
+        font-size: 14px;
+        padding: 4px 10px;
+      }
 
       &:hover,
       &.active {
@@ -148,9 +214,11 @@
       span:nth-child(1) {
         transform: translateY(9px) rotate(45deg);
       }
+
       span:nth-child(2) {
         opacity: 0;
       }
+
       span:nth-child(3) {
         transform: translateY(-9px) rotate(-45deg);
       }
@@ -167,18 +235,22 @@
   &__wallet-address {
     display: flex !important;
     align-items: center;
-    gap: s(20);
-    font-size: s(14);
+    gap: 10px;
+    font-size: 14px;
     color: #fff;
+
     svg {
-      width: s(20);
+      width: 20px;
+      height: 20px;
     }
+
+    @media (max-width: 991px) {}
   }
 
   // Mobile styles
   @media (max-width: 991px) {
-    padding: 0 s(15);
-    height: s(70);
+    // padding: 0 15px;
+    // height: s(70);
 
     &__left {
       gap: s(20);
@@ -188,29 +260,41 @@
 
     &__details {
       position: fixed;
-      top: s(70);
+      top: 0;
       left: 0;
       width: 100%;
+      max-width: 250px;
+      height: 100%;
       background: #121212;
       flex-direction: column;
-      padding: s(20) 0;
-      gap: s(15);
-      transform: translateY(-150%);
+      padding: 20px 0;
+      gap: 15px;
+      transform: translateX(-150%);
       opacity: 0;
       z-index: 999;
       box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
       display: flex !important;
 
       &.active {
-        transform: translateY(0);
+        transform: translateX(0);
         opacity: 1;
       }
 
       a {
         width: 100%;
-        text-align: center;
-        padding: s(12) 0;
-        font-size: s(18);
+        padding-inline: 10px;
+      }
+    }
+
+    &__nav {
+      display: flex !important;
+      flex-direction: column;
+      align-items: flex-start;
+      width: 100%;
+
+      a {
+        width: 100%;
+        justify-content: flex-start;
       }
     }
 
@@ -221,23 +305,19 @@
 
   // Desktop styles
   @media (min-width: 768px) {
-    &__nav {
-      display: flex !important;
-    }
-
     &__menu-toggle {
       display: none;
     }
   }
 }
 
-
 // Mobile menu button (hamburger)
 .hamburger {
   display: none; // Hidden by default on desktop
   flex-direction: column;
   justify-content: space-between;
-  width: 30px;
+  width: 100%;
+  max-width: 21px;
   height: 21px;
   background: transparent;
   border: none;
@@ -245,7 +325,7 @@
   padding: 0;
   z-index: 100;
   position: relative;
-  
+
   span {
     display: block;
     height: 3px;
@@ -260,9 +340,11 @@
     span:nth-child(1) {
       transform: translateY(9px) rotate(45deg);
     }
+
     span:nth-child(2) {
       opacity: 0;
     }
+
     span:nth-child(3) {
       transform: translateY(-9px) rotate(-45deg);
     }

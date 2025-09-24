@@ -26,6 +26,7 @@ import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
+import { Col, Row } from "antd";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
@@ -69,17 +70,17 @@ export default function Dashboard() {
 
   const buttons = [
     {
-      label: "All Requests",
+      label: <>All <span>Requests</span></>,
       value: "allrequest",
       count: countAccount?.totalCount || 0,
     },
     {
-      label: "Link Requests",
+      label: <>Link <span>Requests</span></>,
       value: "Link",
       count: countAccount?.linkCount || 0,
     },
     {
-      label: "Unlink Requests",
+      label: <>Unlink <span>Requests</span></>,
       value: "Unlink",
       count: countAccount?.UnlinkCount || 0,
     },
@@ -265,16 +266,20 @@ export default function Dashboard() {
   return (
     <div className="dashboard">
       <div className="dashboard__header">
-        <h1>Dashboard</h1>
+        <h3>Dashboard</h3>
       </div>
       <div className="cardSection">
-        {cards.map((card, index) => (
-          <CardBox key={index} title={card.title} value={card.value} />
-        ))}
+        <Row gutter={[25, 20]} className="card-row">
+          {cards.map((card, index) => (
+            <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
+              <CardBox key={index} title={card.title} value={card.value} />
+            </Col>
+          ))}
+        </Row>
       </div>
 
       <div className="custom-table-wrapper commonTable">
-        <h2 className="table-title">Node Requests</h2>
+        <h3 className="table-title">Node Requests</h3>
         <div className="node__btns">
           {buttons.map(({ label, value, count }) => (
             <button

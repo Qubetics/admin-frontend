@@ -63,9 +63,9 @@ const Plans = () => {
   }, [page, limit]);
 
   return (
-    <div className="plans container">
+    <div className="plans">
       <div className="plans__header">
-        <h1>Plans List</h1>
+        <h3>Plans List</h3>
         <ButtonCustom label="Create Plan" onClick={() => setCreateShow(true)} />
       </div>
       <div className="custom-table-wrapper commonTable">
