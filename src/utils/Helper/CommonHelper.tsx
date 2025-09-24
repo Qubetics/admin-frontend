@@ -208,3 +208,8 @@ export const getValueWithUnit=(value: string | number, unit: any = envConstants.
   const valueStr = valueCurr.toFixed();
   return valueStr;
 };
+
+export const toFirstCapital = (str: string): string => {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};

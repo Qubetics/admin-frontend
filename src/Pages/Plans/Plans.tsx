@@ -66,7 +66,7 @@ const Plans = () => {
     <div className="plans">
       <div className="plans__header">
         <h3>Plans List</h3>
-        <ButtonCustom label="Create Plan" onClick={() => setCreateShow(true)} />
+        <ButtonCustom className="btn_create" label="Create Plan" onClick={() => setCreateShow(true)} />
       </div>
       <div className="custom-table-wrapper commonTable">
         <div className="outerTable">

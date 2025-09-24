@@ -27,12 +27,14 @@ import NotificationToast from "../../Common/NotificationModal/NotificationModal"
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
 import { Col, Row } from "antd";
+import { CircleCheckIcon, CircleCloseIcon, NordsIcon } from "../../assets/SvgIcon/SvgIcon";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
   title: string;
   value: string | number;
+  icons?: any;
 }
 
 interface TableRow {
@@ -97,11 +99,16 @@ export default function Dashboard() {
   // manage this in state
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
-  const CardBox: React.FC<CardBoxProps> = ({ title, value }) => {
+  const CardBox: React.FC<CardBoxProps> = ({ title, value, icons }) => {
     return (
       <div className="card-box">
-        <p className="card-title">{title}</p>
-        <h2 className="card-value">{value}</h2>
+        <div className="card-box-icons">
+          {icons}
+        </div>
+        <div className="right-text">
+          <p className="card-title">{title}</p>
+          <h2 className="card-value">{value}</h2>
+        </div>
       </div>
     );
   };
@@ -255,9 +262,9 @@ export default function Dashboard() {
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
-    { title: "All Nodes", value: activeAccount?.totalCount || 0 },
-    { title: "Active Nodes", value: activeAccount?.activeCount || 0 },
-    { title: "Inactive Nodes", value: activeAccount?.inactiveCount || 0 },
+    { icons: <NordsIcon />, title: "All Nodes", value: activeAccount?.totalCount || 0 },
+    { icons: <CircleCheckIcon />, title: "Active Nodes", value: activeAccount?.activeCount || 0 },
+    { icons: <CircleCloseIcon />, title: "Inactive Nodes", value: activeAccount?.inactiveCount || 0 },
   ];
 
   return (
@@ -269,7 +276,7 @@ export default function Dashboard() {
         <Row gutter={[25, 20]} className="card-row">
           {cards.map((card, index) => (
             <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
-              <CardBox key={index} title={card.title} value={card.value} />
+              <CardBox key={index} title={card.title} value={card.value} icons={card.icons} />
             </Col>
           ))}
         </Row>
@@ -284,7 +291,7 @@ export default function Dashboard() {
               className={active === value ? "active" : "dashboardBtn"}
               onClick={() => handleTabChange(value)}
             >
-              {label} ({count})
+              {label}&nbsp;({count})
             </button>
           ))}
         </div>
@@ -326,8 +333,9 @@ export default function Dashboard() {
                         <td>{row?.email ? row?.email : "-"}</td>
                         <td>{row?.location || "-"}</td>
                         <td>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
-                            <CopyText text={row?.nodeAddress} /></span>
+                          <span className="address_nord" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
+                            <div className="copy-btn"><CopyText text={row?.nodeAddress} /></div>
+                          </span>
                         </td>
                         <td>
                           {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
