@@ -125,8 +125,9 @@ function Node() {
                     <tr key={i}>
                       <td>{row?.orgName ? row?.orgName : "-"}</td>
                       <td>
-                        <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
-                          <CopyText text={row?.nodeAddress} /></span>
+                        <span className="address_nord" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
+                          <div className="copy-btn"><CopyText text={row?.nodeAddress} /></div>
+                        </span>
                       </td>
                       {active !== "active" && active !== "inactive" && (
                         <td>

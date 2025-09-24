@@ -20,12 +20,7 @@
 
     @media (max-width:991px) {
       padding-top: 30px;
-      height: s(400);
-    }
-
-    @media (max-width:767px) {
-      height: 100%;
-      min-height: 100vh;
+      height: 500px;
     }
 
     &::after {

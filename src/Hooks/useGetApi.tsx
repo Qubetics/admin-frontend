@@ -17,11 +17,11 @@ const useNetworkRequest = () => {
     body,
     url,
   }: // checktoast,
-  any) => {
+    any) => {
     try {
       const response = await axios({
         method: method || apiMethods.GET,
-        url: url ? url : envConstants.baseApiUrls + endpoint,
+        url: endpoint,
         data: body || undefined,
         withCredentials: true,
       });
