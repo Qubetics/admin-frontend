@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from "react";
 import "./Dashboard.scss";
 import Modal from "react-bootstrap/Modal";
@@ -70,17 +71,29 @@ export default function Dashboard() {
 
   const buttons = [
     {
-      label: <>All <span>Requests</span></>,
+      label: (
+        <>
+          All <span>Requests</span>
+        </>
+      ),
       value: "allrequest",
       count: countAccount?.totalCount || 0,
     },
     {
-      label: <>Link <span>Requests</span></>,
+      label: (
+        <>
+          Link <span>Requests</span>
+        </>
+      ),
       value: "Link",
       count: countAccount?.linkCount || 0,
     },
     {
-      label: <>Unlink <span>Requests</span></>,
+      label: (
+        <>
+          Unlink <span>Requests</span>
+        </>
+      ),
       value: "Unlink",
       count: countAccount?.UnlinkCount || 0,
     },
@@ -157,11 +170,9 @@ export default function Dashboard() {
 
       const res = await processTransaction(leaseMessage);
       if (!res) {
-        setUnLease(true)
-      }
-      else {
-        setLease(true)
-
+        setUnLease(true);
+      } else {
+        setLease(true);
       }
     } catch (err: any) {
       console.error(err.message, "err");
@@ -187,7 +198,6 @@ export default function Dashboard() {
       // setRejectShow(true);
     }
     fetchNodeRequestNumber();
-
   };
 
   const onReject = (nodeAddress: string) => {
@@ -326,8 +336,16 @@ export default function Dashboard() {
                         <td>{row?.email ? row?.email : "-"}</td>
                         <td>{row?.location || "-"}</td>
                         <td>
-                          <span style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
-                            <CopyText text={row?.nodeAddress} /></span>
+                          <span
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                            }}
+                          >
+                            {truncateValue(row?.nodeAddress)}
+                            <CopyText text={row?.nodeAddress} />
+                          </span>
                         </td>
                         <td>
                           {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
@@ -373,7 +391,9 @@ export default function Dashboard() {
             totalPages={totalPages}
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
-            onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
           />
         )}
         <Modal show={show} onHide={handleClose} centered>

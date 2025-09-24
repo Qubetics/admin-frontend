@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState } from "react";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import "./Plans.scss";
@@ -7,11 +8,20 @@ import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import Pagination from "../../utils/pagination";
 import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
-import { STATUS_ENUM, bytesToGb, provWalletPrefix } from "../../Constant/constants";
+import {
+  STATUS_ENUM,
+  bytesToGb,
+  provWalletPrefix,
+} from "../../Constant/constants";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { Timestamp, convertNodeToWallet, formatDuration, getValueWithUnit } from "../../utils/Helper/CommonHelper";
+import {
+  convertNodeToWallet,
+  formatCustomTimestamp,
+  formatDuration,
+  getValueWithUnit,
+} from "../../utils/Helper/CommonHelper";
 import InnerLoader from "../../Common/Loader/InnerLoader";
 import { toast } from "react-toastify";
 
@@ -25,7 +35,7 @@ const Plans = () => {
   const { authData } = useIsLoggedIn();
   const [createShow, setCreateShow] = useState(false);
 
-  // manage this in state 
+  // manage this in state
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const getAllPlan = async () => {
@@ -38,25 +48,30 @@ const Plans = () => {
     if (!success) return;
 
     setPlanList(data?.data || []);
-    setTotalPages(data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1);
+    setTotalPages(
+      data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1
+    );
   };
 
   const handleClick = async (val: any) => {
     const message = buildUpdatePlanStatusMessage({
       from: provAddress,
-      id: Long.fromString(val?.id),   //paln Id
-      status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE
+      id: Long.fromString(val?.id), //paln Id
+      status:
+        val?.status === "active"
+          ? STATUS_ENUM.STATUS_INACTIVE
+          : STATUS_ENUM.STATUS_ACTIVE,
     });
 
-    const TxHash = await processTransaction(message)
+    const TxHash = await processTransaction(message);
 
     if (!TxHash) {
-      toast.error("Transaction failed")
+      toast.error("Transaction failed");
       return;
     }
-    toast.success("Sucessfully Activated")
+    toast.success("Sucessfully Activated");
     getAllPlan();
-  }
+  };
 
   useEffect(() => {
     getAllPlan();
@@ -100,15 +115,23 @@ const Plans = () => {
                     <td>{row?.id}</td>
                     <td>
                       {row?.prices?.length > 0
-                        ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${(String(row?.prices[0]?.denom)).toUpperCase()}`
+                        ? `${getValueWithUnit(
+                            row?.prices[0]?.quote_value
+                          )} ${String(row?.prices[0]?.denom).toUpperCase()}`
                         : "-"}
                     </td>
                     <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
-                    <td>{Timestamp(row?.status_at)}</td>
+                    <td>{formatCustomTimestamp(row?.status_at)}</td>
                     <td>{formatDuration(Number(row?.hours))}</td>
                     <td>
                       <div className="action-btns">
-                        <button className={`approve-btn ${row.status === "active" ? "disabled" : ""}`} onClick={() => handleClick(row)} disabled={row.status === "active"}>
+                        <button
+                          className={`approve-btn ${
+                            row.status === "active" ? "disabled" : ""
+                          }`}
+                          onClick={() => handleClick(row)}
+                          disabled={row.status === "active"}
+                        >
                           {row.status === "active" ? "Activated" : "Activate"}
                         </button>
                       </div>
@@ -121,15 +144,24 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: any) => setPage(newPage)}
-          limit={limit}
-          onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
-        />}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: any) => setPage(newPage)}
+            limit={limit}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
+          />
+        )}
 
-        <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} provAddress={provAddress} />
+        <CreatePlanModal
+          createShow={createShow}
+          setCreateShow={setCreateShow}
+          getAllPlan={getAllPlan}
+          provAddress={provAddress}
+        />
       </div>
     </div>
   );

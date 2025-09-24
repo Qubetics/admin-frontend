@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { useEffect, useState, useCallback, useRef } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -66,14 +67,18 @@ const Header = () => {
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node) && !(event.target as Element).closest('.hamburger')) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest(".hamburger")
+      ) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -149,7 +154,8 @@ const Header = () => {
   const connectKeplr = useCallback(async (): Promise<string | null> => {
     if (!window.keplr) {
       if (/Android/i.test(navigator.userAgent)) {
-        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+        window.location.href =
+          "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
       } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.location.href = "keplrwallet://";
       } else {
@@ -269,7 +275,6 @@ const Header = () => {
     }
   }, [connectKeplr, signMessage, isConnecting]);
 
-
   useEffect(() => {
     if (authData) {
       fetchAccountBalance(authData);
@@ -287,7 +292,7 @@ const Header = () => {
     { path: Path.PLANS, label: "Plans" },
     { path: Path.NODES, label: "Nodes" },
   ];
-  const hasHeaderActions = location.pathname !== '/';
+  const hasHeaderActions = location.pathname !== "/";
 
   return (
     <div className="header-main">
@@ -302,7 +307,10 @@ const Header = () => {
           </Link>
         </div>
         {hasHeaderActions && (
-          <div className={`header__details ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
             {authData && (
               <>
                 <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
@@ -326,7 +334,8 @@ const Header = () => {
                 />
               </>
             )}
-          </div>)}
+          </div>
+        )}
 
         {/* Right Section */}
         <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
@@ -340,13 +349,13 @@ const Header = () => {
             />
           ) : (
             <>
-              <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
               <div className="header__wallet-address customButton">
                 <div>{truncateValue(authData)}</div>
                 <CopyText text={authData} />
               </div>
+              <span className="customButton balance-display">
+                {formatBalance(balance)} TICS
+              </span>
               <ButtonCustom
                 className="web-logout"
                 label={isConnecting ? "Logging out..." : "Logout"}
@@ -356,12 +365,11 @@ const Header = () => {
               />
             </>
           )}
-
         </div>
 
         {hasHeaderActions && (
           <button
-            className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+            className={`hamburger ${isMenuOpen ? "active" : ""}`}
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >

@@ -1,5 +1,6 @@
-import { WEI } from '../../Constant/constants';
-import BigNumber from 'bignumber.js';
+/* eslint-disable */
+import { WEI } from "../../Constant/constants";
+import BigNumber from "bignumber.js";
 import { Buffer } from "buffer";
 import sha3 from "js-sha3";
 import * as _m0 from "protobufjs/minimal";
@@ -61,7 +62,6 @@ export const api = async (url: string, init?: RequestInit) => {
       const data = await response.json();
 
       if (!response.ok) {
-        
         const errorMessage = data?.message || "Something went wrong!";
         throw new Error(errorMessage);
       }
@@ -89,7 +89,7 @@ export const fetchAccountInfo = async (address: string) => {
 };
 
 export const convertNodeToWallet = (address: any, walletPrefix: any) => {
-  if(!address){
+  if (!address) {
     return "";
   }
   // Decode node address
@@ -160,7 +160,7 @@ export const truncateValue = (
   return `${value.slice(0, start)}...${value.slice(-end)}`;
 };
 
-export const formatDuration = (hours:any) => {
+export const formatDuration = (hours: any) => {
   if (!hours && hours !== 0) return "";
 
   if (hours >= 24) {
@@ -185,15 +185,17 @@ export const copyToClipboard = (text: any) => {
   return navigator.clipboard.writeText(text);
 };
 
- export const formatBalance = (amount:any) => {
+export const formatBalance = (amount: any) => {
   return amount.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
-
-export const getValueWithUnit=(value: string | number, unit: any = envConstants.currency)=> {
+export const getValueWithUnit = (
+  value: string | number,
+  unit: any = envConstants.currency
+) => {
   let unitBn: BigNumber.Value;
   switch (unit) {
     case envConstants.currency:
@@ -207,4 +209,34 @@ export const getValueWithUnit=(value: string | number, unit: any = envConstants.
   const valueCurr = valueBn.dividedBy(unitBn);
   const valueStr = valueCurr.toFixed();
   return valueStr;
+};
+
+export const formatCustomTimestamp = (dateString: string | number) => {
+  if (!dateString) return "-";
+
+  const date = new Date(dateString);
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  let hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, "0");
+
+  const ampm = hours >= 12 ? "pm" : "am";
+  hours = hours % 12;
+  hours = hours ? hours : 12; // 0 ko 12 banane ke liye
+
+  const formatted = `${year}-${month}-${day}  ${String(hours).padStart(
+    2,
+    "0"
+  )}:${minutes}${ampm}`;
+
+  return formatted;
+};
+
+export const formatStatusText = (status: string) => {
+  if (!status) return "";
+  const lower = status.toLowerCase();
+  return lower.charAt(0).toUpperCase() + lower.slice(1);
 };

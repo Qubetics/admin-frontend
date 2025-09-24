@@ -37,8 +37,8 @@ export function ToggleIcon() {
 export function CopyIcon() {
   return (
     <svg
-      width="23"
-      height="23"
+      width="14"
+      height="14"
       viewBox="0 0 23 23"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
