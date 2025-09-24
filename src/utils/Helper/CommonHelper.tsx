@@ -1,3 +1,5 @@
+import { WEI } from '../../Constant/constants';
+import BigNumber from 'bignumber.js';
 import { Buffer } from "buffer";
 import sha3 from "js-sha3";
 import * as _m0 from "protobufjs/minimal";
@@ -188,4 +190,21 @@ export const copyToClipboard = (text: any) => {
     minimumFractionDigits: 2,
     maximumFractionDigits: 6,
   });
+};
+
+
+export const getValueWithUnit=(value: string | number, unit: any = envConstants.currency)=> {
+  let unitBn: BigNumber.Value;
+  switch (unit) {
+    case envConstants.currency:
+      unitBn = WEI;
+      break;
+    default:
+      unitBn = new BigNumber(1);
+  }
+
+  const valueBn = new BigNumber(value);
+  const valueCurr = valueBn.dividedBy(unitBn);
+  const valueStr = valueCurr.toFixed();
+  return valueStr;
 };

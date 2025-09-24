@@ -4,6 +4,7 @@ export const envConstants = {
   rpc_endpoint: import.meta.env.VITE_RPC_ENDPOINT,
   chain_prefix: import.meta.env.VITE_CHAIN_PREFIX,
   gas_price: import.meta.env.VITE_GAS_PRICE,
+  currency: import.meta.env.VITE_CURRENCY,
   gas_limit: import.meta.env.VITE_GAS_LIMIT,
   hd_path: import.meta.env.VITE_HD_PATH,
   swagger_api: import.meta.env.VITE_SWAGGER_HTTP_HOST,
