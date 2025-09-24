@@ -3,10 +3,11 @@
 .onboarding-layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  // min-height: 100vh;
   background-size: cover;
   background-position: center;
   position: relative;
+  flex: 1 auto;
 }
 
 .onboarding-header {
@@ -21,22 +22,34 @@
 }
 
 .onboarding-main {
-  flex: 1;
+  flex: 1 auto;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: s(80) 0;
-  min-height: 100vh;
   box-sizing: border-box;
+  padding-top: 100px;
+  padding-bottom: 50px;
+
+  @media (max-width: 1679px) {
+    padding-top: 90px;
+    padding-bottom: 40px;
+  }
+
+  @media (max-width: 1399px) {
+    padding-top: 80px;
+    padding-bottom: 30px;
+  }
+
+  @media (max-width: 1199px) {
+    padding-top: 70px;
+    padding-bottom: 20px;
+  }
 }
 
 .login-container {
   width: 100%;
 }
 
-// Responsive adjustments
-@media (max-width: 991px) {
-  .onboarding-main {
-    padding: s(80) s(15) s(100);
-  }
+.onboarding-footer {
+  margin-top: auto;
 }

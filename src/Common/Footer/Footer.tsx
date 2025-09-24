@@ -11,7 +11,7 @@ import coinmarketcap from "../../assets/coinmarketcap.svg";
 const Footer = () => {
   return (
     <footer className="footer">
-      <div className="footer__container">
+      <div className="footer__container container">
         <div className="footer__content">
           {/* Brand */}
           <div className="footer__brand">
@@ -26,7 +26,7 @@ const Footer = () => {
 
           {/* About Us */}
           <div className="footer__section">
-            <h3 className="footer__section-title">About Us</h3>
+            <h5 className="footer__section-title">About Us</h5>
             <ul className="footer__links">
               <li>
                 <a
@@ -177,9 +177,9 @@ const Footer = () => {
         </div>
 
         <div className="footer__bottom">
-          <p className="footer__copyright">
+          <h5 className="footer__copyright">
             ©2025 Copyright Qubetics. All rights reserved.
-          </p>
+          </h5>
         </div>
       </div>
     </footer>

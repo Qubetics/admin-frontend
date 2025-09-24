@@ -1,23 +1,33 @@
-@import "../../utils/functions.scss";
+@use "../../utils/functions.scss" as *;
 
 .plans {
-  margin-top: s(140);
+  margin-top: 40px;
 
   &__header {
     display: flex;
     justify-content: space-between;
     align-items: center;
 
-    h1 {
+    h3 {
       color: #fff;
       font-weight: 600;
-      font-size: s(24);
-      margin-bottom: 0;
     }
   }
 
   .commonTable {
-    margin-top: s(20);
+    margin-top: 50px;
+
+    @media (max-width: 1679px) {
+      margin-top: 40px;
+    }
+
+    @media (max-width: 1399px) {
+      margin-top: 30px;
+    }
+
+    @media (max-width: 991px) {
+      margin-top: 25px;
+    }
   }
 
   .plans-table {
@@ -43,11 +53,37 @@
             justify-content: center;
 
             .approve-btn {
-              height: 32px;
-              width: 100px;
+              white-space: nowrap;
+              position: relative;
               display: flex;
-              justify-content: center;
               align-items: center;
+              padding: 5px 20px;
+              font-size: 16px;
+              font-weight: bold;
+              color: #fff;
+              background-color: #000;
+              text-decoration: none;
+              border: none;
+              border-radius: s(30);
+              overflow: hidden;
+              cursor: pointer;
+              height: 51px;
+
+              @media (max-width: 1679px) {
+                height: 50px;
+                padding: 5px 16px;
+              }
+
+              @media (max-width: 1399px) {
+                height: 45px;
+                padding: 5px 12px;
+              }
+
+              @media (max-width: 1199px) {
+                height: 40px;
+                font-size: 14px;
+                padding: 4px 10px;
+              }
             }
           }
         }
@@ -86,15 +122,17 @@
         padding: s(20) 8px;
         height: s(54);
         color: #ffffff !important;
-        
+
         .ant-select-selector {
           background: #080808 !important;
           border: none !important;
           color: #ffffff !important;
         }
+
         .ant-select-selection-placeholder {
           color: #fff !important;
         }
+
         .ant-select-arrow {
           color: #ffffff !important;
         }
@@ -109,6 +147,7 @@
       margin-top: 20px;
       display: flex;
       justify-content: center;
+
       .customButton {
         min-width: s(174) !important;
       }

@@ -1,21 +1,27 @@
-@import "../../utils/functions.scss";
+@use "../../utils/functions.scss" as *;
 
 .dashboard {
-  max-width: s(1640);
   width: 100%;
   margin: auto;
-  margin-top: s(140);
-
-  @media screen and (max-width: 767px) {
-    margin-top: s(100);
-  }
+  margin-top: 40px;
 
   &__header {
-    h1 {
+    h3 {
       color: #fff;
-      padding-bottom: s(14);
+      padding-bottom: 20px;
       font-weight: 600;
-      font-size: s(24);
+
+      @media (max-width: 1679px) {
+        padding-bottom: 18px;
+      }
+
+      @media (max-width: 1399px) {
+        padding-bottom: 15px;
+      }
+
+      @media (max-width: 1199px) {
+        padding-bottom: 12px;
+      }
     }
   }
 
@@ -26,18 +32,25 @@
         rgba(29, 29, 29, 0.54) -0.65%,
         rgba(29, 29, 29, 0.9) 99.59%);
 
-    border-radius: s(14);
-    max-width: s(264);
+    border-radius: 14px;
     width: 100%;
     color: #fff;
-    padding: s(20);
+    padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: center;
     transition: transform 0.2s ease-in-out;
 
-    @media screen and (max-width: 767px) {
-      max-width: initial;
+    @media (max-width: 1679px) {
+      padding: 18px;
+    }
+
+    @media (max-width: 1399px) {
+      padding: 15px;
+    }
+
+    @media (max-width: 1199px) {
+      padding: 12px;
     }
 
     &:hover {
@@ -48,45 +61,100 @@
       font-size: 16px;
       color: #a0a0a0;
       margin-bottom: 10px;
+
+      @media (max-width: 1679px) {
+        font-size: 14px;
+      }
+
+      @media (max-width: 1199px) {
+        font-size: 12px;
+      }
     }
 
     .card-value {
-      font-size: s(20);
+      font-size: 20px;
       font-weight: 400;
       color: #fff;
+
+      @media (max-width: 1679px) {
+        font-size: 18px;
+      }
+
+      @media (max-width: 1399px) {
+        font-size: 16px;
+      }
+
+      @media (max-width: 991px) {
+        font-size: 14px;
+      }
     }
   }
 
   .cardSection {
     display: flex;
-    gap: s(20);
+    gap: 20px;
 
-    @media screen and (max-width: 767px) {
+    .card-row {
+      width: 100%;
+    }
+
+    @media (max-width: 767px) {
       flex-direction: column;
+      gap: 10px;
+
+      .card-row {
+        width: auto;
+      }
     }
   }
 
   .commonTable {
-    margin-top: s(40);
+    margin-top: 50px;
+
+    @media (max-width: 1679px) {
+      margin-top: 40px;
+    }
+
+    @media (max-width: 1399px) {
+      margin-top: 30px;
+    }
+
+    @media (max-width: 991px) {
+      margin-top: 25px;
+    }
   }
 }
 
 .node__btns {
   display: flex;
-  margin-top: s(20);
-  margin-bottom: s(20);
+  margin-bottom: 20px;
   background-color: #121212;
-  border-radius: s(30);
-  padding: s(4);
+  border-radius: 30px;
+  padding: 5px 20px;
   width: 100%;
   max-width: 600px;
+
+  @media (max-width: 1679px) {
+    padding: 5px 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 1399px) {
+    padding: 5px 12px;
+    margin-bottom: 12px;
+  }
+
+  @media (max-width: 1199px) {
+    padding: 4px 10px;
+  }
+
   button {
     max-width: 200px;
     width: 100%;
     background-color: #121212;
     color: #a0a0a0;
     border: 0;
-    border-radius: s(28);
+    border-radius: 28px;
     cursor: pointer;
     transition: 0.2s;
     display: flex;
@@ -96,15 +164,29 @@
     font-weight: 500;
     padding: 0 10px;
     height: 40px;
-    @media screen and (max-width: 600px) {
+
+    @media (max-width: 1399px) {
       font-size: 14px;
+      max-width: 160px;
     }
-    @media screen and (max-width: 430px) {
+
+    @media(max-width: 991px) {
       font-size: 12px;
+      max-width: 140px;
     }
+
+    span {
+      margin-left: 5px;
+
+      @media(max-width: 479px) {
+        display: none;
+      }
+    }
+
     &:hover {
       background-color: #333;
     }
+
     &.active {
       white-space: nowrap;
       max-width: 200px;
@@ -114,27 +196,36 @@
       background-color: #000;
       text-decoration: none;
       border: none;
-      border-radius: s(28);
+      border-radius: 28px;
       overflow: hidden;
       cursor: pointer;
+
+      @media (max-width: 1399px) {
+        font-size: 14px;
+        max-width: 160px;
+      }
+
+      @media(max-width: 991px) {
+        font-size: 12px;
+        max-width: 140px;
+      }
+
       &::before {
         content: "";
         position: absolute;
         inset: 0;
-        padding: s(2);
-        border-radius: s(30);
-        background: conic-gradient(
-          var(--clr-card),
-          var(--clr-1),
-          var(--clr-2),
-          var(--clr-3),
-          var(--clr-4),
-          var(--clr-5),
-          var(--clr-6),
-          var(--clr-2),
-          var(--clr-1),
-          var(--clr-card)
-        );
+        padding: 2px;
+        border-radius: 28px;
+        background: conic-gradient(var(--clr-card),
+            var(--clr-1),
+            var(--clr-2),
+            var(--clr-3),
+            var(--clr-4),
+            var(--clr-5),
+            var(--clr-6),
+            var(--clr-2),
+            var(--clr-1),
+            var(--clr-card));
         animation: rotate 2.5s linear infinite;
         -webkit-mask: linear-gradient(#fff 0 0) content-box,
           linear-gradient(#fff 0 0);
@@ -146,12 +237,13 @@
     }
   }
 }
+
 .dashboard-table {
   thead {
     tr {
       th {
         &:last-child {
-          text-align: center;
+          text-align: left;
           width: 250px;
         }
       }

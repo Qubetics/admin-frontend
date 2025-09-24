@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 
 import "./Header.scss";
 import Logo from "../../assets/Logo.svg";
+import mobLogo from "../../assets/MobileLogo.svg";
 import Path from "../../Routing/Constant/RoutePaths";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
@@ -51,7 +52,17 @@ const Header = () => {
   const { authData, setAuthData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
+  // function to logo resize
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
 
+  const handleResize = () => {
+    setIsMobile(window.innerWidth <= 768);
+  };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -277,38 +288,39 @@ const Header = () => {
       <div className="header-main__bottom container">
         <div className="header__left">
           <Link to={Path.LANDING}>
-            <img src={Logo} alt="Logo" />
+            {isMobile ? (
+              <img src={mobLogo} alt="Mobile Logo" className="mobile-logo" />
+            ) : (
+              <img src={Logo} alt="Web Logo" className="web-logo" />
+            )}
           </Link>
         </div>
-
         {hasHeaderActions && (
-          <button 
-            className={`hamburger ${isMenuOpen ? 'active' : ''}`} 
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
-            <span></span>
-            <span></span>
-            <span></span>
-          </button>
-        )}
-        {hasHeaderActions && (
-        <div className={`header__details ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
-          {authData && (
-            <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
-              {navigationItems.map(({ path, label }) => (
-                <Link
-                  key={path}
-                  to={path}
-                  className={isActive(path)}
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {label}
-                </Link>
-              ))}
-            </nav>
-          )}
-        </div>)}
+          <div className={`header__details ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
+            {authData && (
+              <>
+                <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
+                  {navigationItems.map(({ path, label }) => (
+                    <Link
+                      key={path}
+                      to={path}
+                      className={isActive(path)}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
+                      {label}
+                    </Link>
+                  ))}
+                </nav>
+                <ButtonCustom
+                  className="mobile-logout"
+                  label={isConnecting ? "Logging out..." : "Logout"}
+                  onClick={handleLogout}
+                  disabled={isLoading}
+                  type="button"
+                />
+              </>
+            )}
+          </div>)}
 
         {/* Right Section */}
         <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
@@ -325,25 +337,33 @@ const Header = () => {
               <span className="customButton balance-display">
                 {formatBalance(balance)} TICS
               </span>
-
-
-
               <div className="header__wallet-address customButton">
                 <div>{truncateValue(authData)}</div>
                 <CopyText text={authData} />
               </div>
+              <ButtonCustom
+                className="web-logout"
+                label={isConnecting ? "Logging out..." : "Logout"}
+                onClick={handleLogout}
+                disabled={isLoading}
+                type="button"
+              />
+            </>
+          )}
 
+        </div>
 
-                <ButtonCustom
-                  label={isConnecting ? "Logging out..." : "Logout"}
-                  onClick={handleLogout}
-                  disabled={isLoading}
-                  type="button"
-                />
-              </>
-            )}
-
-          </div>
+        {hasHeaderActions && (
+          <button
+            className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        )}
       </div>
     </div>
   );

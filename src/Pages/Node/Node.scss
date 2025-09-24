@@ -1,43 +1,89 @@
-@import "../../utils/functions.scss";
+@use "../../utils/functions.scss" as *;
 
 .node {
-  margin-top: s(140);
+  margin-top: 40px;
+
 
   &__header {
     display: flex;
     justify-content: space-between;
 
-    h1 {
+    h3 {
       color: #fff;
+      padding-bottom: 20px;
       font-weight: 600;
-      font-size: s(24);
+
+      @media (max-width: 1679px) {
+        padding-bottom: 18px;
+      }
+
+      @media (max-width: 1399px) {
+        padding-bottom: 15px;
+      }
+
+      @media (max-width: 1199px) {
+        padding-bottom: 12px;
+      }
     }
   }
 
   .node__btns {
     display: flex;
-    margin-top: s(20);
+    margin-bottom: 20px;
     background-color: #121212;
-    border-radius: s(30);
-    padding: s(4);
+    border-radius: 30px;
+    padding: 5px 20px;
     width: 100%;
-    max-width: s(500);
+    max-width: 600px;
+
+    @media (max-width: 1679px) {
+      padding: 5px 16px;
+      margin-bottom: 16px;
+    }
+
+    @media (max-width: 1399px) {
+      padding: 5px 12px;
+      margin-bottom: 12px;
+    }
+
+    @media (max-width: 1199px) {
+      padding: 4px 10px;
+    }
 
     button {
-      max-width: s(172);
+      max-width: 200px;
       width: 100%;
       background-color: #121212;
       color: #a0a0a0;
       border: 0;
-      border-radius: s(28);
+      border-radius: 28px;
       cursor: pointer;
-      height: s(40);
       transition: 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 16px;
       font-weight: 500;
+      padding: 0 10px;
+      height: 40px;
+
+      @media (max-width: 1399px) {
+        font-size: 14px;
+        max-width: 160px;
+      }
+
+      @media(max-width: 991px) {
+        font-size: 12px;
+        max-width: 140px;
+      }
+
+      span {
+        margin-left: 5px;
+
+        @media(max-width: 479px) {
+          display: none;
+        }
+      }
 
       &:hover {
         background-color: #333;
@@ -45,23 +91,33 @@
 
       &.active {
         white-space: nowrap;
-        max-width: s(172);
+        max-width: 200px;
         width: 100%;
         position: relative;
         color: #fff;
         background-color: #000;
         text-decoration: none;
         border: none;
-        border-radius: s(28);
+        border-radius: 28px;
         overflow: hidden;
         cursor: pointer;
+
+        @media (max-width: 1399px) {
+          font-size: 14px;
+          max-width: 160px;
+        }
+
+        @media(max-width: 991px) {
+          font-size: 12px;
+          max-width: 140px;
+        }
 
         &::before {
           content: "";
           position: absolute;
           inset: 0;
-          padding: s(2);
-          border-radius: s(30);
+          padding: 2px;
+          border-radius: 28px;
           background: conic-gradient(var(--clr-card),
               var(--clr-1),
               var(--clr-2),
@@ -109,7 +165,19 @@
   }
 
   .commonTable {
-    margin-top: s(20);
+    margin-top: 50px;
+
+    @media (max-width: 1679px) {
+      margin-top: 40px;
+    }
+
+    @media (max-width: 1399px) {
+      margin-top: 30px;
+    }
+
+    @media (max-width: 991px) {
+      margin-top: 25px;
+    }
 
     .active {
       color: #34c759;
@@ -125,7 +193,6 @@
 
 .status-badge {
   display: inline-block;
-  font-size: s(14);
   font-weight: 600;
   text-transform: capitalize;
 

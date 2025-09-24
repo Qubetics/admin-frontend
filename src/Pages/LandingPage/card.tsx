@@ -9,8 +9,8 @@ export type CardProps = {
 const Card: React.FC<CardProps> = ({ title, description }) => {
   return (
     <div className="card">
-      <h3 className="card-title">{title}</h3>
-      <p className="card-description">{description}</p>
+      <h4 className="card-title">{title}</h4>
+      <h6 className="card-description">{description}</h6>
     </div>
   );
 };

@@ -1,4 +1,4 @@
-@import "../../utils/functions.scss";
+@use "../../utils/functions.scss" as *;
 
 :root {
   --bg-background: #111827;
@@ -10,41 +10,53 @@
   --clr-5: rgb(255, 152, 226) 120deg;
   --clr-6: rgb(247, 186, 229);
 }
+
 @property --gradient-angle {
   syntax: "<angle>";
   initial-value: 90deg;
   inherits: false;
 }
+
 .customButton {
-    white-space: nowrap;
-  
-    @media (max-width: 1199px) {
-      display: flex !important;
-      justify-content: center;
-      height: s(50);
-    }
-  
-    position: relative;
-    display: inline-block;
-    padding: s(12.5) s(20);
-    font-size: s(16);
-    font-weight: bold;
-    color: #fff;
-    background-color: #000;
-    text-decoration: none;
-    border: none;
-    border-radius: s(30);
-    overflow: hidden;
-    cursor: pointer;
-  
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0;
-      padding: s(2);
-      border-radius: s(30);
-      background: conic-gradient(
-        from var(--gradient-angle),
+  white-space: nowrap;
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 5px 20px;
+  font-size: 16px;
+  font-weight: bold;
+  color: #fff;
+  background-color: #000;
+  text-decoration: none;
+  border: none;
+  border-radius: s(30);
+  overflow: hidden;
+  cursor: pointer;
+  height: 51px;
+
+  @media (max-width: 1679px) {
+    height: 50px;
+    padding: 5px 16px;
+  }
+
+  @media (max-width: 1399px) {
+    height: 45px;
+    padding: 5px 12px;
+  }
+
+  @media (max-width: 1199px) {
+    height: 40px;
+    font-size: 14px;
+    padding: 4px 10px;
+  }
+
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    padding: 2px;
+    border-radius: 30px;
+    background: conic-gradient(from var(--gradient-angle),
         var(--clr-card),
         var(--clr-1),
         var(--clr-2),
@@ -54,34 +66,35 @@
         var(--clr-6),
         var(--clr-2),
         var(--clr-1),
-        var(--clr-card)
-      );
-      animation: rotate 2.5s linear infinite;
-      -webkit-mask: linear-gradient(#fff 0 0) content-box,
-        linear-gradient(#fff 0 0);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      animation: rotate 3s linear infinite;
-    }
-    @keyframes rotate {
-      0% {
-        --gradient-angle: 0deg;
-      }
+        var(--clr-card));
+    animation: rotate 2.5s linear infinite;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    animation: rotate 3s linear infinite;
+  }
 
-      100% {
-        --gradient-angle: 360deg;
-      }
+  @keyframes rotate {
+    0% {
+      --gradient-angle: 0deg;
     }
-  
-    &:disabled {
-      cursor: not-allowed;
+
+    100% {
+      --gradient-angle: 360deg;
     }
-  
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+
   &-bordered {
     border: 1px solid var(--brandPurple);
     background-color: transparent;
     color: var(--brandPurple);
+
     &:hover {
       background-color: var(--darkPurple);
       color: var(--white);
