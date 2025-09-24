@@ -152,7 +152,7 @@ export const Timestamp = (value: string | number | Date): string => {
 
 export const truncateValue = (
   value: string,
-  start: number = 6,
+  start: number = 4,
   end: number = 4
 ) => {
   if (!value) return "";
@@ -188,7 +188,7 @@ export const copyToClipboard = (text: any) => {
  export const formatBalance = (amount:any) => {
   return amount.toLocaleString("en-US", {
     minimumFractionDigits: 2,
-    maximumFractionDigits: 6,
+    maximumFractionDigits: 2,
   });
 };
 
