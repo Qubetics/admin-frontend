@@ -209,7 +209,6 @@ export default function Dashboard() {
 
     // setIsLoading(false)
     if (!success) {
-      toast.error("Unable to fetch the node list");
       return;
     }
     setNodeList(data?.data?.nodeList);
@@ -223,7 +222,6 @@ export default function Dashboard() {
     });
 
     if (!success) {
-      console.log("unable to fetch the active account");
       return;
     }
     setActiveAccount(data?.data);
@@ -235,7 +233,6 @@ export default function Dashboard() {
     });
 
     if (!success) {
-      toast.error("unable to fetch the active account");
       return;
     }
     setCountAccount(data?.data);

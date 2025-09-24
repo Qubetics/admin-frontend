@@ -70,13 +70,13 @@ const createPlanModal = ({
     setIsLoading(true);
     const message = buildCreatePlanMessage({
       from: provAddress,
-      gigabytes: Long.fromString(gbToBytes(formData.bytes)),
-      hours: Long.fromString(formData.hours),
+      gigabytes: Long.fromString(gbToBytes(formData?.bytes)),
+      hours: Long.fromString(formData?.hours),
       prices: [
         {
           denom: "tics",
-          baseValue: ModifyNum(formData.price),
-          quoteValue: formData.price,
+          baseValue: ModifyNum(formData?.price),
+          quoteValue: ModifyNum(formData?.price),
         },
       ],
     });
