@@ -1,3 +1,5 @@
+import BigNumber from 'bignumber.js';
+
 export const apiMethods = {
   GET: "get",
   POST: "post",
@@ -17,6 +19,7 @@ export const TYPE_URLS = {
 
 export const provWalletPrefix = "qubeticsprov";
 export const DECIMAL_PLACES = 18;
+export const WEI = new BigNumber(10 ** 18);
 
 export const gbToBytes = (gb: any): string => {
   return (Number(gb) * 1024 * 1024 * 1024).toString();

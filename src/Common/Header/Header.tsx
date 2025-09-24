@@ -147,8 +147,14 @@ const Header = () => {
   }, [useGetApi, navigate, setAuthData, isLoading]);
 
   const connectKeplr = useCallback(async (): Promise<string | null> => {
-    if (!window?.keplr) {
-      toast.error("Install Keplr wallet first");
+    if (!window.keplr) {
+      if (/Android/i.test(navigator.userAgent)) {
+        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+      } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+        window.location.href = "keplrwallet://";
+      } else {
+        toast.error("Install Keplr extension first");
+      }
       return null;
     }
 

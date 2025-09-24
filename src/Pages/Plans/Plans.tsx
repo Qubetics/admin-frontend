@@ -11,7 +11,7 @@ import { STATUS_ENUM, bytesToGb, provWalletPrefix } from "../../Constant/constan
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { Timestamp, convertNodeToWallet, formatDuration } from "../../utils/Helper/CommonHelper";
+import { Timestamp, convertNodeToWallet, formatDuration, getValueWithUnit } from "../../utils/Helper/CommonHelper";
 import InnerLoader from "../../Common/Loader/InnerLoader";
 import { toast } from "react-toastify";
 
@@ -100,7 +100,7 @@ const Plans = () => {
                     <td>{row?.id}</td>
                     <td>
                       {row?.prices?.length > 0
-                        ? `${row?.prices[0]?.quote_value} ${(String(row?.prices[0]?.denom)).toUpperCase()}`
+                        ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${(String(row?.prices[0]?.denom)).toUpperCase()}`
                         : "-"}
                     </td>
                     <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
