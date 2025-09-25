@@ -131,6 +131,25 @@ body {
   }
 }
 
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f138;
+  border-radius: 10px
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555
+}
+
 .disabled {
   opacity: 0.5 !important;
   cursor: not-allowed !important;
@@ -188,12 +207,14 @@ body {
       }
 
       @media (max-width: 1679px) {
-        font-size: 14px;
         padding: 10px 20px;
       }
 
+      @media (max-width: 1399px) {
+        font-size: 14px;
+      }
+
       @media (max-width: 1199px) {
-        font-size: 12px;
         padding: 8px 15px;
       }
     }

@@ -23,7 +23,37 @@ const Footer = () => {
               uniting all leading networks.
             </p>
           </div>
-
+          {/* Quick Links */}
+          <div className="footer__section">
+            <h5 className="footer__section-title">Quick Links</h5>
+            <ul className="footer__links">
+              <li>
+                <a target="blank" href="#" className="footer__link">
+                  Tokens
+                </a>
+              </li>
+              <li>
+                <a target="blank" href="#" className="footer__link">
+                  Blockchain
+                </a>
+              </li>
+              <li>
+                <a target="blank" href="#" className="footer__link">
+                  Validators
+                </a>
+              </li>
+              <li>
+                <a target="blank" href="#" className="footer__link">
+                  Analytics
+                </a>
+              </li>
+              <li>
+                <a target="blank" href="#" className="footer__link">
+                  Nodes
+                </a>
+              </li>
+            </ul>
+          </div>
           {/* About Us */}
           <div className="footer__section">
             <h5 className="footer__section-title">About Us</h5>
