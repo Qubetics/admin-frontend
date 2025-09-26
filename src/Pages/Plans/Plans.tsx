@@ -81,7 +81,7 @@ const Plans = () => {
     <div className="plans">
       <div className="plans__header">
         <h3>Plans List</h3>
-        <ButtonCustom label="Create Plan" onClick={() => setCreateShow(true)} />
+        <ButtonCustom className="btn_create" label="Create Plan" onClick={() => setCreateShow(true)} />
       </div>
       <div className="custom-table-wrapper commonTable">
         <div className="outerTable">
@@ -105,8 +105,8 @@ const Plans = () => {
                 </tr>
               ) : planList.length === 0 ? (
                 <tr>
-                  <td colSpan={6} style={{ textAlign: "center" }}>
-                    No plans found
+                  <td colSpan={6} style={{ textAlign: "center"}}>
+                    <div  style={{ textAlign: "center", minHeight:200, display:"flex", alignItems:"center", justifyContent: "center" }}>No plans found</div>
                   </td>
                 </tr>
               ) : (

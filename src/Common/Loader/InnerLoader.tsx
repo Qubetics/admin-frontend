@@ -5,7 +5,7 @@ function InnerLoader() {
   return (
     <div
       style={{
-        height: "400px",
+        height: "200px",
         width: "100%",
         display: "flex",
         justifyContent: "center",

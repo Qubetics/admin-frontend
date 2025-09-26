@@ -26,7 +26,7 @@ const Footer = () => {
 
           {/* About Us */}
           <div className="footer__section">
-            <h5 className="footer__section-title">About Us</h5>
+            <h3 className="footer__section-title">About Us</h3>
             <ul className="footer__links">
               <li>
                 <a
@@ -49,7 +49,7 @@ const Footer = () => {
 
           {/* Products & Services */}
           <div className="footer__section">
-            <h3 className="footer__section-title">Products & Services</h3>
+            <h5 className="footer__section-title">Products & Services</h5>
             <ul className="footer__links">
               <li>
                 <a
@@ -103,7 +103,7 @@ const Footer = () => {
 
           {/* Resources */}
           <div className="footer__section">
-            <h3 className="footer__section-title">Resources</h3>
+            <h5 className="footer__section-title">Resources</h5>
             <ul className="footer__links">
               <li>
                 <a target="blank" href="https://www.qubetics.com/" className="footer__link">

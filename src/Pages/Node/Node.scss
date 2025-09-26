@@ -145,7 +145,6 @@
       tr {
         th {
           &:last-child {
-            width: 300px;
             text-align: center;
           }
         }
@@ -155,9 +154,31 @@
     tbody {
       tr {
         td {
+          width: auto;
+
           &:last-child {
             text-align: center;
-            width: 300px;
+          }
+
+          .address_nord {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 410px;
+
+            .copy-btn {
+              width: 16px;
+              height: 16px;
+              display: flex;
+              align-items: center;
+
+              >div,
+              svg {
+                width: 100%;
+                height: 100%;
+              }
+            }
           }
         }
       }

@@ -17,7 +17,7 @@ const useNetworkRequest = () => {
     body,
     url,
   }: // checktoast,
-  any) => {
+    any) => {
     try {
       const response = await axios({
         method: method || apiMethods.GET,

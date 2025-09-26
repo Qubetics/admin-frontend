@@ -152,11 +152,13 @@
     }
   }
 
-  &__section-title {
+  &__section {
+    &-title {
     font-weight: 600;
     color: white;
     margin-bottom: 16px;
   }
+}
 
   &__links {
     list-style: none;

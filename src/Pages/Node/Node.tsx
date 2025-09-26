@@ -3,6 +3,7 @@ import CopyText from "../../Common/Copy/CopyText";
 import { apiUrls } from "../../Constant/apiUrls";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { formatStatusText } from "../../utils/Helper/CommonHelper";
+import { toFirstCapital } from "../../utils/Helper/CommonHelper";
 import Pagination from "../../utils/pagination";
 import "./Node.scss";
 import { useEffect, useState } from "react";
@@ -131,15 +132,8 @@ function Node() {
                     <tr key={i}>
                       <td>{row?.orgName ? row?.orgName : "-"}</td>
                       <td>
-                        <span
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "6px",
-                          }}
-                        >
-                          {row?.nodeAddress}
-                          <CopyText text={row?.nodeAddress} />
+                        <span className="address_nord" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
+                          <div className="copy-btn"><CopyText text={row?.nodeAddress} /></div>
                         </span>
                       </td>
                       {active !== "active" && active !== "inactive" && (
@@ -152,7 +146,7 @@ function Node() {
                       <td>{row?.requestFor}</td>
                       <td>
                         <span className={getStatusClass(row?.status)}>
-                          {formatStatusText(row?.status) || "-"}
+                          {toFirstCapital(row?.status) || "-"}
                         </span>
                       </td>
                     </tr>

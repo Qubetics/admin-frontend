@@ -239,4 +239,8 @@ export const formatStatusText = (status: string) => {
   if (!status) return "";
   const lower = status.toLowerCase();
   return lower.charAt(0).toUpperCase() + lower.slice(1);
+}
+export const toFirstCapital = (str: string): string => {
+  if (!str) return "";
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
