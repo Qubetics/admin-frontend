@@ -34,6 +34,7 @@
   overflow: hidden;
   cursor: pointer;
   height: 51px;
+  min-width: 100px;
 
   @media (max-width: 1679px) {
     height: 50px;
