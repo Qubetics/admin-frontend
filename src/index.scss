@@ -115,7 +115,10 @@ body {
   background-size: cover;
   background-position: center;
 }
-
+body::-webkit-scrollbar{
+  width: 0px;
+  display: none;
+}
 .container {
   position: relative;
   margin-left: auto;
