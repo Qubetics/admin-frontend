@@ -159,7 +159,7 @@ export default function Dashboard() {
         nodeAddress: address,
         hours: Long.fromString(hours),
         denom: "tics",
-        renewalPricePolicy: 0,
+        renewalPricePolicy: 3,
       });
 
       const res = await processTransaction(leaseMessage);
