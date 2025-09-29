@@ -75,7 +75,7 @@ export function buildUnlinkNodeMessage(params: {
         nodeAddress: params?.nodeAddress,
         hours: params?.hours,
         denom: params?.denom,
-        renewalPricePolicy:0
+        renewalPricePolicy:3
       }).finish(),
     };
   }
