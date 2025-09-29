@@ -297,7 +297,7 @@
 
         .address_nord {
           display: flex;
-          align-items: center;
+          align-items: inherit !important;
           justify-content: space-between;
           width: 100%;
           max-width: 410px;
