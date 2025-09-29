@@ -5,9 +5,10 @@ import "./CustomInput.scss";
 interface CustomInputProps {
   type?: string;
   name: string;
+  disable?: boolean;
   value: string | number;
   placeholder?: string;
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -15,7 +16,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
   name,
   value,
   placeholder,
-  onChange,
+  onChange=()=>{},
+  disable=false
 }) => {
   return (
     <div className="custom-input">
@@ -23,6 +25,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         type={type}
         name={name}
         value={value}
+        disabled={disable}
         placeholder={placeholder}
         onChange={onChange}
         className="input-field"

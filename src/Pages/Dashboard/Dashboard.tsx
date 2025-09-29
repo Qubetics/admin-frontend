@@ -14,6 +14,7 @@ import {
 } from "../../service/BuildMessage/buildMessage";
 import {
   convertNodeToWallet,
+  getValueWithUnit,
   truncateValue,
 } from "../../utils/Helper/CommonHelper";
 import {
@@ -159,7 +160,7 @@ export default function Dashboard() {
         nodeAddress: address,
         hours: Long.fromString(hours),
         denom: "tics",
-        renewalPricePolicy: 0,
+        renewalPricePolicy: 3,
       });
 
       const res = await processTransaction(leaseMessage);
@@ -251,6 +252,20 @@ export default function Dashboard() {
     setLimit(5);
   };
 
+  const convertPlanString = (planStr?: any): any => {
+    if (!planStr) return '';
+
+    // Split the string into numeric part and the rest
+    const [valueStr, ...rest] = planStr.split(' ');
+    const unitStr = rest.join(' '); // e.g., "TICS/month"
+
+    // Convert the numeric part
+    const convertedValue = getValueWithUnit(valueStr);
+
+    // Return formatted string
+    return `${convertedValue} ${unitStr}`;
+  };
+
   useEffect(() => {
     fetchData();
   }, [page, limit, active]);
@@ -340,7 +355,7 @@ export default function Dashboard() {
                         <td>
                           {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
                         </td>
-                        <td>{row?.plan || "-"}</td>
+                        <td>{row?.plan ? convertPlanString(row?.plan) : "-"}</td>
                         {active === "allrequest" && <td>{row?.requestFor}</td>}
                         <td>
                           <div className="action-btns">
