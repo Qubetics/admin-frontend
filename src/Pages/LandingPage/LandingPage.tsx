@@ -12,7 +12,7 @@ const LandingPage = () => {
     {
       title: "Lease Your Node",
       description:
-        "Lease node(s) as a provider and empower users to join the Qubetics dVPN ecosystem.",
+        "Lease node(s) as a provider and empower users to join the Qubetics dVPN ecosystem",
     },
     {
       title: "Earn Effortlessly",
@@ -28,7 +28,7 @@ const LandingPage = () => {
           <h2 className="hero__title big">Secure Your Digital Freedom</h2>
           <h5 className="top_text">
             Experience the next generation of decentralized VPN technology. Connect anonymously, browse securely, and maintain your
-            privacy across the global network.
+            privacy across the global network
           </h5>
         </div>
       </div>
