@@ -829,3 +829,20 @@ h6 {
     font-size: 12px;
   }
 }
+.responsiveDrawerData{
+  display: none !important;
+  
+  @media (max-width:991px) {
+    display: block !important;
+    position: absolute;
+    bottom:100px;
+    left:15px;
+  }
+  span,.customButton, button{
+    @media (max-width:991px) {
+      display: flex !important;
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
+  }
+}
