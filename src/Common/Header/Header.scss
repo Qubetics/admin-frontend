@@ -6,7 +6,9 @@
   z-index: 1;
   width: 100%;
   transition: 0.3s all;
-  background-color: #121212;
+  // background-color: #121212;
+  background-color: transparent;
+  backdrop-filter: blur(16px);
   padding: 25px 0;
 
   @media (max-width: 1679px) {
@@ -47,6 +49,9 @@
 
     @media screen and (max-width: 676px) {
       width: 100%;
+    }
+    @media (max-width:390px) {
+      gap:7px;
     }
 
     .mob__List {
@@ -112,7 +117,6 @@
     align-items: center;
     gap: 20px;
     position: relative;
-
     img {
       max-width: 200px;
 
@@ -230,6 +234,15 @@
     display: flex;
     align-items: center;
     gap: 10px;
+   
+    @media (max-width:390px) {
+      gap:7px;
+    }
+    .customButton{
+      @media (max-width:390px) {
+        padding:7px;
+      }
+    }
   }
 
   &__wallet-address {
@@ -270,12 +283,15 @@
       transform: translateX(-150%);
       opacity: 0;
       z-index: 999;
+      height:100vh;
       box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
       display: flex !important;
 
       &.active {
         transform: translateX(0);
         opacity: 1;
+      background: #121212;
+
       }
 
       a {
