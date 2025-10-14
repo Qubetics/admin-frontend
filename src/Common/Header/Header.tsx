@@ -20,6 +20,7 @@ import {
 } from "../../utils/Helper/CommonHelper";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
 import CopyText from "../Copy/CopyText";
+import useCurrentWidth from "../../Hooks/useCurrentWidth";
 
 // Types
 interface KeplrWindow extends Window {
@@ -55,6 +56,7 @@ const Header = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   // function to logo resize
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
+  const width=useCurrentWidth();
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -306,11 +308,8 @@ const Header = () => {
             )}
           </Link>
         </div>
-        {hasHeaderActions && (
-          <div
-            className={`header__details ${isMenuOpen ? "active" : ""}`}
-            ref={menuRef}
-          >
+        {hasHeaderActions && authData &&(
+          <div className={`header__details ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
             {authData && (
               <>
                 <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
@@ -324,7 +323,34 @@ const Header = () => {
                       {label}
                     </Link>
                   ))}
+                   <>
+              {/* <div className="responsiveDrawerData">
+              <span className="customButton balance-display">
+                {formatBalance(balance)} TICS
+              </span>
+              <div className="header__wallet-address customButton">
+                <div>{truncateValue(authData)}</div>
+                <CopyText text={authData} />
+              </div>
+              <ButtonCustom
+                // className="web-logout"
+                // label={isConnecting ? "Logging out..." : "Logout"}
+                label='logout'
+                onClick={handleLogout}
+                // disabled={isLoading}
+                type="button"
+              />
+              </div> */}
+            </>
                 </nav>
+                <div className="responsiveDrawerData">
+                <span className="customButton balance-display">
+                {formatBalance(balance)} TICS
+              </span>
+              <div className="header__wallet-address customButton">
+                <div>{truncateValue(authData)}</div>
+                <CopyText text={authData} />
+              </div>
                 <ButtonCustom
                   className="mobile-logout"
                   label={isConnecting ? "Logging out..." : "Logout"}
@@ -332,6 +358,7 @@ const Header = () => {
                   disabled={isLoading}
                   type="button"
                 />
+                </div>
               </>
             )}
           </div>
@@ -348,7 +375,10 @@ const Header = () => {
               disabled={isConnecting}
             />
           ) : (
-            <>
+            width > 991 && (<>
+              <span className="customButton balance-display">
+                {formatBalance(balance)} TICS
+              </span>
               <div className="header__wallet-address customButton">
                 <div>{truncateValue(authData)}</div>
                 <CopyText text={authData} />
@@ -363,11 +393,11 @@ const Header = () => {
                 disabled={isLoading}
                 type="button"
               />
-            </>
+            </>)
           )}
         </div>
 
-        {hasHeaderActions && (
+        {hasHeaderActions && authData && (
           <button
             className={`hamburger ${isMenuOpen ? "active" : ""}`}
             onClick={toggleMenu}

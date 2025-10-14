@@ -125,14 +125,29 @@
   background-blend-mode: overlay;
   background-blend-mode: overlay;
   border: 1px solid #37003fe6;
-  border-radius: 14px;
+  border-radius: 50px;
   width: 100%;
   color: #fff;
-  padding: 20px;
+  padding: 40px 38px;
   text-align: center;
   transition: all 0.3s ease;
   backdrop-filter: blur(50px);
   height: 100%;
+
+  @media (max-width: 1679px) {
+    border-radius: 45px;
+    padding: 32px 30px;
+  }
+
+  @media (max-width: 1399px) {
+    border-radius: 35px;
+    padding: 22px 20px;
+  }
+
+  @media (max-width: 1199px) {
+    border-radius: 25px;
+    padding: 15px;
+  }
 
   &:hover {
     transform: translateY(-5px);

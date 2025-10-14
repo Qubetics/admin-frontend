@@ -7,6 +7,7 @@ import YouTube from "../../assets/YouTube.svg";
 import Instagram from "../../assets/Instagram.svg";
 import TickTok from "../../assets/TickTok.svg";
 import coinmarketcap from "../../assets/coinmarketcap.svg";
+import { envConstants } from "../../Constant/envConstants";
 
 const Footer = () => {
   return (
@@ -23,7 +24,32 @@ const Footer = () => {
               uniting all leading networks.
             </p>
           </div>
-
+          {/* Quick Links */}
+          <div className="footer__section">
+            <h5 className="footer__section-title">Quick Links</h5>
+            <ul className="footer__links">
+              <li>
+                <a target="blank" href={`${envConstants.explorer_link}/token`} className="footer__link">
+                  Tokens
+                </a>
+              </li>
+              <li>
+                <a target="blank" href={`${envConstants.explorer_link}/blocks`} className="footer__link">
+                  Blockchain
+                </a>
+              </li>
+              <li>
+                <a target="blank" href={`${envConstants.explorer_link}/validators`} className="footer__link">
+                  Validators
+                </a>
+              </li>
+              <li>
+                <a target="blank" href={`${envConstants.explorer_link}/nodes`} className="footer__link">
+                  Nodes
+                </a>
+              </li>
+            </ul>
+          </div>
           {/* About Us */}
           <div className="footer__section">
             <h3 className="footer__section-title">About Us</h3>

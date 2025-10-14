@@ -115,7 +115,10 @@ body {
   background-size: cover;
   background-position: center;
 }
-
+body::-webkit-scrollbar{
+  width: 0px;
+  display: none;
+}
 .container {
   position: relative;
   margin-left: auto;
@@ -129,6 +132,25 @@ body {
     padding-right: 15px;
     padding-left: 15px;
   }
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f138;
+  border-radius: 10px
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555
 }
 
 .disabled {
@@ -188,12 +210,14 @@ body {
       }
 
       @media (max-width: 1679px) {
-        font-size: 14px;
         padding: 10px 20px;
       }
 
+      @media (max-width: 1399px) {
+        font-size: 14px;
+      }
+
       @media (max-width: 1199px) {
-        font-size: 12px;
         padding: 8px 15px;
       }
     }
@@ -803,5 +827,22 @@ h6 {
 
   @media (max-width: 1199px) {
     font-size: 12px;
+  }
+}
+.responsiveDrawerData{
+  display: none !important;
+  
+  @media (max-width:991px) {
+    display: block !important;
+    position: absolute;
+    bottom:100px;
+    left:15px;
+  }
+  span,.customButton, button{
+    @media (max-width:991px) {
+      display: flex !important;
+      max-width: 150px;
+      margin-bottom: 10px;
+    }
   }
 }

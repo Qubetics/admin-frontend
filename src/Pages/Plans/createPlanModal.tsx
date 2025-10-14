@@ -16,7 +16,7 @@ const createPlanModal = ({
   provAddress,
 }: any) => {
   const initialFormData = {
-    hours: "",
+    hours: "720",
     bytes: "",
     price: "",
   };
@@ -32,10 +32,18 @@ const createPlanModal = ({
     const { name, value } = e.target;
     let errorMsg = "";
     if (!/^[1-9]\d*$/.test(value) && value !== "") {
-      // toast.error("Only number in decimal is allowed");
-
       errorMsg = "Only positive numbers allowed";
+    } else if (name === "hours" && value !== "" && Number(value) < 720) {
+      errorMsg = "Minimum value is 720";
 
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+  
+    }
+  
+    if (errorMsg) {
       setErrors((prev) => ({
         ...prev,
         [name]: errorMsg,
@@ -152,7 +160,7 @@ const createPlanModal = ({
                     name="hours"
                     placeholder="Enter Validity (hours)"
                     value={formData.hours}
-                    onChange={handleChange}
+                    disable={true}
                   />
                   {errors.hours && <p style={{ color: "red", fontSize: "12px" }}>{errors.hours}</p>}
                 </div>
