@@ -383,9 +383,9 @@ const Header = () => {
                 <div>{truncateValue(authData)}</div>
                 <CopyText text={authData} />
               </div>
-              <span className="customButton balance-display">
+              {/* <span className="customButton balance-display">
                 {formatBalance(balance)} TICS
-              </span>
+              </span> */}
               <ButtonCustom
                 className="web-logout"
                 label={isConnecting ? "Logging out..." : "Logout"}
