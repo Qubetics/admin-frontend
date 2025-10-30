@@ -82,9 +82,12 @@ export const sendMsgs = async (
       envConstants.chainId,
       signedTx.tx
     );
-    const txTracer = new TendermintTxTracer(envConstants.rpc_endpoint, "/websocket");
-    await txTracer.traceTx(txHash).then((tx:any) => {
-      console.log(tx,"Transaction commit successfully");
+    const txTracer = new TendermintTxTracer(
+      envConstants.rpc_endpoint,
+      "/websocket"
+    );
+    await txTracer.traceTx(txHash).then((tx: any) => {
+      console.log(tx, "Transaction commit successfully");
     });
 
     return txHash;

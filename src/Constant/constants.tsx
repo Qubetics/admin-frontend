@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from "bignumber.js";
 
 export const apiMethods = {
   GET: "get",
@@ -15,6 +15,9 @@ export const TYPE_URLS = {
   UPDATE_NODE_STATUS: "/qubetics.node.v3.MsgUpdateNodeStatusRequest",
   LINK_NODE: "/qubetics.plan.v3.MsgLinkNodeRequest",
   UNLINK_NODE: "/qubetics.plan.v3.MsgUnlinkNodeRequest",
+  REGISTER_PROVIDER: "/qubetics.provider.v3.MsgRegisterProviderRequest",
+  UPDATE_STATUS_PROVIDER:
+    "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
 };
 
 export const provWalletPrefix = "qubeticsprov";
@@ -26,7 +29,8 @@ export const gbToBytes = (gb: any): string => {
 };
 
 export const bytesToGb = (bytes: number): number => {
-  if(!bytes) return 0;
+  if (!bytes) return 0;
+
   return Math.round(bytes / (1024 * 1024 * 1024));
 };
 

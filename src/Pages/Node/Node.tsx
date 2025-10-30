@@ -22,7 +22,11 @@ function Node() {
       value: "allnodes",
       count: activeAccount?.totalCount || 0,
     },
-    { label: "Active", value: "active", count: activeAccount?.activeCount || 0 },
+    {
+      label: "Active",
+      value: "active",
+      count: activeAccount?.activeCount || 0,
+    },
     {
       label: "Inactive",
       value: "inactive",
@@ -126,8 +130,18 @@ function Node() {
                     <tr key={i}>
                       <td>{row?.orgName ? row?.orgName : "-"}</td>
                       <td>
-                        <span className="address_nord" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
-                          <div className="copy-btn"><CopyText text={row?.nodeAddress} /></div>
+                        <span
+                          className="address_nord"
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          {row?.nodeAddress}
+                          <div className="copy-btn">
+                            <CopyText text={row?.nodeAddress} />
+                          </div>
                         </span>
                       </td>
                       {active !== "active" && active !== "inactive" && (
@@ -158,7 +172,9 @@ function Node() {
             totalPages={totalPages}
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
-            onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
           />
         )}
       </div>

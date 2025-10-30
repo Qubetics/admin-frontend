@@ -4,13 +4,17 @@ import DashboardLayout from "../Common/Layouts/DashboardLayout/DashboardLayout";
 import Plans from "../Pages/Plans/Plans.tsx";
 import Node from "../Pages/Node/Node.tsx";
 import LandingPage from "../Pages/LandingPage/LandingPage.tsx";
- import Dashboard from "../Pages/Dashboard/Dashboard.tsx";
+import Dashboard from "../Pages/Dashboard/Dashboard.tsx";
+import ServiceProvider from "../Pages/ServiceProvider/ServiceProvider.tsx";
 
 // Pages function returning public and private pages
 export default function PAGES() {
   return {
     // Public pages - accessible without authentication
-    PUBLIC_PAGES: [{ path: Path.LANDING, element: <LandingPage /> }],
+    PUBLIC_PAGES: [
+      { path: Path.LANDING, element: <LandingPage /> },
+      { path: Path.SERVICE_PROVIDER, element: <ServiceProvider /> },
+    ],
 
     // Private pages - require authentication
     PRIVATE_PAGES: [

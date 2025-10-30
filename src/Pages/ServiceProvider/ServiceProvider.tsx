@@ -1,0 +1,184 @@
+"use client";
+
+import React, { useState } from "react";
+import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
+import CustomInput from "../../Common/CustomInput/CustomInput";
+import "./ServiceProvider.scss";
+import {
+  buildRegisterProviderMessage,
+  buildUpdateProviderStatusMessage,
+} from "../../service/BuildMessage/buildMessage";
+import { processTransaction } from "../../service/processTransaction/processTransaction";
+import { toast } from "react-toastify";
+import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import { useIsLoggedIn } from "../../Context/LoggedInContext";
+import { provWalletPrefix } from "../../Constant/constants";
+
+interface ServiceProviderFormData {
+  name: string;
+  email: string;
+  website: string;
+  description: string;
+}
+
+interface FormErrors {
+  name?: string;
+  email?: string;
+  website?: string;
+  description?: string;
+}
+
+const ServiceProvider = () => {
+  const [formData, setFormData] = useState<ServiceProviderFormData>({
+    name: "",
+    email: "",
+    website: "",
+    description: "",
+  });
+
+  const [errors, setErrors] = useState<FormErrors>({});
+  const { authData } = useIsLoggedIn();
+
+  const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const validateForm = (): boolean => {
+    const newErrors: FormErrors = {};
+
+    if (!formData.name.trim()) newErrors.name = "Name is required.";
+    if (!formData.website.trim())
+      newErrors.website = "Website URL is required.";
+    if (!formData.description.trim())
+      newErrors.description = "Description is required.";
+    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Please enter a valid email address.";
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!validateForm()) return;
+
+    try {
+      const message = buildRegisterProviderMessage({
+        from: provAddress,
+        name: formData.name,
+        // identity: string;
+        website: formData.website,
+        description: formData.description,
+      });
+      const TxHash = await processTransaction(message);
+
+      if (!TxHash) {
+        return;
+      } else {
+        try {
+          const message = buildUpdateProviderStatusMessage({
+            from: provAddress,
+            status: TxHash,
+          });
+          const res = await processTransaction(message);
+
+          console.log("world heres", res);
+        } catch (err: any) {}
+
+        setFormData({
+          name: "",
+          email: "",
+          website: "",
+          description: "",
+        });
+      }
+    } catch (err: any) {
+      toast.error("Something went wrong");
+    }
+  };
+
+  return (
+    <div className="mainContainer">
+      <h4>Register as Service Provider</h4>
+
+      <div className="borderDiv borderDiv-bordered">
+        <h4 className="borderDiv-header">Connect Keplr Wallet</h4>
+        <div>
+          Ensure that you are connected to the correct Keplr wallet before
+          proceeding with the Service Provider registration.
+          <br />
+          The wallet you connect will be used to verify your identity, manage
+          your node registration, and handle all related transactions on the
+          blockchain. Connecting the wrong wallet may prevent successful
+          registration or cause discrepancies in ownership verification.
+        </div>
+      </div>
+
+      <form className="formDiv" onSubmit={handleSubmit}>
+        <label>
+          Name<span className="redText">*</span>
+        </label>
+        <CustomInput
+          type="text"
+          name="name"
+          placeholder="Enter Name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        {errors.name && <div className="redText">{errors.name}</div>}
+
+        <label>Email Address</label>
+        <CustomInput
+          type="email"
+          name="email"
+          placeholder="Enter your email address"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        {errors.email && <div className="redText">{errors.email}</div>}
+
+        <label>
+          Website URL<span className="redText">*</span>
+        </label>
+        <CustomInput
+          type="text"
+          name="website"
+          placeholder="Enter Website URL"
+          value={formData.website}
+          onChange={handleChange}
+        />
+        {errors.website && <div className="redText">{errors.website}</div>}
+
+        <label>
+          Description<span className="redText">*</span>
+        </label>
+        <CustomInput
+          type="text"
+          name="description"
+          placeholder="Enter Description"
+          value={formData.description}
+          onChange={handleChange}
+        />
+        {errors.description && (
+          <div className="redText">{errors.description}</div>
+        )}
+
+        <ButtonCustom label="Submit" />
+      </form>
+    </div>
+  );
+};
+
+export default ServiceProvider;

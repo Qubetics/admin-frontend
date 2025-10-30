@@ -28,7 +28,11 @@ import NotificationToast from "../../Common/NotificationModal/NotificationModal"
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
 import { Col, Row } from "antd";
-import { CircleCheckIcon, CircleCloseIcon, NordsIcon } from "../../assets/SvgIcon/SvgIcon";
+import {
+  CircleCheckIcon,
+  CircleCloseIcon,
+  NordsIcon,
+} from "../../assets/SvgIcon/SvgIcon";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
@@ -73,17 +77,29 @@ export default function Dashboard() {
 
   const buttons = [
     {
-      label: <>All <span>Requests</span></>,
+      label: (
+        <>
+          All <span>Requests</span>
+        </>
+      ),
       value: "allrequest",
       count: countAccount?.totalCount || 0,
     },
     {
-      label: <>Link <span>Requests</span></>,
+      label: (
+        <>
+          Link <span>Requests</span>
+        </>
+      ),
       value: "Link",
       count: countAccount?.linkCount || 0,
     },
     {
-      label: <>Unlink <span>Requests</span></>,
+      label: (
+        <>
+          Unlink <span>Requests</span>
+        </>
+      ),
       value: "Unlink",
       count: countAccount?.UnlinkCount || 0,
     },
@@ -103,9 +119,7 @@ export default function Dashboard() {
   const CardBox: React.FC<CardBoxProps> = ({ title, value, icons }) => {
     return (
       <div className="card-box">
-        <div className="card-box-icons">
-          {icons}
-        </div>
+        <div className="card-box-icons">{icons}</div>
         <div className="right-text">
           <p className="card-title">{title}</p>
           <h2 className="card-value">{value}</h2>
@@ -165,11 +179,9 @@ export default function Dashboard() {
 
       const res = await processTransaction(leaseMessage);
       if (!res) {
-        setUnLease(true)
-      }
-      else {
-        setLease(true)
-
+        setUnLease(true);
+      } else {
+        setLease(true);
       }
     } catch (err: any) {
       console.error(err.message, "err");
@@ -195,7 +207,6 @@ export default function Dashboard() {
       // setRejectShow(true);
     }
     fetchNodeRequestNumber();
-
   };
 
   const onReject = (nodeAddress: string) => {
@@ -253,11 +264,11 @@ export default function Dashboard() {
   };
 
   const convertPlanString = (planStr?: any): any => {
-    if (!planStr) return '';
+    if (!planStr) return "";
 
     // Split the string into numeric part and the rest
-    const [valueStr, ...rest] = planStr.split(' ');
-    const unitStr = rest.join(' '); // e.g., "TICS/month"
+    const [valueStr, ...rest] = planStr.split(" ");
+    const unitStr = rest.join(" "); // e.g., "TICS/month"
 
     // Convert the numeric part
     const convertedValue = getValueWithUnit(valueStr);
@@ -277,9 +288,21 @@ export default function Dashboard() {
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
-    { icons: <NordsIcon />, title: "All Nodes", value: activeAccount?.totalCount || 0 },
-    { icons: <CircleCheckIcon />, title: "Active Nodes", value: activeAccount?.activeCount || 0 },
-    { icons: <CircleCloseIcon />, title: "Inactive Nodes", value: activeAccount?.inactiveCount || 0 },
+    {
+      icons: <NordsIcon />,
+      title: "All Nodes",
+      value: activeAccount?.totalCount || 0,
+    },
+    {
+      icons: <CircleCheckIcon />,
+      title: "Active Nodes",
+      value: activeAccount?.activeCount || 0,
+    },
+    {
+      icons: <CircleCloseIcon />,
+      title: "Inactive Nodes",
+      value: activeAccount?.inactiveCount || 0,
+    },
   ];
 
   return (
@@ -291,7 +314,12 @@ export default function Dashboard() {
         <Row gutter={[25, 20]} className="card-row">
           {cards.map((card, index) => (
             <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
-              <CardBox key={index} title={card.title} value={card.value} icons={card.icons} />
+              <CardBox
+                key={index}
+                title={card.title}
+                value={card.value}
+                icons={card.icons}
+              />
             </Col>
           ))}
         </Row>
@@ -348,14 +376,26 @@ export default function Dashboard() {
                         <td>{row?.email ? row?.email : "-"}</td>
                         <td>{row?.location || "-"}</td>
                         <td>
-                          <span className="address_nord" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
-                            <div className="copy-btn"><CopyText text={row?.nodeAddress} /></div>
+                          <span
+                            className="address_nord"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                            }}
+                          >
+                            {truncateValue(row?.nodeAddress)}
+                            <div className="copy-btn">
+                              <CopyText text={row?.nodeAddress} />
+                            </div>
                           </span>
                         </td>
                         <td>
                           {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
                         </td>
-                        <td>{row?.plan ? convertPlanString(row?.plan) : "-"}</td>
+                        <td>
+                          {row?.plan ? convertPlanString(row?.plan) : "-"}
+                        </td>
                         {active === "allrequest" && <td>{row?.requestFor}</td>}
                         <td>
                           <div className="action-btns">
@@ -396,7 +436,9 @@ export default function Dashboard() {
             totalPages={totalPages}
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
-            onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
           />
         )}
         <Modal show={show} onHide={handleClose} centered>
