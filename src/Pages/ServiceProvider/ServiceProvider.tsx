@@ -12,7 +12,13 @@ import { processTransaction } from "../../service/processTransaction/processTran
 import { toast } from "react-toastify";
 import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { provWalletPrefix } from "../../Constant/constants";
+import { provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
+import useNetworkRequest from "../../Hooks/useGetApi";
+import { apiUrls } from "../../Constant/apiUrls";
+import { apiMethods } from "../../Constant/constants";
+import { computePubKey } from "../../utils/Helper/CommonHelper";
+import { envConstants } from "../../Constant/envConstants";
+import { useNavigate } from "react-router-dom";
 
 interface ServiceProviderFormData {
   name: string;
@@ -29,13 +35,15 @@ interface FormErrors {
 }
 
 const ServiceProvider = () => {
+  const useGetApi = useNetworkRequest();
+  const navigate = useNavigate();
+
   const [formData, setFormData] = useState<ServiceProviderFormData>({
     name: "",
     email: "",
     website: "",
     description: "",
   });
-
   const [errors, setErrors] = useState<FormErrors>({});
   const { authData } = useIsLoggedIn();
 
@@ -58,12 +66,9 @@ const ServiceProvider = () => {
     const newErrors: FormErrors = {};
 
     if (!formData.name.trim()) newErrors.name = "Name is required.";
-    if (!formData.website.trim())
-      newErrors.website = "Website URL is required.";
-    if (!formData.description.trim())
-      newErrors.description = "Description is required.";
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Please enter a valid email address.";
+    if (!formData.website.trim()) newErrors.website = "Website URL is required.";
+    if (!formData.description.trim()) newErrors.description = "Description is required.";
+    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -71,111 +76,120 @@ const ServiceProvider = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!validateForm()) return;
 
     try {
-      const message = buildRegisterProviderMessage({
-        from: provAddress,
-        name: formData.name,
-        // identity: string;
-        website: formData.website,
-        description: formData.description,
+      const registerTx = await processTransaction(
+        buildRegisterProviderMessage({
+          from: authData,
+          name: formData.name,
+          website: formData.website,
+          description: formData.description,
+        })
+      );
+      if (!registerTx) return;
+
+      const statusTx = await processTransaction(
+        buildUpdateProviderStatusMessage({
+          from: provAddress,
+          status: STATUS_ENUM.STATUS_ACTIVE,
+        })
+      );
+      if (!statusTx) return;
+
+      const keplr = (window as any)?.keplr;
+      if (!keplr) return toast.error("Keplr wallet not found");
+
+      const { signature, pub_key } = await keplr.signArbitrary(envConstants.chainId, authData, authData);
+      if (!signature) return toast.error("Signature rejected");
+
+      const pubKeyFromSignature = computePubKey(authData, signature, authData);
+      const { success } = await useGetApi({
+        endpoint: apiUrls.register,
+        method: apiMethods.POST,
+        body: {
+          address: authData,
+          name: formData.name,
+          email: formData.email,
+          url: formData.website,
+          description: formData.description,
+          pubKey: pubKeyFromSignature,
+          signature: { pub_key, signature },
+          txHash: Buffer.from(statusTx).toString("hex"),
+        },
       });
-      const TxHash = await processTransaction(message);
 
-      if (!TxHash) {
-        return;
+      if (success) {
+        toast.success("Registration successful!");
+        navigate("/dashboard");
       } else {
-        try {
-          const message = buildUpdateProviderStatusMessage({
-            from: provAddress,
-            status: TxHash,
-          });
-          const res = await processTransaction(message);
-
-          console.log("world heres", res);
-        } catch (err: any) {}
-
-        setFormData({
-          name: "",
-          email: "",
-          website: "",
-          description: "",
-        });
+        toast.error("Registration failed.");
+        setFormData({ name: "", email: "", website: "", description: "" });
       }
-    } catch (err: any) {
-      toast.error("Something went wrong");
+    } catch (err) {
+      console.error(err);
+      toast.error("Something went wrong during registration");
     }
   };
 
   return (
-    <div className="mainContainer">
+    <div className='mainContainer'>
       <h4>Register as Service Provider</h4>
 
-      <div className="borderDiv borderDiv-bordered">
-        <h4 className="borderDiv-header">Connect Keplr Wallet</h4>
+      <div className='borderDiv borderDiv-bordered'>
+        <h4 className='borderDiv-header'>Connect Keplr Wallet</h4>
         <div>
-          Ensure that you are connected to the correct Keplr wallet before
-          proceeding with the Service Provider registration.
+          Ensure that you are connected to the correct Keplr wallet before proceeding with the Service Provider
+          registration.
           <br />
-          The wallet you connect will be used to verify your identity, manage
-          your node registration, and handle all related transactions on the
-          blockchain. Connecting the wrong wallet may prevent successful
-          registration or cause discrepancies in ownership verification.
+          The wallet you connect will be used to verify your identity, manage your node registration, and handle all
+          related transactions on the blockchain. Connecting the wrong wallet may prevent successful registration or
+          cause discrepancies in ownership verification.
         </div>
       </div>
 
-      <form className="formDiv" onSubmit={handleSubmit}>
+      <form className='formDiv' onSubmit={handleSubmit}>
         <label>
-          Name<span className="redText">*</span>
+          Name<span className='redText'>*</span>
         </label>
-        <CustomInput
-          type="text"
-          name="name"
-          placeholder="Enter Name"
-          value={formData.name}
-          onChange={handleChange}
-        />
-        {errors.name && <div className="redText">{errors.name}</div>}
+        <CustomInput type='text' name='name' placeholder='Enter Name' value={formData.name} onChange={handleChange} />
+        {errors.name && <div className='redText'>{errors.name}</div>}
 
         <label>Email Address</label>
         <CustomInput
-          type="email"
-          name="email"
-          placeholder="Enter your email address"
+          type='email'
+          name='email'
+          placeholder='Enter your email address'
           value={formData.email}
           onChange={handleChange}
         />
-        {errors.email && <div className="redText">{errors.email}</div>}
+        {errors.email && <div className='redText'>{errors.email}</div>}
 
         <label>
-          Website URL<span className="redText">*</span>
+          Website URL<span className='redText'>*</span>
         </label>
         <CustomInput
-          type="text"
-          name="website"
-          placeholder="Enter Website URL"
+          type='text'
+          name='website'
+          placeholder='Enter Website URL'
           value={formData.website}
           onChange={handleChange}
         />
-        {errors.website && <div className="redText">{errors.website}</div>}
+        {errors.website && <div className='redText'>{errors.website}</div>}
 
         <label>
-          Description<span className="redText">*</span>
+          Description<span className='redText'>*</span>
         </label>
         <CustomInput
-          type="text"
-          name="description"
-          placeholder="Enter Description"
+          type='text'
+          name='description'
+          placeholder='Enter Description'
           value={formData.description}
           onChange={handleChange}
         />
-        {errors.description && (
-          <div className="redText">{errors.description}</div>
-        )}
+        {errors.description && <div className='redText'>{errors.description}</div>}
 
-        <ButtonCustom label="Submit" />
+        <ButtonCustom label='Submit' />
       </form>
     </div>
   );

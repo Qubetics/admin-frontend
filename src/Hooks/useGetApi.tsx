@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
-import axios from "axios";
-import { apiMethods } from "../Constant/constants";
-import { envConstants } from "../Constant/envConstants";
-import { useIsLoggedIn } from "../Context/LoggedInContext";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
+import axios from 'axios';
+import { apiMethods } from '../Constant/constants';
+import { envConstants } from '../Constant/envConstants';
+import { useIsLoggedIn } from '../Context/LoggedInContext';
+import { data, useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const useNetworkRequest = () => {
   const { setAuthData } = useIsLoggedIn();
@@ -17,7 +17,7 @@ const useNetworkRequest = () => {
     body,
     url,
   }: // checktoast,
-    any) => {
+  any) => {
     try {
       const response = await axios({
         method: method || apiMethods.GET,
@@ -29,8 +29,8 @@ const useNetworkRequest = () => {
       return {
         success: true,
         data: response.data,
-        headers: { totalCount: response.headers["total"] },
-        message: response.data.message || "Success",
+        headers: { totalCount: response.headers['total'] },
+        message: response.data.message || 'Success',
       };
     } catch (error: any) {
       // if (checktoast) {
@@ -41,19 +41,20 @@ const useNetworkRequest = () => {
       //   hideOn && updateToast("error", error?.message);
       // }
       if (error?.response?.status === 401) {
-        localStorage.removeItem("authData");
+        localStorage.removeItem('authData');
         sessionStorage.clear();
-        setAuthData("");
-        toast.error("unauthorized Access");
-        navigate("/landing");
+        setAuthData('');
+        toast.error('unauthorized Access');
+        navigate('/landing');
         return {
           success: false,
-          message: "Session expired. Please log in again.",
+          message: 'Session expired. Please log in again.',
         };
       }
       return {
         success: false,
         message: error?.response?.data?.message,
+        data: error?.response?.data,
       };
     }
   };

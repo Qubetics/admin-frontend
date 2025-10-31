@@ -1,24 +1,24 @@
 //@ts-nocheck
-import {
-  AuthInfo,
-  Fee,
-  SignerInfo,
-  TxBody,
-  TxRaw,
-} from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
+import { AuthInfo, Fee, SignerInfo, TxBody, TxRaw } from "@keplr-wallet/proto-types/cosmos/tx/v1beta1/tx";
 import { SignMode } from "@keplr-wallet/proto-types/cosmos/tx/signing/v1beta1/signing";
 import { PubKey } from "@keplr-wallet/proto-types/cosmos/crypto/secp256k1/keys";
 import { api, fetchAccountInfo } from "./CommonHelper";
 import { envConstants } from "../../Constant/envConstants";
 import { Buffer } from "buffer";
+import { ChainInfo, Keplr } from "@keplr-wallet/types";
 
 export const simulateMsgs = async (
-  keplr,
-  chainId,
-  sender,
-  proto,
-  fee,
-  memo
+  keplr: Keplr,
+  chainId: ChainInfo,
+  sender: string,
+  proto: Any[],
+  fee: [
+    {
+      denom: string;
+      amount: string;
+    }
+  ],
+  memo: string = ""
 ) => {
   const account = await fetchAccountInfo(sender);
 
@@ -68,24 +68,19 @@ export const simulateMsgs = async (
       signatures: [new Uint8Array(64)],
     }).finish();
 
-    const simulatedResult = await api(
-      `${envConstants.swagger_api}/cosmos/tx/v1beta1/simulate`,
-      {
-        method: "POST",
-        headers: {
-          "content-type": "application/json",
-        },
-        body: JSON.stringify({
-          tx_bytes: Buffer.from(unsignedTx).toString("base64"),
-        }),
-      }
-    );
+    const simulatedResult = await api(`${envConstants.swagger_api}/cosmos/tx/v1beta1/simulate`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        tx_bytes: Buffer.from(unsignedTx).toString("base64"),
+      }),
+    });
 
     const gasUsed = parseInt(simulatedResult?.gas_info.gas_used);
     if (Number.isNaN(gasUsed)) {
-      throw new Error(
-        `Invalid integer gas: ${simulatedResult?.gas_info.gas_used}`
-      );
+      throw new Error(`Invalid integer gas: ${simulatedResult?.gas_info.gas_used}`);
     }
 
     return gasUsed;

@@ -35,11 +35,7 @@ export function buildCreatePlanMessage(params?: {
   };
 }
 
-export function buildLinkNodeMessage(params: {
-  from?: any;
-  id?: any;
-  nodeAddress?: any;
-}) {
+export function buildLinkNodeMessage(params: { from?: any; id?: any; nodeAddress?: any }) {
   return {
     typeUrl: TYPE_URLS.LINK_NODE,
     value: MsgLinkNodeRequest.encode({
@@ -50,11 +46,7 @@ export function buildLinkNodeMessage(params: {
   };
 }
 
-export function buildUnlinkNodeMessage(params: {
-  from?: any;
-  id?: any;
-  nodeAddress?: any;
-}) {
+export function buildUnlinkNodeMessage(params: { from?: any; id?: any; nodeAddress?: any }) {
   return {
     typeUrl: TYPE_URLS.UNLINK_NODE,
     value: MsgUnlinkNodeRequest.encode({
@@ -84,11 +76,7 @@ export function buildStartLeaseStatusMessage(params: {
   };
 }
 
-export function buildUpdatePlanStatusMessage(params: {
-  from?: any;
-  id: any;
-  status: number;
-}) {
+export function buildUpdatePlanStatusMessage(params: { from?: any; id: any; status: number }) {
   return {
     typeUrl: TYPE_URLS.UPDATE_PLAN_STATUS,
     value: MsgUpdatePlanStatusRequest.encode({
@@ -100,7 +88,7 @@ export function buildUpdatePlanStatusMessage(params: {
 }
 
 export function buildRegisterProviderMessage(params?: {
-  from?: string;
+  from?: any;
   name?: string;
   identity?: string;
   website?: string;
@@ -108,25 +96,22 @@ export function buildRegisterProviderMessage(params?: {
 }) {
   return {
     typeUrl: TYPE_URLS.REGISTER_PROVIDER,
-    value: MsgRegisterProviderRequest.fromPartial({
+    value: MsgRegisterProviderRequest.encode({
       from: params?.from, // bech32 address and also signer msg with same msnemnics for thsi transaction
       name: params?.name || "",
       identity: params?.identity || "",
       website: params?.website || "",
       description: params?.description || "",
-    }),
+    }).finish(),
   };
 }
 
-export function buildUpdateProviderStatusMessage(params?: {
-  from?: string;
-  status?: number;
-}) {
+export function buildUpdateProviderStatusMessage(params?: { from?: any; status?: any }) {
   return {
     typeUrl: TYPE_URLS.UPDATE_STATUS_PROVIDER,
-    value: MsgUpdateProviderStatusRequest.fromPartial({
+    value: MsgUpdateProviderStatusRequest.encode({
       from: params?.from, //provider address
       status: params?.status,
-    }),
+    }).finish(),
   };
 }
