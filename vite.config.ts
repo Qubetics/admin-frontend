@@ -1,5 +1,5 @@
-import { defineConfig } from 'vite';
-import { nodePolyfills } from 'vite-plugin-node-polyfills';
+import { defineConfig } from "vite";
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
   plugins: [
@@ -15,31 +15,29 @@ export default defineConfig({
     }),
   ],
   define: {
-    global: 'globalThis',
+    global: "globalThis",
   },
   resolve: {
     alias: {
-      buffer: 'buffer',
-      process: 'process/browser',
-      util: 'util',
-      stream: 'stream-browserify',
-      events: 'events',
+      buffer: "buffer",
+      process: "process/browser",
+      util: "util",
+      stream: "stream-browserify",
+      events: "events",
     },
   },
   optimizeDeps: {
-    include: ['buffer', 'process'],
+    include: ["buffer", "process"],
   },
   server: {
     proxy: {
-      '/api': {
+      "/api": {
         // Proxy requests starting with /api
-        /* target: 'http://172.16.15.142:4003',  */ // Your backend server address
+        target: "http://172.16.15.29:4003", // Your backend server address
         // changeOrigin: true, // Needed for virtual hosted sites
-        secure: process.env.VITE_PLATFORM_ENVIROMENT == 'production' ? true : false,
+        secure: process.env.VITE_PLATFORM_ENVIROMENT == "production" ? true : false,
         ws: true,
-        target: 'http://172.16.15.142:4003',
       },
     },
-    host: true,
   },
 });
