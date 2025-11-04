@@ -233,17 +233,10 @@ const Header = () => {
           setAuthData(address);
           navigate(Path.SERVICE_PROVIDER);
           return false;
-        } else {
-          if (data?.isExist) {
-            setAuthData(address);
-            navigate("/dashboard");
-            return true;
-          } else {
-            setAuthData(address);
-            navigate(Path.SERVICE_PROVIDER);
-            return false;
-          }
         }
+        setAuthData(address);
+        navigate("/dashboard");
+        return true;
       } catch (error: any) {
         if (error?.message?.includes("rejected")) {
           toast.error("Signing rejected by user");

@@ -10,15 +10,15 @@ import {
 } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { toast } from "react-toastify";
-import { convertNodeToWallet } from "../../utils/Helper/CommonHelper";
+import { convertNodeToWallet, computePubKey } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
+import { DESCRIPTION, HEADING, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { apiMethods } from "../../Constant/constants";
-import { computePubKey } from "../../utils/Helper/CommonHelper";
 import { envConstants } from "../../Constant/envConstants";
 import { useNavigate } from "react-router-dom";
+import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 
 interface ServiceProviderFormData {
   name: string;
@@ -37,6 +37,7 @@ interface FormErrors {
 const ServiceProvider = () => {
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
+  const { authData } = useIsLoggedIn();
 
   const [formData, setFormData] = useState<ServiceProviderFormData>({
     name: "",
@@ -45,7 +46,8 @@ const ServiceProvider = () => {
     description: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
-  const { authData } = useIsLoggedIn();
+  const [showRegisterToast, setShowRegisterToast] = useState(false);
+  const [showProviderToast, setShowProviderToast] = useState(false);
 
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
@@ -55,7 +57,6 @@ const ServiceProvider = () => {
       ...prev,
       [name]: value,
     }));
-
     setErrors((prev) => ({
       ...prev,
       [name]: "",
@@ -64,12 +65,10 @@ const ServiceProvider = () => {
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
-
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.website.trim()) newErrors.website = "Website URL is required.";
     if (!formData.description.trim()) newErrors.description = "Description is required.";
     if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
-
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -88,6 +87,7 @@ const ServiceProvider = () => {
         })
       );
       if (!registerTx) return;
+      setShowRegisterToast(true);
 
       const statusTx = await processTransaction(
         buildUpdateProviderStatusMessage({
@@ -96,6 +96,8 @@ const ServiceProvider = () => {
         })
       );
       if (!statusTx) return;
+
+      setShowProviderToast(true);
 
       const keplr = (window as any)?.keplr;
       if (!keplr) return toast.error("Keplr wallet not found");
@@ -191,6 +193,20 @@ const ServiceProvider = () => {
 
         <ButtonCustom label='Submit' />
       </form>
+
+      <NotificationToast
+        show={showRegisterToast}
+        handleClose={() => setShowRegisterToast(false)}
+        heading={HEADING.REGISTER_PROVIDER}
+        description={DESCRIPTION.REGISTER_PROVIDER}
+      />
+
+      <NotificationToast
+        show={showProviderToast}
+        handleClose={() => setShowProviderToast(false)}
+        heading={HEADING.PROVIDER_STATUS}
+        description={DESCRIPTION.PROVIDER_STATUS}
+      />
     </div>
   );
 };

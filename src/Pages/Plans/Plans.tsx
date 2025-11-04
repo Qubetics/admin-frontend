@@ -25,13 +25,12 @@ const Plans = () => {
   const { authData } = useIsLoggedIn();
   const [createShow, setCreateShow] = useState(false);
 
-  // manage this in state 
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const getAllPlan = async () => {
     setIsLoading(true);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.getAllPlan(page, limit),
+      endpoint: apiUrls.getAllPlan(page, limit, authData),
     });
     setIsLoading(false);
 
@@ -44,33 +43,33 @@ const Plans = () => {
   const handleClick = async (val: any) => {
     const message = buildUpdatePlanStatusMessage({
       from: provAddress,
-      id: Long.fromString(val?.id),   //paln Id
-      status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE
+      id: Long.fromString(val?.id),
+      status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE,
     });
 
-    const TxHash = await processTransaction(message)
+    const TxHash = await processTransaction(message);
 
     if (!TxHash) {
-      toast.error("Transaction failed")
+      toast.error("Transaction failed");
       return;
     }
-    toast.success("Sucessfully Activated")
+    toast.success("Sucessfully Activated");
     getAllPlan();
-  }
+  };
 
   useEffect(() => {
     getAllPlan();
   }, [page, limit]);
 
   return (
-    <div className="plans">
-      <div className="plans__header">
+    <div className='plans'>
+      <div className='plans__header'>
         <h3>Plans List</h3>
-        <ButtonCustom className="btn_create" label="Create Plan" onClick={() => setCreateShow(true)} />
+        <ButtonCustom className='btn_create' label='Create Plan' onClick={() => setCreateShow(true)} />
       </div>
-      <div className="custom-table-wrapper commonTable">
-        <div className="outerTable">
-          <table className="custom-table plans-table ">
+      <div className='custom-table-wrapper commonTable'>
+        <div className='outerTable'>
+          <table className='custom-table plans-table '>
             <thead>
               <tr>
                 <th>Plan ID</th>
@@ -100,15 +99,21 @@ const Plans = () => {
                     <td>{row?.id}</td>
                     <td>
                       {row?.prices?.length > 0
-                        ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${(String(row?.prices[0]?.denom)).toUpperCase()}`
+                        ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${String(
+                            row?.prices[0]?.denom
+                          ).toUpperCase()}`
                         : "-"}
                     </td>
                     <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
                     <td>{Timestamp(row?.status_at)}</td>
                     <td>{formatDuration(Number(row?.hours))}</td>
                     <td>
-                      <div className="action-btns">
-                        <button className={`approve-btn ${row.status === "active" ? "disabled" : ""}`} onClick={() => handleClick(row)} disabled={row.status === "active"}>
+                      <div className='action-btns'>
+                        <button
+                          className={`approve-btn ${row.status === "active" ? "disabled" : ""}`}
+                          onClick={() => handleClick(row)}
+                          disabled={row.status === "active"}
+                        >
                           {row.status === "active" ? "Activated" : "Activate"}
                         </button>
                       </div>
@@ -121,15 +126,24 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && <Pagination
-          currentPage={page}
-          totalPages={totalPages}
-          onPageChange={(newPage: any) => setPage(newPage)}
-          limit={limit}
-          onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
-        />}
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: any) => setPage(newPage)}
+            limit={limit}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
+          />
+        )}
 
-        <CreatePlanModal createShow={createShow} setCreateShow={setCreateShow} getAllPlan={getAllPlan} provAddress={provAddress} />
+        <CreatePlanModal
+          createShow={createShow}
+          setCreateShow={setCreateShow}
+          getAllPlan={getAllPlan}
+          provAddress={provAddress}
+        />
       </div>
     </div>
   );
