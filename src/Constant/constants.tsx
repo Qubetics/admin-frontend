@@ -1,4 +1,4 @@
-import BigNumber from 'bignumber.js';
+import BigNumber from "bignumber.js";
 
 export const apiMethods = {
   GET: "get",
@@ -15,6 +15,8 @@ export const TYPE_URLS = {
   UPDATE_NODE_STATUS: "/qubetics.node.v3.MsgUpdateNodeStatusRequest",
   LINK_NODE: "/qubetics.plan.v3.MsgLinkNodeRequest",
   UNLINK_NODE: "/qubetics.plan.v3.MsgUnlinkNodeRequest",
+  REGISTER_PROVIDER: "/qubetics.provider.v3.MsgRegisterProviderRequest",
+  UPDATE_STATUS_PROVIDER: "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
 };
 
 export const provWalletPrefix = "qubeticsprov";
@@ -26,7 +28,8 @@ export const gbToBytes = (gb: any): string => {
 };
 
 export const bytesToGb = (bytes: number): number => {
-  if(!bytes) return 0;
+  if (!bytes) return 0;
+
   return Math.round(bytes / (1024 * 1024 * 1024));
 };
 
@@ -41,11 +44,15 @@ export const STATUS_ENUM = {
 export const HEADING = {
   LEASE_NODE: "NODE Provided On Lease",
   EXIST_LEASE: "Existing Leased Node",
+  REGISTER_PROVIDER: "Registering Provider",
+  PROVIDER_STATUS: "Updating Provider Status",
 };
 
 export const DESCRIPTION = {
   LEASE_NODE: "Node provided on lease successfully!",
   EXIST_LEASE: "This node already exists within the ecosystem!",
+  REGISTER_PROVIDER: "Provider registered succesfully",
+  PROVIDER_STATUS: "Provider Status updated Succesfully",
 };
 
 export const UNDEFINED = "undefined";

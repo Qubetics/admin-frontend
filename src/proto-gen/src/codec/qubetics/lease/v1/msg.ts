@@ -7,7 +7,11 @@
 /* eslint-disable */
 import Long from "long";
 import _m0 from "protobufjs/minimal";
-import { RenewalPricePolicy, renewalPricePolicyFromJSON, renewalPricePolicyToJSON } from "../../types/v1/renewal";
+import {
+  RenewalPricePolicy,
+  renewalPricePolicyFromJSON,
+  renewalPricePolicyToJSON,
+} from "../../types/v1/renewal";
 import { Params } from "./params";
 
 export const protobufPackage = "qubetics.lease.v1";
@@ -43,28 +47,27 @@ export interface MsgUpdateParamsRequest {
   params?: Params | undefined;
 }
 
-export interface MsgEndLeaseResponse {
-}
+export interface MsgEndLeaseResponse {}
 
-export interface MsgRenewLeaseResponse {
-}
+export interface MsgRenewLeaseResponse {}
 
 export interface MsgStartLeaseResponse {
   id: Long;
 }
 
-export interface MsgUpdateLeaseResponse {
-}
+export interface MsgUpdateLeaseResponse {}
 
-export interface MsgUpdateParamsResponse {
-}
+export interface MsgUpdateParamsResponse {}
 
 function createBaseMsgEndLeaseRequest(): MsgEndLeaseRequest {
   return { from: "", id: Long.UZERO };
 }
 
 export const MsgEndLeaseRequest = {
-  encode(message: MsgEndLeaseRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgEndLeaseRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -75,7 +78,8 @@ export const MsgEndLeaseRequest = {
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgEndLeaseRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgEndLeaseRequest();
     while (reader.pos < end) {
@@ -122,13 +126,20 @@ export const MsgEndLeaseRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgEndLeaseRequest>, I>>(base?: I): MsgEndLeaseRequest {
+  create<I extends Exact<DeepPartial<MsgEndLeaseRequest>, I>>(
+    base?: I
+  ): MsgEndLeaseRequest {
     return MsgEndLeaseRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgEndLeaseRequest>, I>>(object: I): MsgEndLeaseRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgEndLeaseRequest>, I>>(
+    object: I
+  ): MsgEndLeaseRequest {
     const message = createBaseMsgEndLeaseRequest();
     message.from = object.from ?? "";
-    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     return message;
   },
 };
@@ -138,7 +149,10 @@ function createBaseMsgRenewLeaseRequest(): MsgRenewLeaseRequest {
 }
 
 export const MsgRenewLeaseRequest = {
-  encode(message: MsgRenewLeaseRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgRenewLeaseRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -154,8 +168,12 @@ export const MsgRenewLeaseRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRenewLeaseRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRenewLeaseRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRenewLeaseRequest();
     while (reader.pos < end) {
@@ -224,25 +242,44 @@ export const MsgRenewLeaseRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgRenewLeaseRequest>, I>>(base?: I): MsgRenewLeaseRequest {
+  create<I extends Exact<DeepPartial<MsgRenewLeaseRequest>, I>>(
+    base?: I
+  ): MsgRenewLeaseRequest {
     return MsgRenewLeaseRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgRenewLeaseRequest>, I>>(object: I): MsgRenewLeaseRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgRenewLeaseRequest>, I>>(
+    object: I
+  ): MsgRenewLeaseRequest {
     const message = createBaseMsgRenewLeaseRequest();
     message.from = object.from ?? "";
-    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
-    message.hours = (object.hours !== undefined && object.hours !== null) ? Long.fromValue(object.hours) : Long.ZERO;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
+    message.hours =
+      object.hours !== undefined && object.hours !== null
+        ? Long.fromValue(object.hours)
+        : Long.ZERO;
     message.denom = object.denom ?? "";
     return message;
   },
 };
 
 function createBaseMsgStartLeaseRequest(): MsgStartLeaseRequest {
-  return { from: "", nodeAddress: "", hours: Long.ZERO, denom: "", renewalPricePolicy: 0 };
+  return {
+    from: "",
+    nodeAddress: "",
+    hours: Long.ZERO,
+    denom: "",
+    renewalPricePolicy: 0,
+  };
 }
 
 export const MsgStartLeaseRequest = {
-  encode(message: MsgStartLeaseRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgStartLeaseRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -261,8 +298,12 @@ export const MsgStartLeaseRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgStartLeaseRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgStartLeaseRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgStartLeaseRequest();
     while (reader.pos < end) {
@@ -315,10 +356,14 @@ export const MsgStartLeaseRequest = {
   fromJSON(object: any): MsgStartLeaseRequest {
     return {
       from: isSet(object.from) ? globalThis.String(object.from) : "",
-      nodeAddress: isSet(object.nodeAddress) ? globalThis.String(object.nodeAddress) : "",
+      nodeAddress: isSet(object.nodeAddress)
+        ? globalThis.String(object.nodeAddress)
+        : "",
       hours: isSet(object.hours) ? Long.fromValue(object.hours) : Long.ZERO,
       denom: isSet(object.denom) ? globalThis.String(object.denom) : "",
-      renewalPricePolicy: isSet(object.renewalPricePolicy) ? renewalPricePolicyFromJSON(object.renewalPricePolicy) : 0,
+      renewalPricePolicy: isSet(object.renewalPricePolicy)
+        ? renewalPricePolicyFromJSON(object.renewalPricePolicy)
+        : 0,
     };
   },
 
@@ -337,19 +382,28 @@ export const MsgStartLeaseRequest = {
       obj.denom = message.denom;
     }
     if (message.renewalPricePolicy !== 0) {
-      obj.renewalPricePolicy = renewalPricePolicyToJSON(message.renewalPricePolicy);
+      obj.renewalPricePolicy = renewalPricePolicyToJSON(
+        message.renewalPricePolicy
+      );
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgStartLeaseRequest>, I>>(base?: I): MsgStartLeaseRequest {
+  create<I extends Exact<DeepPartial<MsgStartLeaseRequest>, I>>(
+    base?: I
+  ): MsgStartLeaseRequest {
     return MsgStartLeaseRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgStartLeaseRequest>, I>>(object: I): MsgStartLeaseRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgStartLeaseRequest>, I>>(
+    object: I
+  ): MsgStartLeaseRequest {
     const message = createBaseMsgStartLeaseRequest();
     message.from = object.from ?? "";
     message.nodeAddress = object.nodeAddress ?? "";
-    message.hours = (object.hours !== undefined && object.hours !== null) ? Long.fromValue(object.hours) : Long.ZERO;
+    message.hours =
+      object.hours !== undefined && object.hours !== null
+        ? Long.fromValue(object.hours)
+        : Long.ZERO;
     message.denom = object.denom ?? "";
     message.renewalPricePolicy = object.renewalPricePolicy ?? 0;
     return message;
@@ -361,7 +415,10 @@ function createBaseMsgUpdateLeaseRequest(): MsgUpdateLeaseRequest {
 }
 
 export const MsgUpdateLeaseRequest = {
-  encode(message: MsgUpdateLeaseRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgUpdateLeaseRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -374,8 +431,12 @@ export const MsgUpdateLeaseRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateLeaseRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateLeaseRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateLeaseRequest();
     while (reader.pos < end) {
@@ -415,7 +476,9 @@ export const MsgUpdateLeaseRequest = {
     return {
       from: isSet(object.from) ? globalThis.String(object.from) : "",
       id: isSet(object.id) ? Long.fromValue(object.id) : Long.UZERO,
-      renewalPricePolicy: isSet(object.renewalPricePolicy) ? renewalPricePolicyFromJSON(object.renewalPricePolicy) : 0,
+      renewalPricePolicy: isSet(object.renewalPricePolicy)
+        ? renewalPricePolicyFromJSON(object.renewalPricePolicy)
+        : 0,
     };
   },
 
@@ -428,18 +491,27 @@ export const MsgUpdateLeaseRequest = {
       obj.id = (message.id || Long.UZERO).toString();
     }
     if (message.renewalPricePolicy !== 0) {
-      obj.renewalPricePolicy = renewalPricePolicyToJSON(message.renewalPricePolicy);
+      obj.renewalPricePolicy = renewalPricePolicyToJSON(
+        message.renewalPricePolicy
+      );
     }
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgUpdateLeaseRequest>, I>>(base?: I): MsgUpdateLeaseRequest {
+  create<I extends Exact<DeepPartial<MsgUpdateLeaseRequest>, I>>(
+    base?: I
+  ): MsgUpdateLeaseRequest {
     return MsgUpdateLeaseRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateLeaseRequest>, I>>(object: I): MsgUpdateLeaseRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateLeaseRequest>, I>>(
+    object: I
+  ): MsgUpdateLeaseRequest {
     const message = createBaseMsgUpdateLeaseRequest();
     message.from = object.from ?? "";
-    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     message.renewalPricePolicy = object.renewalPricePolicy ?? 0;
     return message;
   },
@@ -450,7 +522,10 @@ function createBaseMsgUpdateParamsRequest(): MsgUpdateParamsRequest {
 }
 
 export const MsgUpdateParamsRequest = {
-  encode(message: MsgUpdateParamsRequest, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgUpdateParamsRequest,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (message.from !== "") {
       writer.uint32(10).string(message.from);
     }
@@ -460,8 +535,12 @@ export const MsgUpdateParamsRequest = {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsRequest {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateParamsRequest {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateParamsRequest();
     while (reader.pos < end) {
@@ -508,15 +587,20 @@ export const MsgUpdateParamsRequest = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgUpdateParamsRequest>, I>>(base?: I): MsgUpdateParamsRequest {
+  create<I extends Exact<DeepPartial<MsgUpdateParamsRequest>, I>>(
+    base?: I
+  ): MsgUpdateParamsRequest {
     return MsgUpdateParamsRequest.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateParamsRequest>, I>>(object: I): MsgUpdateParamsRequest {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateParamsRequest>, I>>(
+    object: I
+  ): MsgUpdateParamsRequest {
     const message = createBaseMsgUpdateParamsRequest();
     message.from = object.from ?? "";
-    message.params = (object.params !== undefined && object.params !== null)
-      ? Params.fromPartial(object.params)
-      : undefined;
+    message.params =
+      object.params !== undefined && object.params !== null
+        ? Params.fromPartial(object.params)
+        : undefined;
     return message;
   },
 };
@@ -526,12 +610,16 @@ function createBaseMsgEndLeaseResponse(): MsgEndLeaseResponse {
 }
 
 export const MsgEndLeaseResponse = {
-  encode(_: MsgEndLeaseResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: MsgEndLeaseResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
   decode(input: _m0.Reader | Uint8Array, length?: number): MsgEndLeaseResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgEndLeaseResponse();
     while (reader.pos < end) {
@@ -555,10 +643,14 @@ export const MsgEndLeaseResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgEndLeaseResponse>, I>>(base?: I): MsgEndLeaseResponse {
+  create<I extends Exact<DeepPartial<MsgEndLeaseResponse>, I>>(
+    base?: I
+  ): MsgEndLeaseResponse {
     return MsgEndLeaseResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgEndLeaseResponse>, I>>(_: I): MsgEndLeaseResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgEndLeaseResponse>, I>>(
+    _: I
+  ): MsgEndLeaseResponse {
     const message = createBaseMsgEndLeaseResponse();
     return message;
   },
@@ -569,12 +661,19 @@ function createBaseMsgRenewLeaseResponse(): MsgRenewLeaseResponse {
 }
 
 export const MsgRenewLeaseResponse = {
-  encode(_: MsgRenewLeaseResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: MsgRenewLeaseResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgRenewLeaseResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgRenewLeaseResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgRenewLeaseResponse();
     while (reader.pos < end) {
@@ -598,10 +697,14 @@ export const MsgRenewLeaseResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgRenewLeaseResponse>, I>>(base?: I): MsgRenewLeaseResponse {
+  create<I extends Exact<DeepPartial<MsgRenewLeaseResponse>, I>>(
+    base?: I
+  ): MsgRenewLeaseResponse {
     return MsgRenewLeaseResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgRenewLeaseResponse>, I>>(_: I): MsgRenewLeaseResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgRenewLeaseResponse>, I>>(
+    _: I
+  ): MsgRenewLeaseResponse {
     const message = createBaseMsgRenewLeaseResponse();
     return message;
   },
@@ -612,15 +715,22 @@ function createBaseMsgStartLeaseResponse(): MsgStartLeaseResponse {
 }
 
 export const MsgStartLeaseResponse = {
-  encode(message: MsgStartLeaseResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    message: MsgStartLeaseResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     if (!message.id.equals(Long.UZERO)) {
       writer.uint32(8).uint64(message.id);
     }
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgStartLeaseResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgStartLeaseResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgStartLeaseResponse();
     while (reader.pos < end) {
@@ -654,12 +764,19 @@ export const MsgStartLeaseResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgStartLeaseResponse>, I>>(base?: I): MsgStartLeaseResponse {
+  create<I extends Exact<DeepPartial<MsgStartLeaseResponse>, I>>(
+    base?: I
+  ): MsgStartLeaseResponse {
     return MsgStartLeaseResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgStartLeaseResponse>, I>>(object: I): MsgStartLeaseResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgStartLeaseResponse>, I>>(
+    object: I
+  ): MsgStartLeaseResponse {
     const message = createBaseMsgStartLeaseResponse();
-    message.id = (object.id !== undefined && object.id !== null) ? Long.fromValue(object.id) : Long.UZERO;
+    message.id =
+      object.id !== undefined && object.id !== null
+        ? Long.fromValue(object.id)
+        : Long.UZERO;
     return message;
   },
 };
@@ -669,12 +786,19 @@ function createBaseMsgUpdateLeaseResponse(): MsgUpdateLeaseResponse {
 }
 
 export const MsgUpdateLeaseResponse = {
-  encode(_: MsgUpdateLeaseResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: MsgUpdateLeaseResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateLeaseResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateLeaseResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateLeaseResponse();
     while (reader.pos < end) {
@@ -698,10 +822,14 @@ export const MsgUpdateLeaseResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgUpdateLeaseResponse>, I>>(base?: I): MsgUpdateLeaseResponse {
+  create<I extends Exact<DeepPartial<MsgUpdateLeaseResponse>, I>>(
+    base?: I
+  ): MsgUpdateLeaseResponse {
     return MsgUpdateLeaseResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateLeaseResponse>, I>>(_: I): MsgUpdateLeaseResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateLeaseResponse>, I>>(
+    _: I
+  ): MsgUpdateLeaseResponse {
     const message = createBaseMsgUpdateLeaseResponse();
     return message;
   },
@@ -712,12 +840,19 @@ function createBaseMsgUpdateParamsResponse(): MsgUpdateParamsResponse {
 }
 
 export const MsgUpdateParamsResponse = {
-  encode(_: MsgUpdateParamsResponse, writer: _m0.Writer = _m0.Writer.create()): _m0.Writer {
+  encode(
+    _: MsgUpdateParamsResponse,
+    writer: _m0.Writer = _m0.Writer.create()
+  ): _m0.Writer {
     return writer;
   },
 
-  decode(input: _m0.Reader | Uint8Array, length?: number): MsgUpdateParamsResponse {
-    const reader = input instanceof _m0.Reader ? input : _m0.Reader.create(input);
+  decode(
+    input: _m0.Reader | Uint8Array,
+    length?: number
+  ): MsgUpdateParamsResponse {
+    const reader =
+      input instanceof _m0.Reader ? input : _m0.Reader.create(input);
     let end = length === undefined ? reader.len : reader.pos + length;
     const message = createBaseMsgUpdateParamsResponse();
     while (reader.pos < end) {
@@ -741,10 +876,14 @@ export const MsgUpdateParamsResponse = {
     return obj;
   },
 
-  create<I extends Exact<DeepPartial<MsgUpdateParamsResponse>, I>>(base?: I): MsgUpdateParamsResponse {
+  create<I extends Exact<DeepPartial<MsgUpdateParamsResponse>, I>>(
+    base?: I
+  ): MsgUpdateParamsResponse {
     return MsgUpdateParamsResponse.fromPartial(base ?? ({} as any));
   },
-  fromPartial<I extends Exact<DeepPartial<MsgUpdateParamsResponse>, I>>(_: I): MsgUpdateParamsResponse {
+  fromPartial<I extends Exact<DeepPartial<MsgUpdateParamsResponse>, I>>(
+    _: I
+  ): MsgUpdateParamsResponse {
     const message = createBaseMsgUpdateParamsResponse();
     return message;
   },
@@ -754,8 +893,12 @@ export interface MsgService {
   MsgEndLease(request: MsgEndLeaseRequest): Promise<MsgEndLeaseResponse>;
   MsgRenewLease(request: MsgRenewLeaseRequest): Promise<MsgRenewLeaseResponse>;
   MsgStartLease(request: MsgStartLeaseRequest): Promise<MsgStartLeaseResponse>;
-  MsgUpdateLease(request: MsgUpdateLeaseRequest): Promise<MsgUpdateLeaseResponse>;
-  MsgUpdateParams(request: MsgUpdateParamsRequest): Promise<MsgUpdateParamsResponse>;
+  MsgUpdateLease(
+    request: MsgUpdateLeaseRequest
+  ): Promise<MsgUpdateLeaseResponse>;
+  MsgUpdateParams(
+    request: MsgUpdateParamsRequest
+  ): Promise<MsgUpdateParamsResponse>;
 }
 
 export const MsgServiceServiceName = "qubetics.lease.v1.MsgService";
@@ -774,49 +917,83 @@ export class MsgServiceClientImpl implements MsgService {
   MsgEndLease(request: MsgEndLeaseRequest): Promise<MsgEndLeaseResponse> {
     const data = MsgEndLeaseRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "MsgEndLease", data);
-    return promise.then((data) => MsgEndLeaseResponse.decode(_m0.Reader.create(data)));
+    return promise.then((data) =>
+      MsgEndLeaseResponse.decode(_m0.Reader.create(data))
+    );
   }
 
   MsgRenewLease(request: MsgRenewLeaseRequest): Promise<MsgRenewLeaseResponse> {
     const data = MsgRenewLeaseRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "MsgRenewLease", data);
-    return promise.then((data) => MsgRenewLeaseResponse.decode(_m0.Reader.create(data)));
+    return promise.then((data) =>
+      MsgRenewLeaseResponse.decode(_m0.Reader.create(data))
+    );
   }
 
   MsgStartLease(request: MsgStartLeaseRequest): Promise<MsgStartLeaseResponse> {
     const data = MsgStartLeaseRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "MsgStartLease", data);
-    return promise.then((data) => MsgStartLeaseResponse.decode(_m0.Reader.create(data)));
+    return promise.then((data) =>
+      MsgStartLeaseResponse.decode(_m0.Reader.create(data))
+    );
   }
 
-  MsgUpdateLease(request: MsgUpdateLeaseRequest): Promise<MsgUpdateLeaseResponse> {
+  MsgUpdateLease(
+    request: MsgUpdateLeaseRequest
+  ): Promise<MsgUpdateLeaseResponse> {
     const data = MsgUpdateLeaseRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "MsgUpdateLease", data);
-    return promise.then((data) => MsgUpdateLeaseResponse.decode(_m0.Reader.create(data)));
+    return promise.then((data) =>
+      MsgUpdateLeaseResponse.decode(_m0.Reader.create(data))
+    );
   }
 
-  MsgUpdateParams(request: MsgUpdateParamsRequest): Promise<MsgUpdateParamsResponse> {
+  MsgUpdateParams(
+    request: MsgUpdateParamsRequest
+  ): Promise<MsgUpdateParamsResponse> {
     const data = MsgUpdateParamsRequest.encode(request).finish();
     const promise = this.rpc.request(this.service, "MsgUpdateParams", data);
-    return promise.then((data) => MsgUpdateParamsResponse.decode(_m0.Reader.create(data)));
+    return promise.then((data) =>
+      MsgUpdateParamsResponse.decode(_m0.Reader.create(data))
+    );
   }
 }
 
 interface Rpc {
-  request(service: string, method: string, data: Uint8Array): Promise<Uint8Array>;
+  request(
+    service: string,
+    method: string,
+    data: Uint8Array
+  ): Promise<Uint8Array>;
 }
 
-type Builtin = Date | Function | Uint8Array | string | number | boolean | undefined;
+type Builtin =
+  | Date
+  | Function
+  | Uint8Array
+  | string
+  | number
+  | boolean
+  | undefined;
 
-export type DeepPartial<T> = T extends Builtin ? T
-  : T extends Long ? string | number | Long : T extends globalThis.Array<infer U> ? globalThis.Array<DeepPartial<U>>
-  : T extends ReadonlyArray<infer U> ? ReadonlyArray<DeepPartial<U>>
-  : T extends {} ? { [K in keyof T]?: DeepPartial<T[K]> }
+export type DeepPartial<T> = T extends Builtin
+  ? T
+  : T extends Long
+  ? string | number | Long
+  : T extends globalThis.Array<infer U>
+  ? globalThis.Array<DeepPartial<U>>
+  : T extends ReadonlyArray<infer U>
+  ? ReadonlyArray<DeepPartial<U>>
+  : T extends {}
+  ? { [K in keyof T]?: DeepPartial<T[K]> }
   : Partial<T>;
 
 type KeysOfUnion<T> = T extends T ? keyof T : never;
-export type Exact<P, I extends P> = P extends Builtin ? P
-  : P & { [K in keyof P]: Exact<P[K], I[K]> } & { [K in Exclude<keyof I, KeysOfUnion<P>>]: never };
+export type Exact<P, I extends P> = P extends Builtin
+  ? P
+  : P & { [K in keyof P]: Exact<P[K], I[K]> } & {
+      [K in Exclude<keyof I, KeysOfUnion<P>>]: never;
+    };
 
 if (_m0.util.Long !== Long) {
   _m0.util.Long = Long as any;

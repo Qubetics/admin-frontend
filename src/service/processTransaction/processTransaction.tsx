@@ -1,16 +1,9 @@
 // @ts-nocheck
-import { isMsgSend } from "@cosmjs/launchpad";
 import { envConstants } from "../../Constant/envConstants";
 import { simulateMsgs } from "../../utils/Helper/stimulateMsg";
-import { MsgSend } from "../../proto-gen/src/codec/cosmos/bank/v1beta1/tx";
-import { TYPE_URLS } from "../../Constant/constants";
 import { sendMsgs } from "../../utils/Helper/sendMsg";
-import Long from "long";
-import { calculateFee, GasPrice } from "@cosmjs-evm/stargate";
-import { Dec, DecUtils } from "@keplr-wallet/unit";
-import { buildCreatePlanMessage } from "../BuildMessage/buildMessage";
+
 import { toast } from "react-toastify";
-import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 
 export const processTransaction = async (message) => {
   if (window?.keplr) {
@@ -47,7 +40,7 @@ export const processTransaction = async (message) => {
       if (message.includes("Request rejected")) {
         toast.error("Transaction rejected");
         return false;
-      } else  if(message.includes("gigabytes cannot be negative")){
+      } else if (message.includes("gigabytes cannot be negative")) {
         toast.error("Value can be negative");
       }
 

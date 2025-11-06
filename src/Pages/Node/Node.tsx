@@ -16,19 +16,23 @@ function Node() {
 
   const useGetApi = useNetworkRequest();
 
-  const buttons = [
-    {
-      label: "All Nodes",
-      value: "allnodes",
-      count: activeAccount?.totalCount || 0,
-    },
-    { label: "Active", value: "active", count: activeAccount?.activeCount || 0 },
-    {
-      label: "Inactive",
-      value: "inactive",
-      count: activeAccount?.inactiveCount || 0,
-    },
-  ];
+  // const buttons = [
+  //   {
+  //     label: "All Nodes",
+  //     value: "allnodes",
+  //     count: activeAccount?.totalCount || 0,
+  //   },
+  //   {
+  //     label: "Active",
+  //     value: "active",
+  //     count: activeAccount?.activeCount || 0,
+  //   },
+  //   {
+  //     label: "Inactive",
+  //     value: "inactive",
+  //     count: activeAccount?.inactiveCount || 0,
+  //   },
+  // ];
   const [active, setActive] = useState("allnodes");
 
   const fetchData = async () => {
@@ -75,11 +79,11 @@ function Node() {
   };
 
   return (
-    <div className="node">
-      <div className="node__header">
+    <div className='node'>
+      <div className='node__header'>
         <h3>Node List</h3>
       </div>
-      <div className="node__btns">
+      {/* <div className="node__btns">
         {buttons.map(({ count, label, value }) => (
           <button
             key={value}
@@ -89,18 +93,16 @@ function Node() {
             {label} ({count})
           </button>
         ))}
-      </div>
+      </div> */}
 
-      <div className="custom-table-wrapper commonTable node-table">
-        <div className="outerTable">
-          <table className="custom-table">
+      <div className='custom-table-wrapper commonTable node-table'>
+        <div className='outerTable'>
+          <table className='custom-table'>
             <thead>
               <tr>
                 <th>Operator Name</th>
                 <th>Node Address</th>
-                {active !== "active" && active !== "inactive" && (
-                  <th>Node Status</th>
-                )}
+                {active !== "active" && active !== "inactive" && <th>Node Status</th>}
                 <th>Request Type</th>
                 <th>Request Status</th>
               </tr>
@@ -126,22 +128,28 @@ function Node() {
                     <tr key={i}>
                       <td>{row?.orgName ? row?.orgName : "-"}</td>
                       <td>
-                        <span className="address_nord" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{row?.nodeAddress}
-                          <div className="copy-btn"><CopyText text={row?.nodeAddress} /></div>
+                        <span
+                          className='address_nord'
+                          style={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            gap: "6px",
+                          }}
+                        >
+                          {row?.nodeAddress}
+                          <div className='copy-btn'>
+                            <CopyText text={row?.nodeAddress} />
+                          </div>
                         </span>
                       </td>
                       {active !== "active" && active !== "inactive" && (
                         <td>
-                          <span className={getStatusClass(row?.nodeStatus)}>
-                            {row?.nodeStatus || "-"}
-                          </span>
+                          <span className={getStatusClass(row?.nodeStatus)}>{row?.nodeStatus || "-"}</span>
                         </td>
                       )}
                       <td>{row?.requestFor}</td>
                       <td>
-                        <span className={getStatusClass(row?.status)}>
-                          {toFirstCapital(row?.status) || "-"}
-                        </span>
+                        <span className={getStatusClass(row?.status)}>{toFirstCapital(row?.status) || "-"}</span>
                       </td>
                     </tr>
                   ))
@@ -158,7 +166,9 @@ function Node() {
             totalPages={totalPages}
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
-            onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
           />
         )}
       </div>

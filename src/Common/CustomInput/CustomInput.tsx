@@ -6,7 +6,7 @@ interface CustomInputProps {
   type?: string;
   name: string;
   disable?: boolean;
-  value: string | number;
+  value?: string | number;
   placeholder?: string;
   onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
@@ -16,8 +16,8 @@ const CustomInput: React.FC<CustomInputProps> = ({
   name,
   value,
   placeholder,
-  onChange=()=>{},
-  disable=false
+  onChange = () => {},
+  disable = false,
 }) => {
   return (
     <div className="custom-input">

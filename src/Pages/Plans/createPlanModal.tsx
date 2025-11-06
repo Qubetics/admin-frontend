@@ -40,9 +40,8 @@ const createPlanModal = ({
         ...prev,
         [name]: value,
       }));
-  
     }
-  
+
     if (errorMsg) {
       setErrors((prev) => ({
         ...prev,
@@ -101,8 +100,8 @@ const createPlanModal = ({
   };
   const handleHide = () => {
     setCreateShow(false);
-    setFormData(initialFormData)
-  }
+    setFormData(initialFormData);
+  };
 
   return (
     <>
@@ -138,7 +137,11 @@ const createPlanModal = ({
                   value={formData.price}
                   onChange={handleChange}
                 />
-                {errors.price && <p style={{ color: "red", fontSize: "12px" }}>{errors.price}</p>}
+                {errors.price && (
+                  <p style={{ color: "red", fontSize: "12px" }}>
+                    {errors.price}
+                  </p>
+                )}
               </div>
 
               <div className="form-group">
@@ -150,7 +153,11 @@ const createPlanModal = ({
                   value={formData.bytes}
                   onChange={handleChange}
                 />
-                {errors.bytes && <p style={{ color: "red", fontSize: "12px" }}>{errors.bytes}</p>}
+                {errors.bytes && (
+                  <p style={{ color: "red", fontSize: "12px" }}>
+                    {errors.bytes}
+                  </p>
+                )}
               </div>
               <div className="create-form">
                 <div className="form-group">
@@ -162,16 +169,24 @@ const createPlanModal = ({
                     value={formData.hours}
                     disable={true}
                   />
-                  {errors.hours && <p style={{ color: "red", fontSize: "12px" }}>{errors.hours}</p>}
+                  {errors.hours && (
+                    <p style={{ color: "red", fontSize: "12px" }}>
+                      {errors.hours}
+                    </p>
+                  )}
                 </div>
               </div>
               <div className="create-btn">
-
-              <ButtonCustom
-                label="Create"
-                onClick={handleClick}
-                disabled={isLoading || !formData.bytes || !formData.hours || !formData.price}
-              />
+                <ButtonCustom
+                  label="Create"
+                  onClick={handleClick}
+                  disabled={
+                    isLoading ||
+                    !formData.bytes ||
+                    !formData.hours ||
+                    !formData.price
+                  }
+                />
               </div>
             </div>
           </div>

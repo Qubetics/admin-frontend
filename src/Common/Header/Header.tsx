@@ -11,12 +11,7 @@ import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { envConstants } from "../../Constant/envConstants";
 import { apiMethods } from "../../Constant/constants";
-import {
-  api,
-  computePubKey,
-  formatBalance,
-  truncateValue,
-} from "../../utils/Helper/CommonHelper";
+import { api, computePubKey, formatBalance, truncateValue } from "../../utils/Helper/CommonHelper";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
 import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
@@ -55,7 +50,7 @@ const Header = () => {
   const menuRef = useRef<HTMLDivElement>(null);
   // function to logo resize
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const width=useCurrentWidth();
+  const width = useCurrentWidth();
 
   const handleResize = () => {
     setIsMobile(window.innerWidth <= 768);
@@ -68,14 +63,18 @@ const Header = () => {
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node) && !(event.target as Element).closest('.hamburger')) {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest(".hamburger")
+      ) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -90,34 +89,31 @@ const Header = () => {
     setIsMenuOpen((prev) => !prev);
   }, []);
 
-  const fetchAccountBalance = useCallback(
-    async (address: string): Promise<void> => {
-      if (!address) {
-        console.warn("No address provided for balance fetch");
-        return;
-      }
+  const fetchAccountBalance = useCallback(async (address: string): Promise<void> => {
+    if (!address) {
+      console.warn("No address provided for balance fetch");
+      return;
+    }
 
-      setIsLoading(true);
-      try {
-        const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
-        const response = await api(uri);
+    setIsLoading(true);
+    try {
+      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
+      const response = await api(uri);
 
-        if (response?.balances?.[0]?.amount) {
-          const balanceAmount = Number(response.balances[0].amount) / 1e18;
-          setBalance(balanceAmount);
-        } else {
-          setBalance(0);
-        }
-      } catch (error) {
-        console.error("Error fetching account balance:", error);
+      if (response?.balances?.[0]?.amount) {
+        const balanceAmount = Number(response.balances[0].amount) / 1e18;
+        setBalance(balanceAmount);
+      } else {
         setBalance(0);
-        toast.error("Failed to fetch account balance");
-      } finally {
-        setIsLoading(false);
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error("Error fetching account balance:", error);
+      setBalance(0);
+      toast.error("Failed to fetch account balance");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleLogout = useCallback(async (): Promise<void> => {
     if (isLoading) return;
@@ -201,11 +197,7 @@ const Header = () => {
         const message = address;
         const chainId = envConstants.chainId;
 
-        const { signature, pub_key } = await window.keplr.signArbitrary(
-          chainId,
-          address,
-          message
-        );
+        const { signature, pub_key } = await window.keplr.signArbitrary(chainId, address, message);
 
         if (!signature || !pub_key) {
           toast.error("Failed to sign message");
@@ -218,7 +210,11 @@ const Header = () => {
           toast.error("Could not compute public key from signature");
           return false;
         }
-        const { success, message: errormassage } = await useGetApi({
+        const {
+          success,
+          data,
+          message: errormassage,
+        } = await useGetApi({
           endpoint: apiUrls.login,
           method: apiMethods.POST,
           body: {
@@ -234,6 +230,8 @@ const Header = () => {
           } else {
             toast.error("Authentication failed. Please try again.");
           }
+          setAuthData(address);
+          navigate(Path.SERVICE_PROVIDER);
           return false;
         }
         setAuthData(address);
@@ -271,7 +269,6 @@ const Header = () => {
     }
   }, [connectKeplr, signMessage, isConnecting]);
 
-
   useEffect(() => {
     if (authData) {
       fetchAccountBalance(authData);
@@ -289,37 +286,33 @@ const Header = () => {
     { path: Path.PLANS, label: "Plans" },
     { path: Path.NODES, label: "Nodes" },
   ];
-  const hasHeaderActions = location.pathname !== '/';
+  const hasHeaderActions = location.pathname !== "/";
+  const hideNavItems = location.pathname === Path.SERVICE_PROVIDER;
 
   return (
-    <div className="header-main">
-      <div className="header-main__bottom container">
-        <div className="header__left">
+    <div className='header-main'>
+      <div className='header-main__bottom container'>
+        <div className='header__left'>
           <Link to={Path.LANDING}>
             {isMobile ? (
-              <img src={mobLogo} alt="Mobile Logo" className="mobile-logo" />
+              <img src={mobLogo} alt='Mobile Logo' className='mobile-logo' />
             ) : (
-              <img src={Logo} alt="Web Logo" className="web-logo" />
+              <img src={Logo} alt='Web Logo' className='web-logo' />
             )}
           </Link>
         </div>
-        {hasHeaderActions && authData &&(
-          <div className={`header__details ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
-            {authData && (
+        {hasHeaderActions && authData && (
+          <div className={`header__details ${isMenuOpen ? "active" : ""}`} ref={menuRef}>
+            {authData && !hideNavItems && (
               <>
                 <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
                   {navigationItems.map(({ path, label }) => (
-                    <Link
-                      key={path}
-                      to={path}
-                      className={isActive(path)}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
+                    <Link key={path} to={path} className={isActive(path)} onClick={() => setIsMenuOpen(false)}>
                       {label}
                     </Link>
                   ))}
-                   <>
-              {/* <div className="responsiveDrawerData">
+                  <>
+                    {/* <div className="responsiveDrawerData">
               <span className="customButton balance-display">
                 {formatBalance(balance)} TICS
               </span>
@@ -336,65 +329,59 @@ const Header = () => {
                 type="button"
               />
               </div> */}
-            </>
+                  </>
                 </nav>
-                <div className="responsiveDrawerData">
-                <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
-              <div className="header__wallet-address customButton">
-                <div>{truncateValue(authData)}</div>
-                <CopyText text={authData} />
-              </div>
-                <ButtonCustom
-                  className="mobile-logout"
-                  label={isConnecting ? "Logging out..." : "Logout"}
-                  onClick={handleLogout}
-                  disabled={isLoading}
-                  type="button"
-                />
+                <div className='responsiveDrawerData'>
+                  <span className='customButton balance-display'>{formatBalance(balance)} TICS</span>
+                  <div className='header__wallet-address customButton'>
+                    <div>{truncateValue(authData)}</div>
+                    <CopyText text={authData} />
+                  </div>
+                  <ButtonCustom
+                    className='mobile-logout'
+                    label={isConnecting ? "Logging out..." : "Logout"}
+                    onClick={handleLogout}
+                    disabled={isLoading}
+                    type='button'
+                  />
                 </div>
               </>
             )}
-          </div>)}
+          </div>
+        )}
 
         {/* Right Section */}
         <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
           {!authData ? (
             <ButtonCustom
               label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-              type="button"
+              type='button'
               tabIndex={3}
               onClick={handleWalletConnect}
               disabled={isConnecting}
             />
           ) : (
-            width > 991 && (<>
-              <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
-              <div className="header__wallet-address customButton">
-                <div>{truncateValue(authData)}</div>
-                <CopyText text={authData} />
-              </div>
-              <ButtonCustom
-                className="web-logout"
-                label={isConnecting ? "Logging out..." : "Logout"}
-                onClick={handleLogout}
-                disabled={isLoading}
-                type="button"
-              />
-            </>)
+            width > 991 && (
+              <>
+                <span className='customButton balance-display'>{formatBalance(balance)} TICS</span>
+                <div className='header__wallet-address customButton'>
+                  <div>{truncateValue(authData)}</div>
+                  <CopyText text={authData} />
+                </div>
+                <ButtonCustom
+                  className='web-logout'
+                  label={isConnecting ? "Logging out..." : "Logout"}
+                  onClick={handleLogout}
+                  disabled={isLoading}
+                  type='button'
+                />
+              </>
+            )
           )}
-
         </div>
 
         {hasHeaderActions && authData && (
-          <button
-            className={`hamburger ${isMenuOpen ? 'active' : ''}`}
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
+          <button className={`hamburger ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu} aria-label='Toggle menu'>
             <span></span>
             <span></span>
             <span></span>

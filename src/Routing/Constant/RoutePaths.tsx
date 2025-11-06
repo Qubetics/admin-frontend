@@ -5,6 +5,7 @@ const Path = {
   PLANS: "/plans",
   NODES: "/nodes",
   LANDING: "/landing",
+  SERVICE_PROVIDER: "/serviceProvider",
 };
 
 export default Path;
