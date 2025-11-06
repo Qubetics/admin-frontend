@@ -280,11 +280,11 @@ export default function Dashboard() {
       title: "Active Nodes",
       value: activeAccount?.activeCount || 0,
     },
-    {
+    /*     {
       icons: <CircleCloseIcon />,
       title: "Inactive Nodes",
       value: activeAccount?.inactiveCount || 0,
-    },
+    }, */
   ];
 
   return (
