@@ -12,7 +12,6 @@ function Node() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   // const [isLoading, setIsLoading] = useState(false);
-  const [activeAccount, setActiveAccount] = useState<any>();
 
   const useGetApi = useNetworkRequest();
 
@@ -33,7 +32,7 @@ function Node() {
   //     count: activeAccount?.inactiveCount || 0,
   //   },
   // ];
-  const [active, setActive] = useState("allnodes");
+  const [active] = useState("active");
 
   const fetchData = async () => {
     const { success, data } = await useGetApi({
@@ -43,24 +42,23 @@ function Node() {
     setNodeList(data?.data?.response);
     setTotalPages(data?.data?.total ? Math.ceil(data?.data?.total / limit) : 1);
   };
-  const fetchNodeNumber = async () => {
-    const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeCount,
-    });
+  // const fetchNodeNumber = async () => {
+  //   const { success } = await useGetApi({
+  //     endpoint: apiUrls.nodeCount,
+  //   });
 
-    if (!success) {
-      console.log("unable to fetch the active account");
-      return;
-    }
-    setActiveAccount(data?.data);
-  };
+  //   if (!success) {
+  //     console.log("unable to fetch the active account");
+  //     return;
+  //   }
+  // };
 
   useEffect(() => {
     fetchData();
   }, [page, limit, active]);
-  useEffect(() => {
-    fetchNodeNumber();
-  }, []);
+  // useEffect(() => {
+  //   fetchNodeNumber();
+  // }, []);
   const getStatusClass = (status: string) => {
     switch (status?.toLowerCase()) {
       case "active":

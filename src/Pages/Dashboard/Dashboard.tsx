@@ -19,7 +19,7 @@ import NotificationToast from "../../Common/NotificationModal/NotificationModal"
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
 import { Col, Row } from "antd";
-import { CircleCheckIcon, CircleCloseIcon, NordsIcon } from "../../assets/SvgIcon/SvgIcon";
+import { CircleCheckIcon, NordsIcon } from "../../assets/SvgIcon/SvgIcon";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
@@ -270,11 +270,11 @@ export default function Dashboard() {
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
-    {
-      icons: <NordsIcon />,
-      title: "All Nodes",
-      value: activeAccount?.totalCount || 0,
-    },
+    // {
+    //   icons: <NordsIcon />,
+    //   title: "All Nodes",
+    //   value: activeAccount?.totalCount || 0,
+    // },
     {
       icons: <CircleCheckIcon />,
       title: "Active Nodes",

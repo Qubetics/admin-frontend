@@ -230,8 +230,10 @@ const Header = () => {
           } else {
             toast.error("Authentication failed. Please try again.");
           }
-          setAuthData(address);
-          navigate(Path.SERVICE_PROVIDER);
+          if (data && !data?.isExist) {
+            setAuthData(address);
+            navigate(Path.SERVICE_PROVIDER);
+          }
           return false;
         }
         setAuthData(address);
