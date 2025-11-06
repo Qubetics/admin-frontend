@@ -210,11 +210,7 @@ const Header = () => {
           toast.error("Could not compute public key from signature");
           return false;
         }
-        const {
-          success,
-          data,
-          message: errormassage,
-        } = await useGetApi({
+        const { success, message: errormassage } = await useGetApi({
           endpoint: apiUrls.login,
           method: apiMethods.POST,
           body: {
