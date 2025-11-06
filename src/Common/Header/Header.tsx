@@ -210,7 +210,11 @@ const Header = () => {
           toast.error("Could not compute public key from signature");
           return false;
         }
-        const { success, message: errormassage } = await useGetApi({
+        const {
+          success,
+          data,
+          message: errormassage,
+        } = await useGetApi({
           endpoint: apiUrls.login,
           method: apiMethods.POST,
           body: {
@@ -226,8 +230,10 @@ const Header = () => {
           } else {
             toast.error("Authentication failed. Please try again.");
           }
-          setAuthData(address);
-          navigate(Path.SERVICE_PROVIDER);
+          if (data && !data?.isExist) {
+            setAuthData(address);
+            navigate(Path.SERVICE_PROVIDER);
+          }
           return false;
         }
         setAuthData(address);
