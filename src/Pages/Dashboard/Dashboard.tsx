@@ -19,7 +19,7 @@ import NotificationToast from "../../Common/NotificationModal/NotificationModal"
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
 import { Col, Row } from "antd";
-import { CircleCheckIcon, NordsIcon } from "../../assets/SvgIcon/SvgIcon";
+import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
