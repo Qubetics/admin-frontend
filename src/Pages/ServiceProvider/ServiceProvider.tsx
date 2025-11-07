@@ -24,14 +24,12 @@ interface ServiceProviderFormData {
   name: string;
   email: string;
   website: string;
-  description: string;
 }
 
 interface FormErrors {
   name?: string;
   email?: string;
   website?: string;
-  description?: string;
 }
 
 const ServiceProvider = () => {
@@ -43,7 +41,6 @@ const ServiceProvider = () => {
     name: "",
     email: "",
     website: "",
-    description: "",
   });
   const [errors, setErrors] = useState<FormErrors>({});
   const [showRegisterToast, setShowRegisterToast] = useState(false);
@@ -66,9 +63,9 @@ const ServiceProvider = () => {
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required.";
-    if (!formData.website.trim()) newErrors.website = "Website URL is required.";
-    if (!formData.description.trim()) newErrors.description = "Description is required.";
-    if (formData.email && !/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
+    if (!formData.email.trim()) newErrors.email = "Email is required.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
+
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -83,7 +80,6 @@ const ServiceProvider = () => {
           from: authData,
           name: formData.name,
           website: formData.website,
-          description: formData.description,
         })
       );
       if (!registerTx) return;
@@ -114,7 +110,6 @@ const ServiceProvider = () => {
           name: formData.name,
           email: formData.email,
           url: formData.website,
-          description: formData.description,
           pubKey: pubKeyFromSignature,
           signature: { pub_key, signature },
           txHash: Buffer.from(statusTx).toString("hex"),
@@ -126,7 +121,7 @@ const ServiceProvider = () => {
         navigate("/dashboard");
       } else {
         toast.error("Registration failed.");
-        setFormData({ name: "", email: "", website: "", description: "" });
+        setFormData({ name: "", email: "", website: "" });
       }
     } catch (err) {
       console.error(err);
@@ -137,7 +132,6 @@ const ServiceProvider = () => {
   return (
     <div className='mainContainer'>
       <h4>Register as Service Provider</h4>
-
       <div className='borderDiv borderDiv-bordered'>
         <h4 className='borderDiv-header'>Connect Keplr Wallet</h4>
         <div>
@@ -157,7 +151,9 @@ const ServiceProvider = () => {
         <CustomInput type='text' name='name' placeholder='Enter Name' value={formData.name} onChange={handleChange} />
         {errors.name && <div className='redText'>{errors.name}</div>}
 
-        <label>Email Address</label>
+        <label>
+          Email Address<span className='redText'>*</span>
+        </label>
         <CustomInput
           type='email'
           name='email'
@@ -167,29 +163,15 @@ const ServiceProvider = () => {
         />
         {errors.email && <div className='redText'>{errors.email}</div>}
 
-        <label>
-          Website URL<span className='redText'>*</span>
-        </label>
+        <label>Website URL</label>
         <CustomInput
           type='text'
           name='website'
-          placeholder='Enter Website URL'
+          placeholder='Enter Website URL (optional)'
           value={formData.website}
           onChange={handleChange}
         />
         {errors.website && <div className='redText'>{errors.website}</div>}
-
-        <label>
-          Description<span className='redText'>*</span>
-        </label>
-        <CustomInput
-          type='text'
-          name='description'
-          placeholder='Enter Description'
-          value={formData.description}
-          onChange={handleChange}
-        />
-        {errors.description && <div className='redText'>{errors.description}</div>}
 
         <ButtonCustom label='Submit' />
       </form>
