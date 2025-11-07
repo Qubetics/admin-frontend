@@ -167,7 +167,7 @@ const ServiceProvider = () => {
         <CustomInput
           type='text'
           name='website'
-          placeholder='Enter Website URL (optional)'
+          placeholder='Enter Website URL'
           value={formData.website}
           onChange={handleChange}
         />
