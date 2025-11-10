@@ -124,8 +124,8 @@ const Header = () => {
 
     const pathname = typeof window !== "undefined" ? window.location.pathname : "";
 
-    if (pathname === "/serviceProvider") {
-      navigate("/landing");
+    if (pathname === Path.SERVICE_PROVIDER) {
+      navigate(Path.LANDING);
       return;
     }
 
