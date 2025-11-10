@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import CustomInput from "../../Common/CustomInput/CustomInput";
 import "./ServiceProvider.scss";
@@ -12,13 +12,14 @@ import { processTransaction } from "../../service/processTransaction/processTran
 import { toast } from "react-toastify";
 import { convertNodeToWallet, computePubKey } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { DESCRIPTION, HEADING, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
+import { DESCRIPTION, ERROR_MSG, HEADING, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { apiMethods } from "../../Constant/constants";
 import { envConstants } from "../../Constant/envConstants";
 import { useNavigate } from "react-router-dom";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
+import { getUserBalance } from "../../service/getUserBalance";
 
 interface ServiceProviderFormData {
   name: string;
@@ -37,6 +38,7 @@ const ServiceProvider = () => {
   const navigate = useNavigate();
   const { authData } = useIsLoggedIn();
 
+  const [walletBalance, setWalletBalance] = useState("0");
   const [formData, setFormData] = useState<ServiceProviderFormData>({
     name: "",
     email: "",
@@ -70,9 +72,34 @@ const ServiceProvider = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  const fetchBalance = async () => {
+    if (!authData) return;
+    try {
+      const response = await getUserBalance(authData);
+      setWalletBalance(response);
+    } catch (err) {
+      console.log(ERROR_MSG.FAILED_FETCHING_BALANCE, err);
+    }
+  };
+
+  useEffect(() => {
+    if (authData?.length > 0) {
+      const timer = setTimeout(() => {
+        fetchBalance();
+      }, 1500);
+
+      return () => clearTimeout(timer);
+    }
+  }, [authData]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
+
+    if (Number(walletBalance) < Number(envConstants.min_stake_amount)) {
+      toast.error(ERROR_MSG.LOW_BALANCE);
+      return;
+    }
 
     try {
       const registerTx = await processTransaction(

@@ -8,5 +8,7 @@ export const envConstants = {
   gas_limit: import.meta.env.VITE_GAS_LIMIT,
   hd_path: import.meta.env.VITE_HD_PATH,
   swagger_api: import.meta.env.VITE_SWAGGER_HTTP_HOST,
-  explorer_link: import.meta.env.VITE_EXPLORER_ENDPOINT
+  explorer_link: import.meta.env.VITE_EXPLORER_ENDPOINT,
+  min_stake_amount: import.meta.env.VITE_MIN_STAKE_AMOUNT,
+  denom: import.meta.env.VITE_DENOM,
 };
