@@ -1,5 +1,5 @@
-import { WEI } from '../../Constant/constants';
-import BigNumber from 'bignumber.js';
+import { WEI } from "../../Constant/constants";
+import BigNumber from "bignumber.js";
 import { Buffer } from "buffer";
 import sha3 from "js-sha3";
 import * as _m0 from "protobufjs/minimal";
@@ -28,26 +28,14 @@ function messageToAminoTransaction(signer: string, data: string) {
   };
 }
 
-export const computePubKey = (
-  address: string,
-  signature: string,
-  signMessage: string
-) => {
+export const computePubKey = (address: string, signature: string, signMessage: string) => {
   try {
-    const aminoEncoded = messageToAminoTransaction(
-      address,
-      Buffer.from(signMessage).toString("base64")
-    );
+    const aminoEncoded = messageToAminoTransaction(address, Buffer.from(signMessage).toString("base64"));
     const serialized = serializeSignDoc(aminoEncoded);
     const hashed = sha3.keccak_256(arrayify(serialized));
 
-    const signatureToCompare = `0x${Buffer.from(signature, "base64").toString(
-      "hex"
-    )}`;
-    const pubkeyComputed = signatureToPubkey(
-      signatureToCompare,
-      Buffer.from(hashed, "hex")
-    );
+    const signatureToCompare = `0x${Buffer.from(signature, "base64").toString("hex")}`;
+    const pubkeyComputed = signatureToPubkey(signatureToCompare, Buffer.from(hashed, "hex"));
 
     return pubkeyComputed;
   } catch (err) {
@@ -61,7 +49,6 @@ export const api = async (url: string, init?: RequestInit) => {
       const data = await response.json();
 
       if (!response.ok) {
-        
         const errorMessage = data?.message || "Something went wrong!";
         throw new Error(errorMessage);
       }
@@ -80,16 +67,14 @@ export const fetchAccountInfo = async (address: string) => {
     return response.account;
   } catch (e) {
     console.log(e, "ERROR");
-    console.error(
-      "This may be a new account. Please send some tokens to this account first."
-    );
+    console.error("This may be a new account. Please send some tokens to this account first.");
 
     return undefined;
   }
 };
 
 export const convertNodeToWallet = (address: any, walletPrefix: any) => {
-  if(!address){
+  if (!address) {
     return "";
   }
   // Decode node address
@@ -127,10 +112,7 @@ export const formatTimestamp = (timestamp: string) => {
 
   hours = hours % 12 || 12; // Convert to 12-hour format
 
-  return `${year}-${month}-${day} ${String(hours).padStart(
-    2,
-    "0"
-  )}:${minutes}${ampm}`;
+  return `${year}-${month}-${day} ${String(hours).padStart(2, "0")}:${minutes}${ampm}`;
 };
 
 export const Timestamp = (value: string | number | Date): string => {
@@ -150,17 +132,13 @@ export const Timestamp = (value: string | number | Date): string => {
   return date.toLocaleString("en-US", options);
 };
 
-export const truncateValue = (
-  value: string,
-  start: number = 4,
-  end: number = 4
-) => {
+export const truncateValue = (value: string, start: number = 4, end: number = 4) => {
   if (!value) return "";
   if (value.length <= start + end) return value; // no need to truncate if too short
   return `${value.slice(0, start)}...${value.slice(-end)}`;
 };
 
-export const formatDuration = (hours:any) => {
+export const formatDuration = (hours: any) => {
   if (!hours && hours !== 0) return "";
 
   if (hours >= 24) {
@@ -185,15 +163,14 @@ export const copyToClipboard = (text: any) => {
   return navigator.clipboard.writeText(text);
 };
 
- export const formatBalance = (amount:any) => {
+export const formatBalance = (amount: any) => {
   return amount.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
   });
 };
 
-
-export const getValueWithUnit=(value: string | number, unit: any = envConstants.currency)=> {
+export const getValueWithUnit = (value: string | number, unit: any = envConstants.currency) => {
   let unitBn: BigNumber.Value;
   switch (unit) {
     case envConstants.currency:
@@ -212,4 +189,39 @@ export const getValueWithUnit=(value: string | number, unit: any = envConstants.
 export const toFirstCapital = (str: string): string => {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+};
+
+export function noExponents(num: number): string {
+  const n = Number(num);
+  if (isNaN(n)) return "0";
+
+  const data = String(n).split(/[eE]/);
+  if (data.length === 1) return data[0];
+
+  let z = "";
+  const sign = n < 0 ? "-" : "";
+  const str = data[0].replace(".", "");
+  let mag = Number(data[1]) + 1;
+
+  if (mag < 0) {
+    z = sign + "0.";
+    while (mag++) z += "0";
+    return z + str.replace("-", "");
+  }
+  mag -= str.length;
+  while (mag--) z += "0";
+  return str + z;
+}
+
+export const noExponential = (num: number) => {
+  return noExponents(num);
+};
+
+export const fetchStakeAmount = async () => {
+  const uri = `${envConstants.swagger_api}/qubetics/provider/v3/params`;
+  const response = await api(uri);
+
+  const stake_amount = Number(response.params.deposit.amount) / 10 ** 18;
+
+  return stake_amount;
 };

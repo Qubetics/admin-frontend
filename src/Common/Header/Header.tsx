@@ -121,6 +121,14 @@ const Header = () => {
     sessionStorage.clear();
     setAuthData("");
     setBalance(0);
+
+    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+
+    if (pathname === Path.SERVICE_PROVIDER) {
+      navigate(Path.LANDING);
+      return;
+    }
+
     setIsLoading(true);
     try {
       const { success } = await useGetApi({

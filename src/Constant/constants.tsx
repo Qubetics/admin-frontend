@@ -56,3 +56,8 @@ export const DESCRIPTION = {
 };
 
 export const UNDEFINED = "undefined";
+
+export const ERROR_MSG = {
+  LOW_BALANCE: "Low wallet Balance",
+  FAILED_FETCHING_BALANCE: "Error fetching balance",
+};
