@@ -122,7 +122,7 @@ const Header = () => {
     setAuthData("");
     setBalance(0);
 
-    const pathname = window.location.pathname;
+    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
 
     if (pathname === "/serviceProvider") {
       navigate("/landing");
