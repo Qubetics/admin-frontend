@@ -10,7 +10,7 @@ import {
 } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { toast } from "react-toastify";
-import { convertNodeToWallet, computePubKey } from "../../utils/Helper/CommonHelper";
+import { convertNodeToWallet, computePubKey, fetchStakeAmount } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import { DESCRIPTION, ERROR_MSG, HEADING, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
@@ -96,7 +96,9 @@ const ServiceProvider = () => {
     e.preventDefault();
     if (!validateForm()) return;
 
-    if (Number(walletBalance) < Number(envConstants.min_stake_amount)) {
+    const minStakeAmount = await fetchStakeAmount();
+
+    if (Number(walletBalance) < minStakeAmount + 1) {
       toast.error(ERROR_MSG.LOW_BALANCE);
       return;
     }

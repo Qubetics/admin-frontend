@@ -216,3 +216,12 @@ export function noExponents(num: number): string {
 export const noExponential = (num: number) => {
   return noExponents(num);
 };
+
+export const fetchStakeAmount = async () => {
+  const uri = `${envConstants.swagger_api}/qubetics/provider/v3/params`;
+  const response = await api(uri);
+
+  const stake_amount = Number(response.params.deposit.amount) / 10 ** 18;
+
+  return stake_amount;
+};
