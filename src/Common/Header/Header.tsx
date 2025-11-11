@@ -10,12 +10,12 @@ import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { envConstants } from "../../Constant/envConstants";
-import { apiMethods } from "../../Constant/constants";
-import { api, computePubKey, formatBalance, truncateValue } from "../../utils/Helper/CommonHelper";
+import { apiMethods, provWalletPrefix } from "../../Constant/constants";
+import { api, computePubKey, convertNodeToWallet, formatBalance, truncateValue } from "../../utils/Helper/CommonHelper";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
 import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
-
+import ProfileIcon from "../../assets/ProfileIcon.svg";
 // Types
 interface KeplrWindow extends Window {
   keplr?: {
@@ -38,6 +38,22 @@ interface KeplrWindow extends Window {
 declare const window: KeplrWindow;
 
 const Header = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [balance, setBalance] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -298,6 +314,7 @@ const Header = () => {
   ];
   const hasHeaderActions = location.pathname !== "/";
   const hideNavItems = location.pathname === Path.SERVICE_PROVIDER;
+  const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   return (
     <div className='header-main'>
@@ -378,13 +395,21 @@ const Header = () => {
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>
-                <ButtonCustom
-                  className='web-logout'
-                  label={isConnecting ? "Logging out..." : "Logout"}
-                  onClick={handleLogout}
-                  disabled={isLoading}
-                  type='button'
-                />
+                <div className='profile-container' ref={profileRef}>
+                  <div className='profile-icon' onClick={() => setIsProfileOpen(!isProfileOpen)}>
+                    <img src={ProfileIcon} alt='Profile' />
+                  </div>
+                  {isProfileOpen && (
+                    <div className='profile-dropdown'>
+                      <p className='dropdown-item'>
+                        Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
+                      </p>
+                      <button onClick={handleLogout} disabled={isLoading} className='dropdown-item logoutBtn'>
+                        {isConnecting ? "Logging in..." : "Logout"}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </>
             )
           )}

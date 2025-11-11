@@ -10,9 +10,19 @@ import {
 } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { toast } from "react-toastify";
-import { convertNodeToWallet, computePubKey, fetchStakeAmount } from "../../utils/Helper/CommonHelper";
+import {
+  convertNodeToWallet,
+  computePubKey,
+  fetchStakeAmount,
+} from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { DESCRIPTION, ERROR_MSG, HEADING, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
+import {
+  DESCRIPTION,
+  ERROR_MSG,
+  HEADING,
+  provWalletPrefix,
+  STATUS_ENUM,
+} from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { apiMethods } from "../../Constant/constants";
@@ -66,7 +76,8 @@ const ServiceProvider = () => {
     const newErrors: FormErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.email.trim()) newErrors.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Please enter a valid email address.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -127,7 +138,11 @@ const ServiceProvider = () => {
       const keplr = (window as any)?.keplr;
       if (!keplr) return toast.error("Keplr wallet not found");
 
-      const { signature, pub_key } = await keplr.signArbitrary(envConstants.chainId, authData, authData);
+      const { signature, pub_key } = await keplr.signArbitrary(
+        envConstants.chainId,
+        authData,
+        authData
+      );
       if (!signature) return toast.error("Signature rejected");
 
       const pubKeyFromSignature = computePubKey(authData, signature, authData);
@@ -159,50 +174,60 @@ const ServiceProvider = () => {
   };
 
   return (
-    <div className='mainContainer'>
-      <h4>Register as Service Provider</h4>
-      <div className='borderDiv borderDiv-bordered'>
-        <h4 className='borderDiv-header'>Connect Keplr Wallet</h4>
-        <div>
-          Ensure that you are connected to the correct Keplr wallet before proceeding with the Service Provider
-          registration.
+    <div className="mainContainer">
+      <h4 className="mainContainer-heading">Register as Service Provider</h4>
+      <div className="borderDiv borderDiv-bordered">
+        <h4 className="borderDiv-header">Connect Keplr Wallet</h4>
+        <p className="borderDiv-para">
+          Ensure that you are connected to the correct Keplr wallet before
+          proceeding with the Service Provider registration.
           <br />
-          The wallet you connect will be used to verify your identity, manage your node registration, and handle all
-          related transactions on the blockchain. Connecting the wrong wallet may prevent successful registration or
-          cause discrepancies in ownership verification.
-        </div>
+          The wallet you connect will be used to verify your identity, manage
+          your node registration, and handle all related transactions on the
+          blockchain. Connecting the wrong wallet may prevent successful
+          registration or cause discrepancies in ownership verification.
+        </p>
       </div>
 
-      <form className='formDiv' onSubmit={handleSubmit}>
-        <label>
-          Name<span className='redText'>*</span>
-        </label>
-        <CustomInput type='text' name='name' placeholder='Enter Name' value={formData.name} onChange={handleChange} />
-        {errors.name && <div className='redText'>{errors.name}</div>}
-
-        <label>
-          Email Address<span className='redText'>*</span>
-        </label>
-        <CustomInput
-          type='email'
-          name='email'
-          placeholder='Enter your email address'
-          value={formData.email}
-          onChange={handleChange}
-        />
-        {errors.email && <div className='redText'>{errors.email}</div>}
-
-        <label>Website URL</label>
-        <CustomInput
-          type='text'
-          name='website'
-          placeholder='Enter Website URL'
-          value={formData.website}
-          onChange={handleChange}
-        />
-        {errors.website && <div className='redText'>{errors.website}</div>}
-
-        <ButtonCustom label='Submit' />
+      <form className="formDiv" onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label>
+            Name<span className="redText">*</span>
+          </label>
+          <CustomInput
+            type="text"
+            name="name"
+            placeholder="Enter Name"
+            value={formData.name}
+            onChange={handleChange}
+          />
+          {errors.name && <div className="redText">{errors.name}</div>}
+        </div>
+        <div className="form-group">
+          <label>
+            Email Address<span className="redText">*</span>
+          </label>
+          <CustomInput
+            type="email"
+            name="email"
+            placeholder="Enter your email address"
+            value={formData.email}
+            onChange={handleChange}
+          />
+          {errors.email && <div className="redText">{errors.email}</div>}
+        </div>
+        <div className="form-group">
+          <label>Website URL</label>
+          <CustomInput
+            type="text"
+            name="website"
+            placeholder="Enter Website URL"
+            value={formData.website}
+            onChange={handleChange}
+          />
+          {errors.website && <div className="redText">{errors.website}</div>}
+        </div>
+        <ButtonCustom label="Submit" />
       </form>
 
       <NotificationToast
