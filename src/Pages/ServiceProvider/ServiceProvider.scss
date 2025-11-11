@@ -1,78 +1,91 @@
 @use "../../utils/functions.scss" as *;
 
 :root {
-    --bg-background: #111827;
-    --clr-card: rgb(168, 219, 215);
-    --clr-1: rgb(121, 255, 247);
-    --clr-2: rgb(255, 200, 118);
-    --clr-4: #91baf8;
-    --clr-3: rgb(106, 168, 209) 0deg;
-    --clr-5: rgb(255, 152, 226) 120deg;
-    --clr-6: rgb(247, 186, 229);
-  }
-  
-  @property --gradient-angle {
-    syntax: "<angle>";
-    initial-value: 90deg;
-    inherits: false;
-  }
+  --bg-background: #111827;
+  --clr-card: rgb(168, 219, 215);
+  --clr-1: rgb(121, 255, 247);
+  --clr-2: rgb(255, 200, 118);
+  --clr-4: #91baf8;
+  --clr-3: rgb(106, 168, 209) 0deg;
+  --clr-5: rgb(255, 152, 226) 120deg;
+  --clr-6: rgb(247, 186, 229);
+}
 
-.mainContainer{
-  margin-top: 40px;
+@property --gradient-angle {
+  syntax: "<angle>";
+  initial-value: 90deg;
+  inherits: false;
+}
 
+.mainContainer {
+  max-width: 810px;
+  width: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
-  width: 100%;
-  color: #fff;
+  margin: 40px auto 0;
   background-color: transparent;
-}
-.redText{
+  padding: 0 20px;
+  &-heading {
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 87px;
+    color: #fff;
+    @media (max-width: 1399px) {
+      font-size: 20px;
+      margin-bottom: 60px;
+    }
+    @media (max-width: 991px) {
+      margin-bottom: 40px;
+    }
+  }
+
+  .redText {
     color: red;
-}
-.borderDiv {
-    margin: 10px 0;
+  }
+  .borderDiv {
     position: relative;
-    color: #A0A0A0;
+    color: #a0a0a0;
     background-color: #121212;
     border: none;
-    padding: 20px 20px;
-    font-size:16px ;
+    padding: 20px;
+    font-size: 16px;
     font-weight: 400;
-    border-radius: s(30);
-    min-width: 100px;
-    max-width: 510px;
-    height: 230px;
-    @media (max-width: 1399px) {  
-        height: 100px;
-        padding: 5px 20px;
+    border-radius: 10px;
+    @media (max-width: 1399px) {
+      padding: 15px 20px;
     }
-  
-    @media (max-width: 1199px) {
-        height: 100px;
-        font-size: 14px;
-      padding: 4px 20px;
+
+    &-header {
+      color: #fff;
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 20px;
     }
-  &-header{
-    color: #fff;
-  }
+    &-para {
+      color: #a0a0a0;
+      font-size: 16px;
+      font-weight: 400;
+    }
     &::before {
       content: "";
       position: absolute;
       inset: 0;
       padding: 2px;
-      border-radius: 30px;
-      background: conic-gradient(from var(--gradient-angle),
-          var(--clr-card),
-          var(--clr-1),
-          var(--clr-2),
-          var(--clr-3),
-          var(--clr-4),
-          var(--clr-5),
-          var(--clr-6),
-          var(--clr-2),
-          var(--clr-1),
-          var(--clr-card));
+      border-radius: 10px;
+      background: conic-gradient(
+        from var(--gradient-angle),
+        var(--clr-card),
+        var(--clr-1),
+        var(--clr-2),
+        var(--clr-3),
+        var(--clr-4),
+        var(--clr-5),
+        var(--clr-6),
+        var(--clr-2),
+        var(--clr-1),
+        var(--clr-card)
+      );
       animation: rotate 2.5s linear infinite;
       -webkit-mask: linear-gradient(#fff 0 0) content-box,
         linear-gradient(#fff 0 0);
@@ -81,18 +94,16 @@
       mask-composite: exclude;
       animation: rotate 3s linear infinite;
     }
-  
+
     @keyframes rotate {
       0% {
         --gradient-angle: 0deg;
       }
-  
+
       100% {
         --gradient-angle: 360deg;
       }
     }
-
- 
   }
   .formDiv {
     position: relative;
@@ -100,49 +111,56 @@
     flex-direction: column;
     align-items: flex-start;
     justify-content: center;
-    padding: 40px 50px;
+    padding: 77px 83px;
     background-color: #121212;
     color: #fff;
-    border-radius: s(30);
-    max-width:510px;
-    max-width: 100%;
+    border-radius: 14px;
+    border: 1px solid #3b393c;
     overflow: hidden;
-  
+    width: 100%;
+    margin-top: 90px;
+    @media (max-width: 1399px) {
+      margin-top: 60px;
+    }
+    @media (max-width: 991px) {
+      margin-top: 40px;
+    }
+
     button {
       margin-top: 10px;
       align-self: center;
       padding: 10px 25px;
       font-size: 16px;
-      font-weight: 500;  
+      font-weight: 500;
+      max-width: 440px;
+      width: 100%;
     }
-  
-  
 
-  
     // Responsive design
     @media (max-width: 1679px) {
       padding: 30px 40px;
-      width:  510px;
     }
-  
+
     @media (max-width: 1399px) {
       padding: 25px 35px;
-      width: 400px;
     }
-  
+
     @media (max-width: 1199px) {
       padding: 20px 30px;
-      width: 350px;
     }
-  
-    @media (max-width: 991px) {
-      padding: 20px;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 20px;
       width: 100%;
-    }
-  
-    @media (max-width: 767px) {
-      padding: 15px;
-      border-radius: s(20);
+
+      label {
+        margin-bottom: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #ffffff;
+      }
     }
   }
-  
+}

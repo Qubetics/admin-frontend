@@ -11,11 +11,16 @@ import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { envConstants } from "../../Constant/envConstants";
 import { apiMethods } from "../../Constant/constants";
-import { api, computePubKey, formatBalance, truncateValue } from "../../utils/Helper/CommonHelper";
+import {
+  api,
+  computePubKey,
+  formatBalance,
+  truncateValue,
+} from "../../utils/Helper/CommonHelper";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
 import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
-
+import ProfileIcon from "../../assets/ProfileIcon.svg";
 // Types
 interface KeplrWindow extends Window {
   keplr?: {
@@ -38,6 +43,25 @@ interface KeplrWindow extends Window {
 declare const window: KeplrWindow;
 
 const Header = () => {
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [balance, setBalance] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
@@ -89,31 +113,34 @@ const Header = () => {
     setIsMenuOpen((prev) => !prev);
   }, []);
 
-  const fetchAccountBalance = useCallback(async (address: string): Promise<void> => {
-    if (!address) {
-      console.warn("No address provided for balance fetch");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
-      const response = await api(uri);
-
-      if (response?.balances?.[0]?.amount) {
-        const balanceAmount = Number(response.balances[0].amount) / 1e18;
-        setBalance(balanceAmount);
-      } else {
-        setBalance(0);
+  const fetchAccountBalance = useCallback(
+    async (address: string): Promise<void> => {
+      if (!address) {
+        console.warn("No address provided for balance fetch");
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching account balance:", error);
-      setBalance(0);
-      toast.error("Failed to fetch account balance");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+
+      setIsLoading(true);
+      try {
+        const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
+        const response = await api(uri);
+
+        if (response?.balances?.[0]?.amount) {
+          const balanceAmount = Number(response.balances[0].amount) / 1e18;
+          setBalance(balanceAmount);
+        } else {
+          setBalance(0);
+        }
+      } catch (error) {
+        console.error("Error fetching account balance:", error);
+        setBalance(0);
+        toast.error("Failed to fetch account balance");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   const handleLogout = useCallback(async (): Promise<void> => {
     if (isLoading) return;
@@ -122,7 +149,8 @@ const Header = () => {
     setAuthData("");
     setBalance(0);
 
-    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+    const pathname =
+      typeof window !== "undefined" ? window.location.pathname : "";
 
     if (pathname === Path.SERVICE_PROVIDER) {
       navigate(Path.LANDING);
@@ -155,7 +183,8 @@ const Header = () => {
   const connectKeplr = useCallback(async (): Promise<string | null> => {
     if (!window.keplr) {
       if (/Android/i.test(navigator.userAgent)) {
-        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+        window.location.href =
+          "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
       } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.location.href = "keplrwallet://";
       } else {
@@ -205,7 +234,11 @@ const Header = () => {
         const message = address;
         const chainId = envConstants.chainId;
 
-        const { signature, pub_key } = await window.keplr.signArbitrary(chainId, address, message);
+        const { signature, pub_key } = await window.keplr.signArbitrary(
+          chainId,
+          address,
+          message
+        );
 
         if (!signature || !pub_key) {
           toast.error("Failed to sign message");
@@ -300,24 +333,32 @@ const Header = () => {
   const hideNavItems = location.pathname === Path.SERVICE_PROVIDER;
 
   return (
-    <div className='header-main'>
-      <div className='header-main__bottom container'>
-        <div className='header__left'>
+    <div className="header-main">
+      <div className="header-main__bottom container">
+        <div className="header__left">
           <Link to={Path.LANDING}>
             {isMobile ? (
-              <img src={mobLogo} alt='Mobile Logo' className='mobile-logo' />
+              <img src={mobLogo} alt="Mobile Logo" className="mobile-logo" />
             ) : (
-              <img src={Logo} alt='Web Logo' className='web-logo' />
+              <img src={Logo} alt="Web Logo" className="web-logo" />
             )}
           </Link>
         </div>
         {hasHeaderActions && authData && (
-          <div className={`header__details ${isMenuOpen ? "active" : ""}`} ref={menuRef}>
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
             {authData && !hideNavItems && (
               <>
                 <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
                   {navigationItems.map(({ path, label }) => (
-                    <Link key={path} to={path} className={isActive(path)} onClick={() => setIsMenuOpen(false)}>
+                    <Link
+                      key={path}
+                      to={path}
+                      className={isActive(path)}
+                      onClick={() => setIsMenuOpen(false)}
+                    >
                       {label}
                     </Link>
                   ))}
@@ -341,18 +382,20 @@ const Header = () => {
               </div> */}
                   </>
                 </nav>
-                <div className='responsiveDrawerData'>
-                  <span className='customButton balance-display'>{formatBalance(balance)} TICS</span>
-                  <div className='header__wallet-address customButton'>
+                <div className="responsiveDrawerData">
+                  <span className="customButton balance-display">
+                    {formatBalance(balance)} TICS
+                  </span>
+                  <div className="header__wallet-address customButton">
                     <div>{truncateValue(authData)}</div>
                     <CopyText text={authData} />
                   </div>
                   <ButtonCustom
-                    className='mobile-logout'
+                    className="mobile-logout"
                     label={isConnecting ? "Logging out..." : "Logout"}
                     onClick={handleLogout}
                     disabled={isLoading}
-                    type='button'
+                    type="button"
                   />
                 </div>
               </>
@@ -365,7 +408,7 @@ const Header = () => {
           {!authData ? (
             <ButtonCustom
               label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-              type='button'
+              type="button"
               tabIndex={3}
               onClick={handleWalletConnect}
               disabled={isConnecting}
@@ -373,25 +416,49 @@ const Header = () => {
           ) : (
             width > 991 && (
               <>
-                <span className='customButton balance-display'>{formatBalance(balance)} TICS</span>
-                <div className='header__wallet-address customButton'>
+                <span className="customButton balance-display">
+                  {formatBalance(balance)} TICS
+                </span>
+                <div className="header__wallet-address customButton">
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>
                 <ButtonCustom
-                  className='web-logout'
+                  className="web-logout"
                   label={isConnecting ? "Logging out..." : "Logout"}
                   onClick={handleLogout}
                   disabled={isLoading}
-                  type='button'
+                  type="button"
                 />
               </>
             )
           )}
+          <div className="profile-container" ref={profileRef}>
+            <div
+              className="profile-icon"
+              onClick={() => setIsProfileOpen(!isProfileOpen)}
+            >
+              <img src={ProfileIcon} alt="Profile" />
+            </div>
+            {isProfileOpen && (
+              <div className="profile-dropdown">
+                <Link to="/profile" className="dropdown-item">
+                  Provider Address: qub...mdr <CopyText text={"Provider Address: qub...mdr"} />
+                </Link>
+                <button onClick={handleLogout} className="dropdown-item logoutBtn">
+                  {isLoading ? "Logging out..." : "Logout"}
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
         {hasHeaderActions && authData && (
-          <button className={`hamburger ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu} aria-label='Toggle menu'>
+          <button
+            className={`hamburger ${isMenuOpen ? "active" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
             <span></span>
             <span></span>
             <span></span>
