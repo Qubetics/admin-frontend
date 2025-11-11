@@ -10,7 +10,8 @@ interface CopyTextProps {
 export default function CopyText({ text }: CopyTextProps) {
   const [copied, setCopied] = useState<boolean>(false);
 
-  const handleCopyClick = async () => {
+  const handleCopyClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -21,7 +22,7 @@ export default function CopyText({ text }: CopyTextProps) {
   };
 
   return (
-    <Tooltip title={copied ? "Copied" : "Copy"} className="copyIconToolTip">
+    <Tooltip title={copied ? "Copied" : "Copy"} className='copyIconToolTip'>
       <div onClick={handleCopyClick} style={{ zIndex: 1, cursor: "pointer" }}>
         {copied ? <CheckOutlined /> : <NewCopyIcon />}
       </div>
