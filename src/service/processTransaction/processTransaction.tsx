@@ -24,9 +24,7 @@ export const processTransaction = async (message) => {
 
       if (gasUsed > 0) {
         const gasLimit = Math.floor(gasUsed * 1.3);
-        const feeAmount = Math.ceil(
-          envConstants.gas_limit * gasPrice
-        ).toString();
+        const feeAmount = Math.ceil(envConstants.gas_limit * gasPrice).toString();
         const res = await sendMsgs(window.keplr, key.bech32Address, [message], {
           amount: [{ denom: "tics", amount: feeAmount }],
           gas: Math.floor(gasUsed * 1.5).toString(),
@@ -38,7 +36,7 @@ export const processTransaction = async (message) => {
     } catch (error) {
       const message = error?.message || String(error);
       if (message.includes("Request rejected")) {
-        toast.error("Transaction rejected");
+        toast.error("Transaction rejected", { toastId: "tx_rejected" });
         return false;
       } else if (message.includes("gigabytes cannot be negative")) {
         toast.error("Value can be negative");

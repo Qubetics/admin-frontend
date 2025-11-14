@@ -61,3 +61,9 @@ export const ERROR_MSG = {
   LOW_BALANCE: "Low wallet Balance",
   FAILED_FETCHING_BALANCE: "Error fetching balance",
 };
+
+export const hoursDropdown = [
+  { label: "30 Days", value: 30 * 24 },
+  { label: "60 Days", value: 60 * 24 },
+  { label: "90 Days", value: 90 * 24 },
+];

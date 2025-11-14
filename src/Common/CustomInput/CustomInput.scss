@@ -34,3 +34,38 @@
     }
   }
 }
+.custom-input {
+  .input-field,
+  .select-field {
+    width: 100%;
+    padding: 12px 14px;
+    border-radius: 8px;
+    border: 1px solid #222328;
+    background: #141416;
+    color: #e9e9ea;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .input-field:focus,
+  .select-field:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+  }
+
+  &.has-error .input-field,
+  &.has-error .select-field {
+    border-color: #ff5a5f;
+  }
+
+  .error-text {
+    margin-top: 6px;
+    color: #ff5a5f;
+    font-size: 12px;
+  }
+
+  .select-wrap {
+    position: relative;
+  }
+}
