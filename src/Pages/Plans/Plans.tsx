@@ -24,7 +24,7 @@ const Plans = () => {
   const useGetApi = useNetworkRequest();
   const { authData } = useIsLoggedIn();
   const [createShow, setCreateShow] = useState(false);
-  const [debouncing, setDebouncing] = useState<{ [key: number]: boolean }>({});
+  const [isTxRunning, setIsTxRunning] = useState(false);
 
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
@@ -43,8 +43,8 @@ const Plans = () => {
 
   const handleClick = async (val: any) => {
     const id = val?.id;
-    if (debouncing[id]) return;
-    setDebouncing((prev) => ({ ...prev, [id]: true }));
+
+    setIsTxRunning(true);
 
     try {
       const message = buildUpdatePlanStatusMessage({
@@ -65,9 +65,7 @@ const Plans = () => {
       toast.success("Successfully Activated", { toastId: "tx_success" });
       await getAllPlan();
     } finally {
-      setTimeout(() => {
-        setDebouncing((prev) => ({ ...prev, [id]: false }));
-      }, 1000);
+      setIsTxRunning(false);
     }
   };
 
@@ -124,9 +122,9 @@ const Plans = () => {
                     <td>
                       <div className='action-btns'>
                         <button
-                          className={`approve-btn ${row.status === "active" || debouncing[row.id] ? "disabled" : ""}`}
+                          className={`approve-btn ${row.status === "active" || isTxRunning ? "disabled" : ""}`}
                           onClick={() => handleClick(row)}
-                          disabled={row.status === "active" || debouncing[row.id]}
+                          disabled={row.status === "active" || isTxRunning}
                         >
                           {row.status === "active" ? "Activated" : "Activate"}
                         </button>
