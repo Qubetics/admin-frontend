@@ -39,11 +39,6 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
       errorMsg = "Minimum value is 720";
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-
     if (errorMsg) {
       setErrors((prev) => ({
         ...prev,
