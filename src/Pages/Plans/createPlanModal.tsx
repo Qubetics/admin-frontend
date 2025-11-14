@@ -26,16 +26,23 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     let errorMsg = "";
-    if (!/^[1-9]\d*$/.test(value) && value !== "") {
+
+    if (name === "price" && Number(value) < 1) {
+      errorMsg = "The price plan cannot be less than 1";
+    } else if (name === "price" && value.includes(".")) {
+      errorMsg = "Price value cannot be in decimal";
+    } else if (name === "bytes" && value.includes(".")) {
+      errorMsg = "Bandwidth value cannot be in decimal";
+    } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
       errorMsg = "Only positive numbers allowed";
     } else if (name === "hours" && value !== "" && Number(value) < 720) {
       errorMsg = "Minimum value is 720";
-
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
     }
+
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
 
     if (errorMsg) {
       setErrors((prev) => ({
