@@ -24,6 +24,7 @@ const Plans = () => {
   const useGetApi = useNetworkRequest();
   const { authData } = useIsLoggedIn();
   const [createShow, setCreateShow] = useState(false);
+  const [debouncing, setDebouncing] = useState<{ [key: number]: boolean }>({});
 
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
@@ -41,22 +42,33 @@ const Plans = () => {
   };
 
   const handleClick = async (val: any) => {
-    const message = buildUpdatePlanStatusMessage({
-      from: provAddress,
-      id: Long.fromString(val?.id),
-      status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE,
-    });
+    const id = val?.id;
+    if (debouncing[id]) return;
+    setDebouncing((prev) => ({ ...prev, [id]: true }));
 
-    const TxHash = await processTransaction(message);
+    try {
+      const message = buildUpdatePlanStatusMessage({
+        from: provAddress,
+        id: Long.fromString(id),
+        status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE,
+      });
 
-    if (!TxHash) {
-      if (!toast.isActive("tx_rejected")) {
-        toast.error("Transaction failed");
+      const TxHash = await processTransaction(message);
+
+      if (!TxHash) {
+        if (!toast.isActive("tx_rejected")) {
+          toast.error("Transaction failed", { toastId: "tx_failed" });
+        }
+        return;
       }
-      return;
+
+      toast.success("Successfully Activated", { toastId: "tx_success" });
+      await getAllPlan();
+    } finally {
+      setTimeout(() => {
+        setDebouncing((prev) => ({ ...prev, [id]: false }));
+      }, 1000);
     }
-    toast.success("Sucessfully Activated");
-    getAllPlan();
   };
 
   useEffect(() => {
@@ -112,9 +124,9 @@ const Plans = () => {
                     <td>
                       <div className='action-btns'>
                         <button
-                          className={`approve-btn ${row.status === "active" ? "disabled" : ""}`}
+                          className={`approve-btn ${row.status === "active" || debouncing[row.id] ? "disabled" : ""}`}
                           onClick={() => handleClick(row)}
-                          disabled={row.status === "active"}
+                          disabled={row.status === "active" || debouncing[row.id]}
                         >
                           {row.status === "active" ? "Activated" : "Activate"}
                         </button>
