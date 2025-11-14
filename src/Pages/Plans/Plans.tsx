@@ -50,7 +50,9 @@ const Plans = () => {
     const TxHash = await processTransaction(message);
 
     if (!TxHash) {
-      toast.error("Transaction failed");
+      if (!toast.isActive("tx_rejected")) {
+        toast.error("Transaction failed");
+      }
       return;
     }
     toast.success("Sucessfully Activated");
