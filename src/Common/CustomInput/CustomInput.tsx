@@ -2,13 +2,16 @@
 import React from "react";
 import "./CustomInput.scss";
 
+type Option = { label: string; value: string | number };
+
 interface CustomInputProps {
   type?: string;
   name: string;
   disable?: boolean;
   value?: string | number;
   placeholder?: string;
-  onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChange?: (e: any) => void;
+  options?: Option[];
 }
 
 const CustomInput: React.FC<CustomInputProps> = ({
@@ -18,17 +21,38 @@ const CustomInput: React.FC<CustomInputProps> = ({
   placeholder,
   onChange = () => {},
   disable = false,
+  options = [],
 }) => {
+  if (type === "select") {
+    return (
+      <div className={"custom-input"}>
+        <div className='select-wrap'>
+          <select name={name} value={value || ""} disabled={disable} onChange={onChange} className='select-field'>
+            <option value='' disabled>
+              {"Choose"}
+            </option>
+            {options.map((opt) => (
+              <option key={opt.value} value={opt.value}>
+                {opt.label}
+              </option>
+            ))}
+          </select>
+          <span className='chevron' aria-hidden='true' />
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="custom-input">
+    <div className='custom-input'>
       <input
         type={type}
         name={name}
         value={value}
         disabled={disable}
         placeholder={placeholder}
-        onChange={onChange}
-        className="input-field"
+        onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
+        className='input-field'
       />
     </div>
   );
