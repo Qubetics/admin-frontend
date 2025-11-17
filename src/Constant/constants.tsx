@@ -67,3 +67,10 @@ export const hoursDropdown = [
   { label: "60 Days", value: 60 * 24 },
   { label: "90 Days", value: 90 * 24 },
 ];
+
+export const ERROR_MESSAGES = {
+  PRICE_LESS_THAN_1: "The price plan cannot be less than 1",
+  PRICE_DECIMAL: "Price value cannot be in decimal",
+  BANDWIDTH_LESS_THAN_1: "Plan bandwidth cannot be less than 1",
+  BANDWIDTH_DECIMAL: "Plan bandwidth cannot be in decimal",
+};
