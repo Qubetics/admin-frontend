@@ -36,7 +36,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     } else if (name === "bytes" && value.includes(".")) {
       errorMsg = "Plan bandwidth cannot be in decimal";
     } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
-      errorMsg = "Only positive numbers allowed";
+      errorMsg = name === "price" ? "The price plan cannot be less than 1" : "Plan bandwidth cannot be less than 1";
     }
 
     if (errorMsg) {

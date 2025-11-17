@@ -10,19 +10,9 @@ import {
 } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { toast } from "react-toastify";
-import {
-  convertNodeToWallet,
-  computePubKey,
-  fetchStakeAmount,
-} from "../../utils/Helper/CommonHelper";
+import { convertNodeToWallet, computePubKey, fetchStakeAmount } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import {
-  DESCRIPTION,
-  ERROR_MSG,
-  HEADING,
-  provWalletPrefix,
-  STATUS_ENUM,
-} from "../../Constant/constants";
+import { DESCRIPTION, ERROR_MSG, HEADING, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { apiMethods } from "../../Constant/constants";
@@ -76,8 +66,7 @@ const ServiceProvider = () => {
     const newErrors: FormErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.email.trim()) newErrors.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Please enter a valid email address.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -138,11 +127,7 @@ const ServiceProvider = () => {
       const keplr = (window as any)?.keplr;
       if (!keplr) return toast.error("Keplr wallet not found");
 
-      const { signature, pub_key } = await keplr.signArbitrary(
-        envConstants.chainId,
-        authData,
-        authData
-      );
+      const { signature, pub_key } = await keplr.signArbitrary(envConstants.chainId, authData, authData);
       if (!signature) return toast.error("Signature rejected");
 
       const pubKeyFromSignature = computePubKey(authData, signature, authData);
@@ -179,13 +164,12 @@ const ServiceProvider = () => {
       <div className="borderDiv borderDiv-bordered">
         <h4 className="borderDiv-header">Connect Keplr Wallet</h4>
         <p className="borderDiv-para">
-          Ensure that you are connected to the correct Keplr wallet before
-          proceeding with the Service Provider registration.
+          Ensure that you are connected to the correct Keplr wallet before proceeding with the Service Provider
+          registration.
           <br />
-          The wallet you connect will be used to verify your identity, manage
-          your node registration, and handle all related transactions on the
-          blockchain. Connecting the wrong wallet may prevent successful
-          registration or cause discrepancies in ownership verification.
+          The wallet you connect will be used to verify your identity, manage your node registration, and handle all
+          related transactions on the blockchain. Connecting the wrong wallet may prevent successful registration or
+          cause discrepancies in ownership verification.
         </p>
       </div>
 
@@ -194,13 +178,7 @@ const ServiceProvider = () => {
           <label>
             Name<span className="redText">*</span>
           </label>
-          <CustomInput
-            type="text"
-            name="name"
-            placeholder="Enter Name"
-            value={formData.name}
-            onChange={handleChange}
-          />
+          <CustomInput type="text" name="name" placeholder="Enter name" value={formData.name} onChange={handleChange} />
           {errors.name && <div className="redText">{errors.name}</div>}
         </div>
         <div className="form-group">
@@ -221,7 +199,7 @@ const ServiceProvider = () => {
           <CustomInput
             type="text"
             name="website"
-            placeholder="Enter Website URL"
+            placeholder="Enter website url"
             value={formData.website}
             onChange={handleChange}
           />
