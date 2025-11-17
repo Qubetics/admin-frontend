@@ -27,12 +27,14 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     const { name, value } = e.target;
     let errorMsg = "";
 
-    if (name === "price" && Number(value) < 1) {
+    if (name === "price" && (Number(value) < 1 || value === "-")) {
       errorMsg = "The price plan cannot be less than 1";
     } else if (name === "price" && value.includes(".")) {
       errorMsg = "Price value cannot be in decimal";
+    } else if (name === "bytes" && (Number(value) < 1 || value === "-")) {
+      errorMsg = "Plan bandwidth cannot be less than 1";
     } else if (name === "bytes" && value.includes(".")) {
-      errorMsg = "Bandwidth value cannot be in decimal";
+      errorMsg = "Plan bandwidth cannot be in decimal";
     } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
       errorMsg = "Only positive numbers allowed";
     } else if (name === "hours" && value !== "" && Number(value) < 720) {
@@ -40,6 +42,11 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     }
 
     if (errorMsg) {
+      if (value === "") {
+        setFormData((prev) => ({ ...prev, [name]: "" }));
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+        return;
+      }
       setErrors((prev) => ({
         ...prev,
         [name]: errorMsg,
