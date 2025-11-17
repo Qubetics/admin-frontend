@@ -5,7 +5,7 @@ import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { ModifyNum } from "../../utils/Helper/CommonHelper";
-import { gbToBytes, hoursDropdown } from "../../Constant/constants";
+import { ERROR_MESSAGES, gbToBytes, hoursDropdown } from "../../Constant/constants";
 import { toast } from "react-toastify";
 import CustomInput from "../../Common/CustomInput/CustomInput";
 
@@ -27,16 +27,22 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     const { name, value } = e.target;
     let errorMsg = "";
 
-    if (name === "price" && (Number(value) < 1 || value === "-")) {
-      errorMsg = "The price plan cannot be less than 1";
-    } else if (name === "price" && value.includes(".")) {
-      errorMsg = "Price value cannot be in decimal";
-    } else if (name === "bytes" && (Number(value) < 1 || value === "-")) {
-      errorMsg = "Plan bandwidth cannot be less than 1";
-    } else if (name === "bytes" && value.includes(".")) {
-      errorMsg = "Plan bandwidth cannot be in decimal";
-    } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
-      errorMsg = name === "price" ? "The price plan cannot be less than 1" : "Plan bandwidth cannot be less than 1";
+    if (name === "price") {
+      if (Number(value) < 1 || value === "-") {
+        errorMsg = ERROR_MESSAGES.PRICE_LESS_THAN_1;
+      } else if (value.includes(".")) {
+        errorMsg = ERROR_MESSAGES.PRICE_DECIMAL;
+      } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
+        errorMsg = ERROR_MESSAGES.PRICE_LESS_THAN_1;
+      }
+    } else if (name === "bytes") {
+      if (Number(value) < 1 || value === "-") {
+        errorMsg = ERROR_MESSAGES.BANDWIDTH_LESS_THAN_1;
+      } else if (value.includes(".")) {
+        errorMsg = ERROR_MESSAGES.BANDWIDTH_DECIMAL;
+      } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
+        errorMsg = ERROR_MESSAGES.BANDWIDTH_LESS_THAN_1;
+      }
     }
 
     if (errorMsg) {
