@@ -27,19 +27,24 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     const { name, value } = e.target;
     let errorMsg = "";
 
-    if (name === "price" && Number(value) < 1) {
+    if (name === "price" && (Number(value) < 1 || value === "-")) {
       errorMsg = "The price plan cannot be less than 1";
     } else if (name === "price" && value.includes(".")) {
       errorMsg = "Price value cannot be in decimal";
+    } else if (name === "bytes" && (Number(value) < 1 || value === "-")) {
+      errorMsg = "Plan bandwidth cannot be less than 1";
     } else if (name === "bytes" && value.includes(".")) {
-      errorMsg = "Bandwidth value cannot be in decimal";
+      errorMsg = "Plan bandwidth cannot be in decimal";
     } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
       errorMsg = "Only positive numbers allowed";
-    } else if (name === "hours" && value !== "" && Number(value) < 720) {
-      errorMsg = "Minimum value is 720";
     }
 
     if (errorMsg) {
+      if (value === "") {
+        setFormData((prev) => ({ ...prev, [name]: "" }));
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+        return;
+      }
       setErrors((prev) => ({
         ...prev,
         [name]: errorMsg,
@@ -113,13 +118,13 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
       <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
-          <div className='modal-overlay'>
-            <div className='modal-content'>
+          <div className="modal-overlay">
+            <div className="modal-content">
               <h2>dVPN Plan</h2>
               <p>Plan Created Successfully!</p>
-              <div className='action-btns'>
+              <div className="action-btns">
                 {/* <button className="gradient-btn">Ok</button> */}
-                <ButtonCustom label='OK' onClick={handleClose} />
+                <ButtonCustom label="OK" onClick={handleClose} />
               </div>
             </div>
           </div>
@@ -131,39 +136,39 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
           <h2>Create Plan</h2>
         </Modal.Header>
         <Modal.Body>
-          <div className='createPlan'>
-            <div className='form-container'>
-              <div className='form-group'>
+          <div className="createPlan">
+            <div className="form-container">
+              <div className="form-group">
                 <label>Plan Price</label>
                 <CustomInput
-                  type='text'
-                  name='price'
-                  placeholder='Enter Plan Price'
+                  type="text"
+                  name="price"
+                  placeholder="Enter Plan Price"
                   value={formData.price}
                   onChange={handleChange}
                 />
                 {errors.price && <p style={{ color: "red", fontSize: "12px" }}>{errors.price}</p>}
               </div>
 
-              <div className='form-group'>
+              <div className="form-group">
                 <label>Plan Bandwidth</label>
                 <CustomInput
-                  type='text'
-                  name='bytes'
-                  placeholder='Enter Bandwidth'
+                  type="text"
+                  name="bytes"
+                  placeholder="Enter Bandwidth"
                   value={formData.bytes}
                   onChange={handleChange}
                 />
                 {errors.bytes && <p style={{ color: "red", fontSize: "12px" }}>{errors.bytes}</p>}
               </div>
 
-              <div className='create-form'>
-                <div className='form-group'>
+              <div className="create-form">
+                <div className="form-group">
                   <label>Duration</label>
                   <CustomInput
-                    type='select'
-                    name='hours'
-                    placeholder='Choose'
+                    type="select"
+                    name="hours"
+                    placeholder="Choose"
                     value={formData.hours}
                     onChange={handleInputChange}
                     disable={false}
@@ -173,9 +178,9 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                 </div>
               </div>
 
-              <div className='create-btn'>
+              <div className="create-btn">
                 <ButtonCustom
-                  label='Create'
+                  label="Create"
                   onClick={handleClick}
                   disabled={isLoading || !formData.bytes || !formData.hours || !formData.price}
                 />

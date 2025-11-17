@@ -86,7 +86,7 @@ const Plans = () => {
               <tr>
                 <th>Plan ID</th>
                 <th>Price</th>
-                <th>Bytes</th>
+                <th>Bandwidth</th>
                 <th>Creation Date</th>
                 <th>Duration</th>
                 <th>Action</th>
