@@ -31,7 +31,7 @@ const Plans = () => {
   const getAllPlan = async () => {
     setIsLoading(true);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.getAllPlan(page, limit, authData),
+      endpoint: apiUrls.getAllPlan(authData),
     });
     setIsLoading(false);
 
@@ -138,18 +138,20 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        {/*   {totalPages > 1 && (
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: any) => setPage(newPage)}
-            limit={limit}
-            onLimitChange={(limit: number) => {
-              setLimit(limit), setPage(1);
-            }}
-          />
-        )}
- */}
+        {
+          /* totalPages > 1 */ false && (
+            <Pagination
+              currentPage={page}
+              totalPages={totalPages}
+              onPageChange={(newPage: any) => setPage(newPage)}
+              limit={limit}
+              onLimitChange={(limit: number) => {
+                setLimit(limit), setPage(1);
+              }}
+            />
+          )
+        }
+
         <CreatePlanModal
           createShow={createShow}
           setCreateShow={setCreateShow}

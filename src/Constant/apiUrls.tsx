@@ -1,9 +1,9 @@
-import type { get } from "http";
+/* import type { get } from "http"; */
 
 export const apiUrls = {
   /*   getAllPlan: (page: number, limit: number, address: string) =>
     `/api/v1/plans?page=${page}&limit=${limit}&reverse=true&address=${address}` */
-  getAllPlan: (page: number, limit: number, address: string) => `/api/v1/plans?reverse=true&address=${address}`,
+  getAllPlan: (address: string) => `/api/v1/plans?reverse=true&address=${address}`,
   postNodeRequest: "/api/v1/node",
   logout: `/api/v1/auth/logout`,
   login: `/api/v1/auth/login`,
