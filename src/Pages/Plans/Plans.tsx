@@ -74,14 +74,14 @@ const Plans = () => {
   }, [page, limit]);
 
   return (
-    <div className='plans'>
-      <div className='plans__header'>
+    <div className="plans">
+      <div className="plans__header">
         <h3>Plans List</h3>
-        <ButtonCustom className='btn_create' label='Create Plan' onClick={() => setCreateShow(true)} />
+        <ButtonCustom className="btn_create" label="Create Plan" onClick={() => setCreateShow(true)} />
       </div>
-      <div className='custom-table-wrapper commonTable'>
-        <div className='outerTable'>
-          <table className='custom-table plans-table '>
+      <div className="custom-table-wrapper commonTable">
+        <div className="outerTable">
+          <table className="custom-table plans-table ">
             <thead>
               <tr>
                 <th>Plan ID</th>
@@ -120,7 +120,7 @@ const Plans = () => {
                     <td>{Timestamp(row?.status_at)}</td>
                     <td>{formatDuration(Number(row?.hours))}</td>
                     <td>
-                      <div className='action-btns'>
+                      <div className="action-btns">
                         <button
                           className={`approve-btn ${row.status === "active" || isTxRunning ? "disabled" : ""}`}
                           onClick={() => handleClick(row)}
@@ -138,7 +138,7 @@ const Plans = () => {
         </div>
 
         {/* Pagination */}
-        {totalPages > 1 && (
+        {/*   {totalPages > 1 && (
           <Pagination
             currentPage={page}
             totalPages={totalPages}
@@ -149,7 +149,7 @@ const Plans = () => {
             }}
           />
         )}
-
+ */}
         <CreatePlanModal
           createShow={createShow}
           setCreateShow={setCreateShow}
