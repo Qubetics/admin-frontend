@@ -8,6 +8,7 @@ import { ModifyNum } from "../../utils/Helper/CommonHelper";
 import { ERROR_MESSAGES, gbToBytes, hoursDropdown } from "../../Constant/constants";
 import { toast } from "react-toastify";
 import CustomInput from "../../Common/CustomInput/CustomInput";
+import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 
 const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }: any) => {
   const initialFormData = {
@@ -22,6 +23,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     bytes: "",
     hours: "",
   });
+  const [showNotification, setShowNotification] = useState(false); 
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -104,7 +106,9 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     setFormData(initialFormData);
     setCreateShow(false);
     // handleClose();
-    handleShow();
+    // handleShow();
+     getAllPlan();
+    setShowNotification(true);
   };
   const handleHide = () => {
     setCreateShow(false);
@@ -121,7 +125,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} centered>
+      {/* <Modal show={show} onHide={handleClose} centered>
         <Modal.Header closeButton></Modal.Header>
         <Modal.Body>
           <div className="modal-overlay">
@@ -129,13 +133,13 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
               <h2>dVPN Plan</h2>
               <p>Plan Created Successfully!</p>
               <div className="action-btns">
-                {/* <button className="gradient-btn">Ok</button> */}
+                <button className="gradient-btn">Ok</button>
                 <ButtonCustom label="OK" onClick={handleClose} />
               </div>
             </div>
           </div>
         </Modal.Body>
-      </Modal>
+      </Modal> */}
 
       <Modal show={createShow} onHide={handleHide} centered>
         <Modal.Header closeButton>
@@ -149,7 +153,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                 <CustomInput
                   type="text"
                   name="price"
-                  placeholder="Enter Plan Price"
+                  placeholder="Enter Plan Price in TICS"
                   value={formData.price}
                   onChange={handleChange}
                 />
@@ -161,7 +165,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                 <CustomInput
                   type="text"
                   name="bytes"
-                  placeholder="Enter Bandwidth"
+                  placeholder="Enter Bandwidth in GB"
                   value={formData.bytes}
                   onChange={handleChange}
                 />
@@ -195,6 +199,12 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
           </div>
         </Modal.Body>
       </Modal>
+       <NotificationToast
+        show={showNotification}
+        handleClose={() => setShowNotification(false)}
+        heading="Plan"
+        description="Plan Created Successfully!"
+      />
     </>
   );
 };
