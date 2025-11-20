@@ -61,7 +61,7 @@ const Header = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { authData, setAuthData } = useIsLoggedIn();
+  const { authData, setAuthData, providerName, setProviderName } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
   // function to logo resize
@@ -254,12 +254,14 @@ const Header = () => {
           } else {
             toast.error("Authentication failed. Please try again.");
           }
-          if (data && !data?.isExist) {
+          if (data && !data?.data?.isExist) {
             setAuthData(address);
             navigate(Path.SERVICE_PROVIDER);
           }
           return false;
         }
+
+        setProviderName(data?.data?.name);
         setAuthData(address);
         navigate("/dashboard");
         return true;
@@ -317,14 +319,14 @@ const Header = () => {
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   return (
-    <div className='header-main'>
-      <div className='header-main__bottom container'>
-        <div className='header__left'>
+    <div className="header-main">
+      <div className="header-main__bottom container">
+        <div className="header__left">
           <Link to={Path.LANDING}>
             {isMobile ? (
-              <img src={mobLogo} alt='Mobile Logo' className='mobile-logo' />
+              <img src={mobLogo} alt="Mobile Logo" className="mobile-logo" />
             ) : (
-              <img src={Logo} alt='Web Logo' className='web-logo' />
+              <img src={Logo} alt="Web Logo" className="web-logo" />
             )}
           </Link>
         </div>
@@ -358,18 +360,18 @@ const Header = () => {
               </div> */}
                   </>
                 </nav>
-                <div className='responsiveDrawerData'>
-                  <span className='customButton balance-display'>{formatBalance(balance)} TICS</span>
-                  <div className='header__wallet-address customButton'>
+                <div className="responsiveDrawerData">
+                  <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
+                  <div className="header__wallet-address customButton">
                     <div>{truncateValue(authData)}</div>
                     <CopyText text={authData} />
                   </div>
                   <ButtonCustom
-                    className='mobile-logout'
+                    className="mobile-logout"
                     label={isConnecting ? "Logging out..." : "Logout"}
                     onClick={handleLogout}
                     disabled={isLoading}
-                    type='button'
+                    type="button"
                   />
                 </div>
               </>
@@ -382,7 +384,7 @@ const Header = () => {
           {!authData ? (
             <ButtonCustom
               label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-              type='button'
+              type="button"
               tabIndex={3}
               onClick={handleWalletConnect}
               disabled={isConnecting}
@@ -390,24 +392,22 @@ const Header = () => {
           ) : (
             width > 991 && (
               <>
-                <span className='customButton balance-display'>{formatBalance(balance)} TICS</span>
-                <div className='header__wallet-address customButton'>
+                <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
+                <div className="header__wallet-address customButton">
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>
-                <div className='profile-container' ref={profileRef}>
-                  <div className='profile-icon' onClick={() => setIsProfileOpen(!isProfileOpen)}>
-                    <img src={ProfileIcon} alt='Profile' />
+                <div className="profile-container" ref={profileRef}>
+                  <div className="profile-icon" onClick={() => setIsProfileOpen(!isProfileOpen)}>
+                    <img src={ProfileIcon} alt="Profile" />
                   </div>
                   {isProfileOpen && (
-                    <div className='profile-dropdown'>
-                      <p className='dropdown-item'>
-                        Provider Name: Kakashi
-                      </p>
-                      <p className='dropdown-item'>
+                    <div className="profile-dropdown">
+                      <p className="dropdown-item">Provider Name: {providerName}</p>
+                      <p className="dropdown-item">
                         Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
                       </p>
-                      <button onClick={handleLogout} disabled={isLoading} className='dropdown-item logoutBtn'>
+                      <button onClick={handleLogout} disabled={isLoading} className="dropdown-item logoutBtn">
                         {isConnecting ? "Logging in..." : "Logout"}
                       </button>
                     </div>
@@ -419,7 +419,7 @@ const Header = () => {
         </div>
 
         {hasHeaderActions && authData && (
-          <button className={`hamburger ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu} aria-label='Toggle menu'>
+          <button className={`hamburger ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu} aria-label="Toggle menu">
             <span></span>
             <span></span>
             <span></span>

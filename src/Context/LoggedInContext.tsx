@@ -4,20 +4,18 @@ import { createContext, useContext, useEffect, useState } from "react";
 interface AuthContextType {
   authData: string;
   setAuthData: React.Dispatch<React.SetStateAction<string>>;
+  providerName: string;
+  setProviderName: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
   logout: () => void;
 }
 
-export const MyLoggedInContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+export const MyLoggedInContext = createContext<AuthContextType | undefined>(undefined);
 
-export const LoggedInProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const LoggedInProvider = ({ children }: { children: React.ReactNode }) => {
   const [authData, setAuthData] = useState<string>("");
+  const [providerName, setProviderName] = useState<string>("");
+
   const [loading, setLoading] = useState<boolean>(true);
 
   // Load from localStorage on mount
@@ -25,9 +23,11 @@ export const LoggedInProvider = ({
     const fetchAuthToken = async () => {
       setLoading(true);
       const stored = localStorage.getItem("authData");
-      if (stored) {
-        setAuthData(stored);
-      }
+      const storedProvider = localStorage.getItem("providerName");
+
+      if (stored) setAuthData(stored);
+      if (storedProvider) setProviderName(storedProvider);
+
       setLoading(false);
     };
     fetchAuthToken();
@@ -42,16 +42,31 @@ export const LoggedInProvider = ({
     }
   }, [authData]);
 
+  useEffect(() => {
+    if (providerName) localStorage.setItem("providerName", providerName);
+    else localStorage.removeItem("providerName");
+  }, [providerName]);
+
   const logout = () => {
     setAuthData("");
+    setProviderName("");
     localStorage.removeItem("authData");
+    localStorage.removeItem("providerName");
+
     sessionStorage.clear();
     window.location.href = "/landing";
   };
 
   return (
     <MyLoggedInContext.Provider
-      value={{ authData, setAuthData, loading, logout }}
+      value={{
+        authData,
+        setAuthData,
+        providerName,
+        setProviderName,
+        loading,
+        logout,
+      }}
     >
       {children}
     </MyLoggedInContext.Provider>
