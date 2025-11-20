@@ -402,6 +402,9 @@ const Header = () => {
                   {isProfileOpen && (
                     <div className='profile-dropdown'>
                       <p className='dropdown-item'>
+                        Provider Name: Kakashi
+                      </p>
+                      <p className='dropdown-item'>
                         Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
                       </p>
                       <button onClick={handleLogout} disabled={isLoading} className='dropdown-item logoutBtn'>
