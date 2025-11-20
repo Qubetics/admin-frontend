@@ -226,8 +226,10 @@ export const fetchStakeAmount = async () => {
   return stake_amount;
 };
 
-export const truncateDecimals = (value: number, decimals: number = 2) => {
-  if (value === null || value === undefined) return "";
-  return value.toFixed(decimals);
-};
+export const truncateDecimals = (value: any, decimals: number = 2) => {
+  const num = parseFloat(value);
 
+  if (isNaN(num)) return "";
+
+  return num.toFixed(decimals);
+};
