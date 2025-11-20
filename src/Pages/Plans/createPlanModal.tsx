@@ -71,12 +71,11 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     }));
   };
 
-  const [show, setShow] = useState(false);
-  const handleClose = () => {
-    getAllPlan();
-    setShow(false);
-  };
-  const handleShow = () => setShow(true);
+  // const handleClose = () => {
+  //   getAllPlan();
+  //   setShow(false);
+  // };
+  // const handleShow = () => setShow(true);
 
   const handleClick = async () => {
     if (!formData.bytes || !formData.hours || !formData.price) {
