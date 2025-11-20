@@ -12,7 +12,7 @@ import {
   buildStartLeaseStatusMessage,
   buildUnlinkNodeMessage,
 } from "../../service/BuildMessage/buildMessage";
-import { convertNodeToWallet, getValueWithUnit, truncateValue } from "../../utils/Helper/CommonHelper";
+import { convertNodeToWallet, getValueWithUnit, truncateDecimals, truncateValue } from "../../utils/Helper/CommonHelper";
 import { DESCRIPTION, HEADING, bytesToGb, provWalletPrefix } from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
@@ -288,23 +288,28 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className='dashboard'>
-      <div className='dashboard__header'>
+    <div className="dashboard">
+      <div className="dashboard__header">
         <h3>Dashboard</h3>
       </div>
-      <div className='cardSection'>
-        <Row gutter={[25, 20]} className='card-row'>
+      <div className="cardSection">
+        <Row gutter={[25, 20]} className="card-row">
           {cards.map((card, index) => (
-            <Col className='gutter-row' lg={8} md={8} sm={12} xs={24}>
-              <CardBox key={index} title={card.title} value={card.value} icons={card.icons} />
+            <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
+              <CardBox
+                key={index}
+                title={card.title}
+                value={card.value}
+                icons={card.icons}
+              />
             </Col>
           ))}
         </Row>
       </div>
 
-      <div className='custom-table-wrapper commonTable'>
-        <h3 className='table-title'>Node Requests</h3>
-        <div className='node__btns'>
+      <div className="custom-table-wrapper commonTable">
+        <h3 className="table-title">Node Requests</h3>
+        <div className="node__btns">
           {buttons.map(({ label, value, count }) => (
             <button
               key={value}
@@ -315,8 +320,8 @@ export default function Dashboard() {
             </button>
           ))}
         </div>
-        <div className='outerTable'>
-          <table className='custom-table dashboard-table'>
+        <div className="outerTable">
+          <table className="custom-table dashboard-table">
             <thead>
               <tr>
                 <th>Operator Name</th>
@@ -350,11 +355,16 @@ export default function Dashboard() {
                     return (
                       <tr key={i}>
                         <td>{row?.orgName ? row?.orgName : "-"}</td>
-                        <td>{row?.email ? row?.email : "-"}</td>
+                        <td>
+                          <span title={row?.email}>
+                            {row?.email ? truncateValue(row?.email, 3, 3) : "-"}
+                          </span>
+                        </td>
+
                         <td>{row?.location || "-"}</td>
                         <td>
                           <span
-                            className='address_nord'
+                            className="address_nord"
                             style={{
                               display: "inline-flex",
                               alignItems: "center",
@@ -362,23 +372,41 @@ export default function Dashboard() {
                             }}
                           >
                             {truncateValue(row?.nodeAddress)}
-                            <div className='copy-btn'>
+                            <div className="copy-btn">
                               <CopyText text={row?.nodeAddress} />
                             </div>
                           </span>
                         </td>
-                        <td>{bytesToGb(Number(row?.bandwidth)) + " GB" || ""}</td>
-                        <td>{row?.plan ? convertPlanString(row?.plan) : "-"}</td>
+                        <td>
+                          {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
+                        </td>
+                        <td
+                          title={row?.plan ? convertPlanString(row?.plan) : "-"}
+                        >
+                          {row?.plan
+                            ? truncateDecimals(convertPlanString(row?.plan), 2)
+                            : "-"}
+                        </td>
                         {active === "allrequest" && <td>{row?.requestFor}</td>}
                         <td>
-                          <div className='action-btns'>
+                          <div className="action-btns">
                             <button
-                              className='approve-btn'
-                              onClick={() => onApproval(row?.nodeAddress, row?.requestFor, row?.planId, row?.hours)}
+                              className="approve-btn"
+                              onClick={() =>
+                                onApproval(
+                                  row?.nodeAddress,
+                                  row?.requestFor,
+                                  row?.planId,
+                                  row?.hours
+                                )
+                              }
                             >
                               Approve
                             </button>
-                            <button className='reject-btn' onClick={() => onReject(row?.nodeAddress)}>
+                            <button
+                              className="reject-btn"
+                              onClick={() => onReject(row?.nodeAddress)}
+                            >
                               Reject
                             </button>
                           </div>
@@ -407,12 +435,12 @@ export default function Dashboard() {
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
-            <div className='modal-overlay'>
-              <div className='modal-content'>
+            <div className="modal-overlay">
+              <div className="modal-content">
                 <h2>Node Request</h2>
                 <p>Node Approved successfully!</p>
-                <div className='action-btns'>
-                  <button className='gradient-btn' onClick={handleClose}>
+                <div className="action-btns">
+                  <button className="gradient-btn" onClick={handleClose}>
                     OK
                   </button>
                 </div>
@@ -423,16 +451,16 @@ export default function Dashboard() {
         <Modal show={rejectShow.show} onHide={handleRejectClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
-            <div className='modal-overlay'>
-              <div className='modal-content'>
+            <div className="modal-overlay">
+              <div className="modal-content">
                 <h2>Node Request</h2>
                 <p>Are you sure you want to reject the request?</p>
-                <div className='action-btns'>
-                  <button className='reject-btn' onClick={handleRejectClose}>
+                <div className="action-btns">
+                  <button className="reject-btn" onClick={handleRejectClose}>
                     No
                   </button>
                   <button
-                    className='gradient-btn'
+                    className="gradient-btn"
                     onClick={() => {
                       handleRejectCall(String(rejectShow.nodeAddress));
                     }}
