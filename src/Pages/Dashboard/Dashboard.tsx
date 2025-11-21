@@ -143,7 +143,7 @@ export default function Dashboard() {
         setShow(true);
         await updateStatus(address, "APPROVED");
       } catch (err: any) {
-        toast.error("Something wentwrong");
+        toast.error("Something went wrong");
         console.error(err.message);
         // setRejectShow(true);
       }
@@ -166,7 +166,9 @@ export default function Dashboard() {
         setLease(true);
       }
     } catch (err: any) {
+      toast.error(" lease Something went wrong");
       console.error(err.message, "err");
+      return;
       // setRejectShow(true);
     }
 
@@ -178,13 +180,13 @@ export default function Dashboard() {
       });
       const TxHash = await processTransaction(message);
       if (!TxHash) {
-        console.error("Transaction failed");
         return;
       }
       const status = await updateStatus(address, "APPROVED");
       if (!status) return;
       handleShow();
     } catch (err: any) {
+      toast.error("Something went wrong")
       console.error(err.message);
       // setRejectShow(true);
     }

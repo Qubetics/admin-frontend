@@ -40,6 +40,12 @@ export const processTransaction = async (message) => {
         return false;
       } else if (message.includes("gigabytes cannot be negative")) {
         toast.error("Value can be negative");
+      } else if(message.includes("account sequence mismatch")) {
+        toast.error("Account Mismatch")
+      } else if(message.includes("node for plan not found")){
+        toast.error("Node is not present in this plan");
+      } else if(message.includes("duplicate node for plan")){
+        toast.error("Node is linked to a plan");
       }
 
       console.log(error, "error while signing transaction");
