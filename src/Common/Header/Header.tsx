@@ -411,7 +411,9 @@ const Header = () => {
                   </div>
                   {isProfileOpen && (
                     <div className="profile-dropdown">
-                      {providerName && <p className="dropdown-item">Provider Name: {providerName}</p>}
+                      {providerName && (
+                        <p className="dropdown-item">Provider Name: {toFirstCapitalCase(providerName)}</p>
+                      )}
                       <p className="dropdown-item">
                         Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
                       </p>
