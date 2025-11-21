@@ -226,10 +226,26 @@ export const fetchStakeAmount = async () => {
   return stake_amount;
 };
 
-export const truncateDecimals = (value: any, decimals: number = 2) => {
-  const num = parseFloat(value);
 
-  if (isNaN(num)) return "";
-
-  return num.toFixed(decimals);
+export const toFirstCapitalCase = (str: string): string => {
+  if (!str) return "";
+  return str
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(" ");
 };
+
+  export const convertPlanString = (planStr?: any): any => {
+    if (!planStr) return "";
+
+    // Split the string into numeric part and the rest
+    const [valueStr, ...rest] = planStr.split(" ");
+    const unitStr = rest.join(" "); // e.g., "TICS/month"
+
+    // Convert the numeric part
+    const convertedValue = getValueWithUnit(valueStr);
+
+    // Return formatted string
+    return `${Number(convertedValue).toFixed(2)} ${unitStr}`;
+  };
+

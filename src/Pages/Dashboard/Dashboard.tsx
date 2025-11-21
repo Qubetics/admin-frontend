@@ -12,13 +12,13 @@ import {
   buildStartLeaseStatusMessage,
   buildUnlinkNodeMessage,
 } from "../../service/BuildMessage/buildMessage";
-import { convertNodeToWallet, getValueWithUnit, truncateDecimals, truncateValue } from "../../utils/Helper/CommonHelper";
+import { convertNodeToWallet, convertPlanString, truncateValue } from "../../utils/Helper/CommonHelper";
 import { DESCRIPTION, HEADING, bytesToGb, provWalletPrefix } from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
-import { Col, Row } from "antd";
+import { Col, Row, Tooltip } from "antd";
 import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
 // import InnerLoader from "../../Common/Loader/InnerLoader";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
@@ -245,20 +245,6 @@ export default function Dashboard() {
     setLimit(5);
   };
 
-  const convertPlanString = (planStr?: any): any => {
-    if (!planStr) return "";
-
-    // Split the string into numeric part and the rest
-    const [valueStr, ...rest] = planStr.split(" ");
-    const unitStr = rest.join(" "); // e.g., "TICS/month"
-
-    // Convert the numeric part
-    const convertedValue = getValueWithUnit(valueStr);
-
-    // Return formatted string
-    return `${convertedValue} ${unitStr}`;
-  };
-
   useEffect(() => {
     fetchData();
   }, [page, limit, active]);
@@ -356,13 +342,17 @@ export default function Dashboard() {
                       <tr key={i}>
                         <td>{row?.orgName ? row?.orgName : "-"}</td>
                         <td>
-                          <span title={row?.email}>
+                          <Tooltip title={row?.email}>
+                          <span>
                             {row?.email ? truncateValue(row?.email, 3, 3) : "-"}
                           </span>
+                          </Tooltip>
                         </td>
 
                         <td>{row?.location || "-"}</td>
                         <td>
+                          <div  style={{ display: "flex", alignItems: "center", gap: "2px" }}>
+                          <Tooltip title={row?.nodeAddress}>
                           <span
                             className="address_nord"
                             style={{
@@ -372,10 +362,12 @@ export default function Dashboard() {
                             }}
                           >
                             {truncateValue(row?.nodeAddress)}
-                            <div className="copy-btn">
-                              <CopyText text={row?.nodeAddress} />
-                            </div>
                           </span>
+                          </Tooltip>
+                          <span className="copy-btn">
+                              <CopyText text={row?.nodeAddress} />
+                            </span>
+                            </div>
                         </td>
                         <td>
                           {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
@@ -384,7 +376,7 @@ export default function Dashboard() {
                           title={row?.plan ? convertPlanString(row?.plan) : "-"}
                         >
                           {row?.plan
-                            ? truncateDecimals(convertPlanString(row?.plan), 2)
+                            ? convertPlanString(row?.plan)
                             : "-"}
                         </td>
                         {active === "allrequest" && <td>{row?.requestFor}</td>}
