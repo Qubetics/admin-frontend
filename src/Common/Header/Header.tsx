@@ -11,7 +11,7 @@ import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { envConstants } from "../../Constant/envConstants";
 import { apiMethods, provWalletPrefix } from "../../Constant/constants";
-import { api, computePubKey, convertNodeToWallet, formatBalance, truncateValue } from "../../utils/Helper/CommonHelper";
+import { api, computePubKey, convertNodeToWallet, formatBalance, toFirstCapitalCase, truncateValue } from "../../utils/Helper/CommonHelper";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
 import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
@@ -403,7 +403,7 @@ const Header = () => {
                   </div>
                   {isProfileOpen && (
                     <div className="profile-dropdown">
-                      <p className="dropdown-item">Provider Name: {providerName}</p>
+                      <p className="dropdown-item">Provider Name: {toFirstCapitalCase(providerName)}</p>
                       <p className="dropdown-item">
                         Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
                       </p>
