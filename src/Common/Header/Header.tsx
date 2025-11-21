@@ -165,6 +165,7 @@ const Header = () => {
       sessionStorage.clear();
       setAuthData("");
       setBalance(0);
+      toast.success("Logged out successfully");
 
       navigate("/landing");
     } catch (error) {
@@ -271,6 +272,7 @@ const Header = () => {
 
         setProviderName(data?.data?.name);
         setAuthData(address);
+        toast.success("Logged in Successfully ");
         navigate("/dashboard");
         return true;
       } catch (error: any) {
