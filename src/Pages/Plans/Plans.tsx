@@ -87,8 +87,8 @@ const Plans = () => {
                 <th>Plan ID</th>
                 <th>Price</th>
                 <th>Bandwidth</th>
-                <th>Creation Date</th>
                 <th>Duration</th>
+                <th>Creation Date</th>
                 <th>Action</th>
               </tr>
             </thead>
@@ -117,8 +117,8 @@ const Plans = () => {
                         : "-"}
                     </td>
                     <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
-                    <td>{Timestamp(row?.status_at)}</td>
                     <td>{formatDuration(Number(row?.hours))}</td>
+                    <td>{Timestamp(row?.status_at)}</td>
                     <td>
                       <div className="action-btns">
                         <button
