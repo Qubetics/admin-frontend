@@ -46,8 +46,20 @@
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    -webkit-appearance: none;
   }
-
+  .chevron {
+    position: absolute;
+    right: 10px;
+    top: 58%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    width: 14px;
+    height: 14px;
+    background-image: url("../../assets/InputArrow.svg");
+    background-repeat: no-repeat;
+    background-size: 10px;
+  }
   .input-field:focus,
   .select-field:focus {
     border-color: #8b5cf6;
