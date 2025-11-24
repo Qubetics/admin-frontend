@@ -432,7 +432,7 @@ body::-webkit-scrollbar{
   .modal-dialog {
     .modal-content {
       background-color: #121212;
-      border: 1px solid #3B393C;
+      // border: 1px solid #3B393C;
       border-radius: 14px;
 
       .modal-header {
@@ -468,7 +468,7 @@ body::-webkit-scrollbar{
       h2 {
         font-size: s(32);
         color: #fff;
-        margin-bottom: s(30);
+        margin-bottom: s(20);
         font-weight: 600;
       }
 
