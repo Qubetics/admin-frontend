@@ -4,6 +4,7 @@ import { simulateMsgs } from "../../utils/Helper/stimulateMsg";
 import { sendMsgs } from "../../utils/Helper/sendMsg";
 
 import { toast } from "react-toastify";
+import { PROCESS_TRANSACTION_ERRORS } from "../../Constant/constants";
 
 export const processTransaction = async (message) => {
   if (window?.keplr) {
@@ -35,17 +36,11 @@ export const processTransaction = async (message) => {
       }
     } catch (error) {
       const message = error?.message || String(error);
-      if (message.includes("Request rejected")) {
-        toast.error("Transaction rejected", { toastId: "tx_rejected" });
-        return false;
-      } else if (message.includes("gigabytes cannot be negative")) {
-        toast.error("Value can be negative");
-      } else if(message.includes("account sequence mismatch")) {
-        toast.error("Account Mismatch")
-      } else if(message.includes("node for plan not found")){
-        toast.error("Node is not present in this plan");
-      } else if(message.includes("duplicate node for plan")){
-        toast.error("Node is linked to a plan");
+
+      for (const err of PROCESS_TRANSACTION_ERRORS) {
+        if (message && message.includes(err.match)) {
+          toast.error(err.toast, { toastId: err.id });
+        }
       }
 
       console.log(error, "error while signing transaction");

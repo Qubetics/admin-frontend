@@ -74,3 +74,12 @@ export const ERROR_MESSAGES = {
   BANDWIDTH_LESS_THAN_1: "Plan bandwidth cannot be less than 1",
   BANDWIDTH_DECIMAL: "Plan bandwidth cannot be in decimal",
 };
+
+export const PROCESS_TRANSACTION_ERRORS = [
+  { match: "Request rejected", toast: "Transaction rejected", id: "tx_rejected" },
+  { match: "gigabytes cannot be negative", toast: "Value can be negative", id: "negative_gb" },
+  { match: "account sequence mismatch", toast: "Account Mismatch", id: "account_mismatch" },
+  { match: "node for plan not found", toast: "Node is not present in this plan", id: "node_not_in_plan" },
+  { match: "duplicate node for plan", toast: "Node is linked to a plan", id: "duplicate_node" },
+  { match: "invalid node status", toast: "Node address is not present on the chain", id: "node_not_present" },
+];
