@@ -44,7 +44,7 @@ const useNetworkRequest = () => {
         localStorage.removeItem("authData");
         sessionStorage.clear();
         setAuthData("");
-        toast.error("unauthorized Access");
+        toast.error("Unauthorized Access", { toastId: "unauthorized" });
         navigate("/landing");
         return {
           success: false,
