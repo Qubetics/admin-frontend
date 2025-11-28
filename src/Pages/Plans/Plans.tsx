@@ -122,7 +122,7 @@ const Plans = () => {
                     <td>
                       <div className="action-btns">
                         <button
-                          className={`approve-btn ${row.status === "active" || isTxRunning ? "disabled" : ""}`}
+                          className={`approve-btn ${row.status === "active" || isTxRunning ? "disablex" : ""}`}
                           onClick={() => handleClick(row)}
                           disabled={row.status === "active" || isTxRunning}
                         >
