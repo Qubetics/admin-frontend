@@ -1,4 +1,5 @@
 import React from "react";
+import { defaultOnLimitChange } from "../../Constant/constants";
 
 interface PaginationProps {
   currentPage: number;
@@ -13,7 +14,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
   limit = 5,
-  onLimitChange = (() => { })
+  onLimitChange = defaultOnLimitChange
 }) => {
   // Helper: generate page numbers
   const getPages = () => {

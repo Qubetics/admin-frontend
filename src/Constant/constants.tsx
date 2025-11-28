@@ -16,7 +16,8 @@ export const TYPE_URLS = {
   LINK_NODE: "/qubetics.plan.v3.MsgLinkNodeRequest",
   UNLINK_NODE: "/qubetics.plan.v3.MsgUnlinkNodeRequest",
   REGISTER_PROVIDER: "/qubetics.provider.v3.MsgRegisterProviderRequest",
-  UPDATE_STATUS_PROVIDER: "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
+  UPDATE_STATUS_PROVIDER:
+    "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
 };
 
 export const provWalletPrefix = "qubeticsprov";
@@ -83,3 +84,4 @@ export const PROCESS_TRANSACTION_ERRORS = [
   { match: "duplicate node for plan", toast: "Node is linked to a plan", id: "duplicate_node" },
   { match: "invalid node status", toast: "Node address is not present on the chain", id: "node_not_present" },
 ];
+export const defaultOnLimitChange = () => {};

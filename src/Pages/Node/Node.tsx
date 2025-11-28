@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import CopyText from "../../Common/Copy/CopyText";
 import { apiUrls } from "../../Constant/apiUrls";
 import useNetworkRequest from "../../Hooks/useGetApi";
@@ -6,7 +8,12 @@ import Pagination from "../../utils/pagination";
 import "./Node.scss";
 import { useEffect, useState } from "react";
 
-function Node() {
+type NodeProps = {
+  activeOverride?: "active" | "inactive" | "allnodes";
+};
+
+// function Node() {
+function Node({ activeOverride }: NodeProps) {
   const [nodeList, setNodeList] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -33,10 +40,12 @@ function Node() {
   //   },
   // ];
   const [active] = useState("active");
+  const effectiveActive = activeOverride ?? active;
 
   const fetchData = async () => {
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(active, page, limit),
+      // endpoint: apiUrls.nodelist(active, page, limit),
+      endpoint: apiUrls.nodelist(effectiveActive, page, limit),
     });
     if (!success) return;
     setNodeList(data?.data?.response);
@@ -55,7 +64,8 @@ function Node() {
 
   useEffect(() => {
     fetchData();
-  }, [page, limit, active]);
+    // }, [page, limit, Active]);
+  }, [page, limit, effectiveActive]);
   // useEffect(() => {
   //   fetchNodeNumber();
   // }, []);
@@ -100,7 +110,10 @@ function Node() {
               <tr>
                 <th>Operator Name</th>
                 <th>Node Address</th>
-                {active !== "active" && active !== "inactive" && <th>Node Status</th>}
+                {/* {active !== "active" && active !== "inactive" && (
+                  <th>Node Status</th>
+                )} */}
+                {effectiveActive !== "active" && effectiveActive !== "inactive" && <th>Node Status</th>}
                 <th>Request Type</th>
                 <th>Request Status</th>
               </tr>
@@ -140,14 +153,26 @@ function Node() {
                           </div>
                         </span>
                       </td>
-                      {active !== "active" && active !== "inactive" && (
+                      {/* {active !== "active" && active !== "inactive" && (
                         <td>
-                          <span className={getStatusClass(row?.nodeStatus)}>{row?.nodeStatus || "-"}</span>
+                          <span className={getStatusClass(row?.nodeStatus)}>
+                            {row?.nodeStatus || "-"}
+                          </span>
                         </td>
-                      )}
+                      )} */}
+                      {effectiveActive !== "active" &&
+                        effectiveActive !== "inactive" && (
+                          <td>
+                            <span className={getStatusClass(row?.nodeStatus)}>
+                              {row?.nodeStatus || "-"}
+                            </span>
+                          </td>
+                        )}
                       <td>{row?.requestFor}</td>
                       <td>
-                        <span className={getStatusClass(row?.status)}>{toFirstCapital(row?.status) || "-"}</span>
+                        <span className={getStatusClass(row?.status)}>
+                          {toFirstCapital(row?.status) || "-"}
+                        </span>
                       </td>
                     </tr>
                   ))
