@@ -12,7 +12,7 @@ import { processTransaction } from "../../service/processTransaction/processTran
 import { toast } from "react-toastify";
 import { convertNodeToWallet, computePubKey, fetchStakeAmount } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { DESCRIPTION, ERROR_MSG, HEADING, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
+import { DESCRIPTION, emailRegex, ERROR_MSG, HEADING, nameRegex, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { apiMethods } from "../../Constant/constants";
@@ -51,16 +51,38 @@ const ServiceProvider = () => {
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
-  };
+  const { name, value } = e.target;
+
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+
+  setErrors((prev) => {
+    const newErrors = { ...prev };
+
+    if (name === "name") {
+      if (!value.trim()) newErrors.name = "Name is required.";
+      else if (!nameRegex.test(value)) {
+         newErrors.name = "Name contains invalid characters.";
+       }
+      else if (value.trim().length < 3 || value.trim().length > 50) newErrors.name = "Name must be between 3 and 50 characters.";
+      else delete newErrors.name;
+    }
+
+    if (name === "email") {
+      if (!value.trim()) newErrors.email = "Email is required.";
+      else if (!/^[a-zA-Z0-9]/.test(value))
+        newErrors.email = "Email cannot start with special characters.";
+      else if (!emailRegex.test(value))
+        newErrors.email = "Please enter a valid email address.";
+      else delete newErrors.email;
+    }
+
+    return newErrors;
+  });
+};
+
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
@@ -157,6 +179,12 @@ const ServiceProvider = () => {
       toast.error("Something went wrong during registration");
     }
   };
+  const isFormValid =
+  formData.name.trim() !== "" &&
+  formData.email.trim() !== "" &&
+  !errors.name &&
+  !errors.email;
+
 
   return (
     <div className="mainContainer">
@@ -205,7 +233,7 @@ const ServiceProvider = () => {
           />
           {errors.website && <div className="redText">{errors.website}</div>}
         </div>
-        <ButtonCustom label="Submit" />
+        <ButtonCustom label="Submit" disabled = {!isFormValid}/>
       </form>
 
       <NotificationToast

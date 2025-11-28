@@ -260,12 +260,14 @@ const Header = () => {
           setProviderName("");
           if (errormassage.includes("role")) {
             toast.error("Role information missing or invalid");
-          } else {
-            toast.error("Authentication failed. Please try again.");
-          }
+          } 
           if (data && !data?.data?.isExist) {
             setAuthData(address);
+            toast.error("Register as a provider")
             navigate(Path.SERVICE_PROVIDER);
+
+          }else {
+            toast.error("Authentication failed. Please try again.");
           }
           return false;
         }
