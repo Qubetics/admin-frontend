@@ -5,12 +5,22 @@ import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { ModifyNum } from "../../utils/Helper/CommonHelper";
-import { ERROR_MESSAGES, gbToBytes, hoursDropdown } from "../../Constant/constants";
+import {
+  ERROR_MESSAGES,
+  gbToBytes,
+  hoursDropdown,
+} from "../../Constant/constants";
 import { toast } from "react-toastify";
 import CustomInput from "../../Common/CustomInput/CustomInput";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
+import type { CreatePlanModalProps } from "../../utils/Interfaces/plan.interface";
 
-const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }: any) => {
+const CreatePlanModal = ({
+  createShow,
+  setCreateShow,
+  getAllPlan,
+  provAddress,
+}: CreatePlanModalProps) => {
   const initialFormData = {
     hours: "",
     bytes: "",
@@ -23,7 +33,7 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     bytes: "",
     hours: "",
   });
-  const [showNotification, setShowNotification] = useState(false); 
+  const [showNotification, setShowNotification] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -106,12 +116,23 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
     setCreateShow(false);
     // handleClose();
     // handleShow();
-     getAllPlan();
+    getAllPlan();
     setShowNotification(true);
   };
+  // const handleHide = () => {
+  //   setCreateShow(false);
+  //   setFormData(initialFormData);
+  // };
   const handleHide = () => {
     setCreateShow(false);
     setFormData(initialFormData);
+
+    setErrors({
+      price: "",
+      bytes: "",
+      hours: "",
+    });
+    setShowNotification(false);
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -156,7 +177,11 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                   value={formData.price}
                   onChange={handleChange}
                 />
-                {errors.price && <p style={{ color: "red", fontSize: "12px" }}>{errors.price}</p>}
+                {errors.price && (
+                  <p style={{ color: "red", fontSize: "12px" }}>
+                    {errors.price}
+                  </p>
+                )}
               </div>
 
               <div className="form-group">
@@ -168,7 +193,11 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                   value={formData.bytes}
                   onChange={handleChange}
                 />
-                {errors.bytes && <p style={{ color: "red", fontSize: "12px" }}>{errors.bytes}</p>}
+                {errors.bytes && (
+                  <p style={{ color: "red", fontSize: "12px" }}>
+                    {errors.bytes}
+                  </p>
+                )}
               </div>
 
               <div className="create-form">
@@ -183,7 +212,11 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                     disable={false}
                     options={hoursDropdown}
                   />
-                  {errors.hours && <p style={{ color: "red", fontSize: "12px" }}>{errors.hours}</p>}
+                  {errors.hours && (
+                    <p style={{ color: "red", fontSize: "12px" }}>
+                      {errors.hours}
+                    </p>
+                  )}
                 </div>
               </div>
 
@@ -191,14 +224,19 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                 <ButtonCustom
                   label="Create"
                   onClick={handleClick}
-                  disabled={isLoading || !formData.bytes || !formData.hours || !formData.price}
+                  disabled={
+                    isLoading ||
+                    !formData.bytes ||
+                    !formData.hours ||
+                    !formData.price
+                  }
                 />
               </div>
             </div>
           </div>
         </Modal.Body>
       </Modal>
-       <NotificationToast
+      <NotificationToast
         show={showNotification}
         handleClose={() => setShowNotification(false)}
         heading="Plan"
@@ -208,4 +246,4 @@ const createPlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
   );
 };
 
-export default createPlanModal;
+export default CreatePlanModal;
