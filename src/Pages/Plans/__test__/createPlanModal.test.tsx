@@ -1,11 +1,9 @@
 // __test__/createPlanModal.test.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
 import {
   render,
   screen,
   fireEvent,
-  waitFor,
   act,
 } from "@testing-library/react";
 import CreatePlanModal from "../createPlanModal";
@@ -17,9 +15,9 @@ jest.mock("react-toastify", () => ({
   },
 }));
 
-const mockBuildMessage = jest.fn(() => "mock-message");
+const mockBuildMessage = jest.fn((..._a: any[]) => "mock-message");
 jest.mock("../../../service/BuildMessage/buildMessage", () => ({
-  buildCreatePlanMessage: (...a: any) => mockBuildMessage(...a),
+  buildCreatePlanMessage: (...a: any[]) => mockBuildMessage(...a),
 }));
 
 const mockTx = jest.fn();

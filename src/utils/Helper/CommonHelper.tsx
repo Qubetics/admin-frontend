@@ -249,3 +249,9 @@ export const toFirstCapitalCase = (str: string): string => {
     return `${Number(convertedValue).toFixed(2)} ${unitStr}`;
   };
 
+export const truncateDecimals = (value: string, decimalPlaces: number): string => {
+  if (!value || isNaN(Number(value))) return "";
+  const num = Number(value);
+  return num.toFixed(decimalPlaces);
+};
+

@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
 import ServiceProvider from "../ServiceProvider";
 import * as balanceModule from "../../../service/getUserBalance";
