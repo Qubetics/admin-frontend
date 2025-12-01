@@ -16,7 +16,8 @@ export const TYPE_URLS = {
   LINK_NODE: "/qubetics.plan.v3.MsgLinkNodeRequest",
   UNLINK_NODE: "/qubetics.plan.v3.MsgUnlinkNodeRequest",
   REGISTER_PROVIDER: "/qubetics.provider.v3.MsgRegisterProviderRequest",
-  UPDATE_STATUS_PROVIDER: "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
+  UPDATE_STATUS_PROVIDER:
+    "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
 };
 
 export const provWalletPrefix = "qubeticsprov";
@@ -84,6 +85,7 @@ export const PROCESS_TRANSACTION_ERRORS = [
   { match: "invalid node status", toast: "Node address is not present on the chain", id: "node_not_present" },
   {match:"duplicate provider", toast: "Provider exists login again", id: "duplicate_provider"}
 ];
+export const defaultOnLimitChange = () => {};
 
   export const emailRegex =/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   

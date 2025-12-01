@@ -254,7 +254,7 @@ export default function Dashboard() {
   useEffect(() => {
     fetchNodeNumber();
     fetchNodeRequestNumber();
-  }, [nodeList.length]);
+  }, [nodeList?.length]);
 
   const cards: CardBoxProps[] = [
     // { title: "Total Earnings", value: "2000 TICS" },
