@@ -19,4 +19,4 @@ jobs:
       ENV: ${{ vars.DEV_FRONTEND }}
     secrets:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD_DEV }}
-      GIT_SSH_KEY: ${{ secrets.ARGOCD_SSH_KEY }} 
+      GIT_SSH_KEY: ${{ secrets.ARGOCD_SSH_KEY_NEW }} 
