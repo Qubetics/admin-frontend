@@ -1,4 +1,3 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import Dashboard from '../Dashboard';
@@ -119,7 +118,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: [] }, total: 0 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -161,7 +160,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -210,7 +209,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: [] }, total: 100 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -255,10 +254,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: true });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -311,10 +310,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: true });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -365,10 +364,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: true });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -440,7 +439,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -491,7 +490,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -556,7 +555,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -594,10 +593,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: false });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -651,7 +650,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -706,10 +705,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: true });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -750,7 +749,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: [] }, total: 0 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -791,10 +790,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: true });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -858,7 +857,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -897,7 +896,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: [] }, total: 100 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -942,10 +941,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: true });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -1020,10 +1019,10 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
-            if (endpoint.includes('/api/v1/node/action')) {
+            if (endpoint && endpoint.includes('/api/v1/node/action')) {
                 return Promise.resolve({ success: false });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -1084,7 +1083,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -1124,7 +1123,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });
@@ -1162,7 +1161,7 @@ describe('Dashboard Component', () => {
             if (endpoint === '/api/v1/node/request-count') {
                 return Promise.resolve({ success: true, data: { data: { totalCount: 10, linkCount: 3, UnlinkCount: 2 } } });
             }
-            if (endpoint.includes('/api/v1/node?')) {
+            if (endpoint && endpoint.includes('/api/v1/node?')) {
                 return Promise.resolve({ success: true, data: { data: { nodeList: mockNodeList }, total: 1 } });
             }
             return Promise.resolve({ success: true, data: {} });

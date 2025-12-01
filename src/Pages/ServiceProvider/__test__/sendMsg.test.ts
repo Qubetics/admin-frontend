@@ -75,11 +75,10 @@ describe("sendMsgs", () => {
   it("handles sendTx broadcast error without failing", async () => {
     mockKeplr.sendTx.mockRejectedValueOnce(new Error("Network failure"));
 
-    let result;
     try {
-      result = await sendMsgs(mockKeplr, mockSender, mockProto, mockFee);
+      await sendMsgs(mockKeplr, mockSender, mockProto, mockFee);
     } catch (e) {
-      result = "error caught";
+      // Error expected
     }
 
     expect(mockKeplr.sendTx).toHaveBeenCalled();
