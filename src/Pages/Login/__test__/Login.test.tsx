@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "./polyfill";
 import React from "react";
 import {
   render,
@@ -10,22 +9,22 @@ import {
 } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import Login from "../src/Pages/Login/Login";
-import ButtonCustom from "../src/Common/ButtonCustom/ButtonCustom";
-// import { envConstants } from "../src/Constant/envConstants";
-import { useIsLoggedIn } from "../src/Context/LoggedInContext";
-import useNetworkRequest from "../src/Hooks/useGetApi";
-import { computePubKey } from "../src/utils/Helper/CommonHelper";
+import Login from "../Login";
+import ButtonCustom from "../../../Common/ButtonCustom/ButtonCustom";
+// import { envConstants } from "../../../Constant/envConstants";
+import { useIsLoggedIn } from "../../../Context/LoggedInContext";
+import useNetworkRequest from "../../../Hooks/useGetApi";
+import { computePubKey } from "../../../utils/Helper/CommonHelper";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-jest.mock("../src/Common/ButtonCustom/ButtonCustom");
-jest.mock("../src/Context/LoggedInContext");
-jest.mock("../src/Hooks/useGetApi");
-jest.mock("../src/Constant/envConstants", () => ({
+jest.mock("../../../Common/ButtonCustom/ButtonCustom");
+jest.mock("../../../Context/LoggedInContext");
+jest.mock("../../../Hooks/useGetApi");
+jest.mock("../../../Constant/envConstants", () => ({
   envConstants: { chainId: "test-chain" },
 }));
-jest.mock("../src/utils/Helper/CommonHelper");
+jest.mock("../../../utils/Helper/CommonHelper");
 jest.mock("react-toastify", () => ({
   toast: {
     error: jest.fn(),

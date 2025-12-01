@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-require-imports */
-import "./polyfill";
 import React from "react";
 const {
   render,
@@ -11,11 +10,11 @@ const {
 } = require("@testing-library/react");
 import "@testing-library/jest-dom";
 
-import Home from "../src/Pages/Home/Home";
-import ButtonCustom from "../src/Common/ButtonCustom/ButtonCustom";
+import Home from "../Home";
+// import ButtonCustom from "../../../Common/ButtonCustom/ButtonCustom";
 
 // Mock ButtonCustom (same approach as Dummy components in Dashboard suite)
-jest.mock("../src/Common/ButtonCustom/ButtonCustom", () => {
+jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => {
   return function DummyButtonCustom({ label, type, onClick }: any) {
     return (
       <button data-testid="button-custom" type={type} onClick={onClick}>

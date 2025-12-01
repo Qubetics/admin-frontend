@@ -1,4 +1,3 @@
-// __test__/Plans.test.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   render,
@@ -7,7 +6,7 @@ import {
   fireEvent,
   act,
 } from "@testing-library/react";
-import Plans from "../src/Pages/Plans/Plans";
+import Plans from "../Plans";
 
 // mock toast
 const mockToastSuccess = jest.fn();
@@ -24,27 +23,27 @@ jest.mock("react-toastify", () => ({
 
 // mock API hook
 const mockUseApi = jest.fn();
-jest.mock("../src/Hooks/useGetApi", () => ({
+jest.mock("../../../Hooks/useGetApi.tsx", () => ({
   __esModule: true,
   default: () => mockUseApi,
 }));
 
 // mock login context
-jest.mock("../src/Context/LoggedInContext", () => ({
+jest.mock("../../../Context/LoggedInContext.tsx", () => ({
   useIsLoggedIn: () => ({
     authData: "mock-auth-address",
   }),
 }));
 
 // mock helper functions
-jest.mock("../src/utils/Helper/CommonHelper", () => ({
+jest.mock("../../../utils/Helper/CommonHelper.tsx", () => ({
   Timestamp: (v: any) => `TS-${v}`,
   convertNodeToWallet: () => "wallet123",
   formatDuration: () => "5 hrs",
   getValueWithUnit: () => "10",
 }));
 
-jest.mock("../src/Constant/constants", () => ({
+jest.mock("../../../Constant/constants.tsx", () => ({
   bytesToGb: () => 5,
   provWalletPrefix: "prefix",
   STATUS_ENUM: {
@@ -54,18 +53,18 @@ jest.mock("../src/Constant/constants", () => ({
 }));
 
 // mock message builder
-jest.mock("../src/service/BuildMessage/buildMessage", () => ({
+jest.mock("../../../service/BuildMessage/buildMessage.ts", () => ({
   buildUpdatePlanStatusMessage: jest.fn(() => "mock-message"),
 }));
 
 // mock tx processor
 const mockProcessTx = jest.fn();
-jest.mock("../src/service/processTransaction/processTransaction", () => ({
+jest.mock("../../../service/processTransaction/processTransaction.tsx", () => ({
   processTransaction: (...args: any) => mockProcessTx(...args),
 }));
 
 // mock modal
-jest.mock("../src/Pages/Plans/createPlanModal", () => {
+jest.mock("../../../Pages/Plans/createPlanModal.tsx", () => {
   return function MockModal(props: any) {
     return props.createShow ? (
       <div data-testid="create-modal">Modal Open</div>
@@ -74,7 +73,7 @@ jest.mock("../src/Pages/Plans/createPlanModal", () => {
 });
 
 // mock inner loader
-jest.mock("../src/Common/Loader/InnerLoader", () => () => (
+jest.mock("../../../Common/Loader/InnerLoader.tsx", () => () => (
   <div>Loading...</div>
 ));
 
@@ -232,5 +231,127 @@ describe("Plans Component", () => {
 
     const btn = await screen.findByText("Activated");
     expect(btn).toBeDisabled();
+  });
+
+  // ---------------------------
+  // NEW ROBUSTNESS TESTS BELOW
+  // ---------------------------
+
+  test("does nothing when API success=false", async () => {
+    mockUseApi.mockResolvedValueOnce({
+      success: false,
+      data: null,
+    });
+
+    await act(async () => {
+      render(<Plans />);
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText("No plans found")).toBeInTheDocument();
+  });
+
+  test("handles API promise rejection without crashing", async () => {
+    // Instead of rejected promise → simulate API failure
+    mockUseApi.mockResolvedValueOnce({
+      success: false,
+      data: null,
+    });
+
+    await act(async () => {
+      render(<Plans />);
+    });
+
+    await waitFor(() => {
+      expect(screen.queryByText("Loading...")).not.toBeInTheDocument();
+    });
+
+    expect(screen.getByText("No plans found")).toBeInTheDocument();
+  });
+
+  test("disables activate button while transaction is running", async () => {
+    const response = {
+      success: true,
+      data: {
+        data: [
+          {
+            id: "101",
+            prices: [{ quote_value: 10, denom: "usdc" }],
+            gigabytes: 1024,
+            status: "inactive",
+            hours: 5,
+            status_at: "123",
+          },
+        ],
+        total: { total: 1 },
+      },
+    };
+
+    // Must mock twice
+    mockUseApi.mockResolvedValueOnce(response).mockResolvedValueOnce(response);
+
+    let resolveTx: any;
+    mockProcessTx.mockReturnValue(
+      new Promise((res) => {
+        resolveTx = res;
+      })
+    );
+
+    await act(async () => {
+      render(<Plans />);
+    });
+
+    const btn = await screen.findByText("Activate");
+
+    await act(async () => {
+      fireEvent.click(btn);
+    });
+
+    expect(btn).toBeDisabled();
+
+    await act(async () => {
+      resolveTx("hash");
+    });
+  });
+
+  test("fetches plan list again after activation", async () => {
+    mockUseApi
+      .mockResolvedValueOnce({
+        success: true,
+        data: {
+          data: [
+            {
+              id: "101",
+              prices: [],
+              gigabytes: 0,
+              hours: 1,
+              status: "inactive",
+              status_at: "0",
+            },
+          ],
+          total: { total: 1 },
+        },
+      })
+      .mockResolvedValueOnce({
+        success: true,
+        data: { data: [], total: { total: 0 } },
+      });
+
+    mockProcessTx.mockResolvedValue("tx-hash");
+
+    await act(async () => {
+      render(<Plans />);
+    });
+
+    const btn = await screen.findByText("Activate");
+
+    await act(async () => {
+      fireEvent.click(btn);
+    });
+
+    expect(mockUseApi).toHaveBeenCalledTimes(2);
   });
 });

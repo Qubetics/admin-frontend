@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { render, screen, fireEvent, act } from "@testing-library/react";
-import ServiceProvider from "../src/Pages/ServiceProvider/ServiceProvider";
-import * as balanceModule from "../src/service/getUserBalance";
+import ServiceProvider from "../ServiceProvider";
+import * as balanceModule from "../../../service/getUserBalance";
 jest.useFakeTimers();
 
 // Mock navigation
@@ -24,32 +24,32 @@ jest.mock("react-toastify", () => ({
 // Mock build messages
 const mockRegisterMsg = "register-msg";
 const mockStatusMsg = "status-msg";
-jest.mock("../src/service/BuildMessage/buildMessage", () => ({
+jest.mock("../../../service/BuildMessage/buildMessage", () => ({
   buildRegisterProviderMessage: () => mockRegisterMsg,
   buildUpdateProviderStatusMessage: () => mockStatusMsg,
 }));
 
 // Mock processTransaction
 const mockTx = jest.fn();
-jest.mock("../src/service/processTransaction/processTransaction", () => ({
+jest.mock("../../../service/processTransaction/processTransaction", () => ({
   processTransaction: (...a: any) => mockTx(...a),
 }));
 
 // Mock useGetApi
 const mockUseApi = jest.fn();
-jest.mock("../src/Hooks/useGetApi", () => ({
+jest.mock("../../../Hooks/useGetApi", () => ({
   __esModule: true,
   default: () => mockUseApi,
 }));
 
 // Mock NotificationToast
-jest.mock("../src/Common/NotificationModal/NotificationModal", () => {
+jest.mock("../../../Common/NotificationModal/NotificationModal", () => {
   return ({ show, heading }: any) =>
     show ? <div data-testid={`toast-${heading}`} /> : null;
 });
 
 // Mock CustomInput
-jest.mock("../src/Common/CustomInput/CustomInput", () => (props: any) => (
+jest.mock("../../../Common/CustomInput/CustomInput", () => (props: any) => (
   <input
     data-testid={props.name}
     name={props.name}
@@ -60,7 +60,7 @@ jest.mock("../src/Common/CustomInput/CustomInput", () => (props: any) => (
 ));
 
 // Mock CustomButton
-jest.mock("../src/Common/ButtonCustom/ButtonCustom", () => {
+jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => {
   return function ButtonCustomMock(props: any) {
     return (
       <button
@@ -75,20 +75,20 @@ jest.mock("../src/Common/ButtonCustom/ButtonCustom", () => {
 });
 
 // Mock LoggedInContext
-jest.mock("../src/Context/LoggedInContext", () => ({
+jest.mock("../../../Context/LoggedInContext", () => ({
   useIsLoggedIn: () => ({
     authData: "cosmos123",
   }),
 }));
 
 // Mock Helpers
-import * as CH from "../src/utils/Helper/CommonHelper";
+import * as CH from "../../../utils/Helper/CommonHelper";
 jest.spyOn(CH, "fetchStakeAmount").mockResolvedValue(-5);
 jest.spyOn(CH, "convertNodeToWallet").mockReturnValue("prov-addr");
 jest.spyOn(CH, "computePubKey").mockReturnValue("pubkey-mock");
 
 // Mock balance
-jest.mock("../src/service/getUserBalance", () => ({
+jest.mock("../../../service/getUserBalance", () => ({
   getUserBalance: () => Promise.resolve("100"),
 }));
 

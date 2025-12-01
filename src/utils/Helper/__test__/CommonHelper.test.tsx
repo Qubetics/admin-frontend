@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import * as CommonHelper from "../src/utils/Helper/CommonHelper";
+import * as CommonHelper from "../CommonHelper";
 import {
   api,
   computePubKey,
@@ -19,10 +19,10 @@ import {
   noExponents,
   noExponential,
   getValueWithUnit,
-} from "../src/utils/Helper/CommonHelper";
+} from "../CommonHelper";
 import { Buffer } from "buffer";
 
-import { envConstants } from "../src/Constant/envConstants";
+import { envConstants } from "../../../Constant/envConstants";
 
 // Mock dependencies
 jest.mock("@hanchon/signature-to-pubkey", () => ({
@@ -33,8 +33,8 @@ jest.mock("@cosmjs/launchpad", () => ({
   serializeSignDoc: jest.fn().mockReturnValue(new Uint8Array([1, 2, 3])),
 }));
 
-jest.mock("../src/utils/Helper/CommonHelper", () => ({
-  ...jest.requireActual("../src/utils/Helper/CommonHelper"),
+jest.mock("../../../utils/Helper/CommonHelper", () => ({
+  ...jest.requireActual("../../../utils/Helper/CommonHelper"),
   truncateDecimals: jest.fn((value: string, decimalPlaces: number) => {
     if (!value || isNaN(Number(value))) return "";
     const num = Number(value);
@@ -237,7 +237,7 @@ describe("CommonHelper - Network / Blockchain", () => {
     // @ts-ignore
     delete global.window;
 
-    const mod = await import("../src/utils/Helper/CommonHelper");
+    const mod = await import("../CommonHelper");
     expect(mod).toBeTruthy();
 
     global.window = originalWindow;

@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import Pagination from "../src/utils/pagination/index";
+import Pagination from "../index";
 
 describe("Pagination Component", () => {
   const setup = (props: any = {}) => {

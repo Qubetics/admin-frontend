@@ -1,13 +1,12 @@
-import './polyfill';
 import React from 'react';
 import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import Dashboard from '../src/Pages/Dashboard/Dashboard';
-import { useIsLoggedIn } from '../src/Context/LoggedInContext';
-import useNetworkRequest from '../src/Hooks/useGetApi';
-import { processTransaction } from '../src/service/processTransaction/processTransaction';
-import { buildLinkNodeMessage, buildStartLeaseStatusMessage, buildUnlinkNodeMessage } from '../src/service/BuildMessage/buildMessage';
-import { convertNodeToWallet, getValueWithUnit, truncateValue, convertPlanString } from '../src/utils/Helper/CommonHelper';
+import Dashboard from '../Dashboard';
+import { useIsLoggedIn } from '../../../Context/LoggedInContext';
+import useNetworkRequest from '../../../Hooks/useGetApi';
+import { processTransaction } from '../../../service/processTransaction/processTransaction';
+import { buildLinkNodeMessage, buildStartLeaseStatusMessage, buildUnlinkNodeMessage } from '../../../service/BuildMessage/buildMessage';
+import { convertNodeToWallet, getValueWithUnit, truncateValue, convertPlanString } from '../../../utils/Helper/CommonHelper';
 import { toast } from 'react-toastify';
 
 // Type definitions for test mocks
@@ -41,11 +40,11 @@ jest.mock('@cosmjs/stargate', () => ({} as Record<string, never>), { virtual: tr
 jest.mock('@cosmjs/proto-signing', () => ({} as Record<string, never>), { virtual: true });
 
 // Mock dependencies
-jest.mock('../src/Context/LoggedInContext');
-jest.mock('../src/Hooks/useGetApi');
-jest.mock('../src/service/processTransaction/processTransaction');
-jest.mock('../src/service/BuildMessage/buildMessage');
-jest.mock('../src/utils/Helper/CommonHelper', () => ({
+jest.mock('../../../Context/LoggedInContext');
+jest.mock('../../../Hooks/useGetApi');
+jest.mock('../../../service/processTransaction/processTransaction');
+jest.mock('../../../service/BuildMessage/buildMessage');
+jest.mock('../../../utils/Helper/CommonHelper', () => ({
     convertNodeToWallet: jest.fn(),
     getValueWithUnit: jest.fn(),
     truncateValue: jest.fn(),
@@ -57,7 +56,7 @@ jest.mock('react-toastify', () => ({
         success: jest.fn(),
     },
 }));
-jest.mock('../src/utils/pagination', () => {
+jest.mock('../../../utils/pagination', () => {
     return function DummyPagination({ onPageChange, onLimitChange }: PaginationProps) {
         return (
             <div data-testid="pagination">
@@ -67,7 +66,7 @@ jest.mock('../src/utils/pagination', () => {
         );
     };
 });
-jest.mock('../src/Common/NotificationModal/NotificationModal', () => {
+jest.mock('../../../Common/NotificationModal/NotificationModal', () => {
     return function DummyNotificationModal({ show, handleClose, heading, description }: NotificationModalProps) {
         if (!show) return null;
         return (
@@ -79,12 +78,12 @@ jest.mock('../src/Common/NotificationModal/NotificationModal', () => {
         );
     };
 });
-jest.mock('../src/Common/Copy/CopyText', () => {
+jest.mock('../../../Common/Copy/CopyText', () => {
     return function DummyCopyText({ text }: CopyTextProps) {
         return <div data-testid="copy-text">{text}</div>;
     };
 });
-jest.mock('../src/assets/SvgIcon/SvgIcon', () => ({
+jest.mock('../../../assets/SvgIcon/SvgIcon', () => ({
     CircleCheckIcon: () => <svg data-testid="circle-check-icon" />,
 }));
 

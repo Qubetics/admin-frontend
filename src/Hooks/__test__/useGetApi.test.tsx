@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import useNetworkRequest from "../src/Hooks/useGetApi";
+import useNetworkRequest from "../useGetApi";
 import axios from "axios";
-import { apiMethods } from "../src/Constant/constants";
+import { apiMethods } from "../../Constant/constants";
 import { toast } from "react-toastify";
 
 // MOCKS
@@ -18,7 +18,7 @@ jest.mock("react-router-dom", () => ({
 
 // Mock LoggedInContext
 const mockSetAuthData = jest.fn();
-jest.mock("../src/Context/LoggedInContext", () => ({
+jest.mock("../../Context/LoggedInContext", () => ({
   useIsLoggedIn: () => ({
     setAuthData: mockSetAuthData
   })

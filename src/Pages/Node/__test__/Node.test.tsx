@@ -6,14 +6,14 @@ import {
   waitFor,
   act,
 } from "@testing-library/react";
-import Node from "../src/Pages/Node/Node";
+import Node from "../Node";
 
-jest.mock("../src/Common/Copy/CopyText", () => ({
+jest.mock("../../../Common/Copy/CopyText", () => ({
   __esModule: true,
   default: ({ text }: any) => <div data-testid="copy">{text}</div>,
 }));
 
-jest.mock("../src/utils/pagination", () => ({
+jest.mock("../../../utils/pagination", () => ({
   __esModule: true,
   default: ({ onPageChange, onLimitChange }: any) => (
     <div>
@@ -33,7 +33,7 @@ jest.mock("../src/utils/pagination", () => ({
 }));
 
 const mockUseApi = jest.fn();
-jest.mock("../src/Hooks/useGetApi", () => ({
+jest.mock("../../../Hooks/useGetApi", () => ({
   __esModule: true,
   default: () => mockUseApi,
 }));

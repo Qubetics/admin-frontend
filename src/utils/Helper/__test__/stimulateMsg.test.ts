@@ -1,15 +1,15 @@
-import { simulateMsgs } from "../src/utils/Helper/stimulateMsg";
-import { fetchAccountInfo, api } from "../src/utils/Helper/CommonHelper";
-import { envConstants } from "../src/Constant/envConstants";
+import { simulateMsgs } from "../stimulateMsg";
+import { fetchAccountInfo, api } from "../CommonHelper";
+import { envConstants } from "../../../Constant/envConstants";
 import type { Keplr, ChainInfo } from "@keplr-wallet/types";
 
 // Mock external dependencies
-jest.mock("../src/utils/Helper/CommonHelper", () => ({
+jest.mock("../../../utils/Helper/CommonHelper", () => ({
   fetchAccountInfo: jest.fn(),
   api: jest.fn(),
 }));
 
-jest.mock("../src/Constant/envConstants", () => ({
+jest.mock("../../../Constant/envConstants", () => ({
   envConstants: {
     swagger_api: "https://api.test.com",
   },

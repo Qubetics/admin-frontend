@@ -4,7 +4,7 @@ import { render, act } from "@testing-library/react";
 import {
   LoggedInProvider,
   useIsLoggedIn,
-} from "../src/Context/LoggedInContext";
+} from "../LoggedInContext";
 
 function renderWithProvider(ui: React.ReactNode) {
   return render(<LoggedInProvider>{ui}</LoggedInProvider>);

@@ -1,14 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import "./polyfill";
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import LandingPage from "../src/Pages/LandingPage/LandingPage";
-import Card from "../src/Pages/LandingPage/card";
+import LandingPage from "../LandingPage";
+import Card from "../card";
 
 // Mock SCSS imports
-jest.mock("../src/Pages/LandingPage/LandingPage.scss", () => ({}), {
+jest.mock("../../../Pages/LandingPage/LandingPage.scss", () => ({}), {
   virtual: true,
 });
 
@@ -27,7 +26,7 @@ jest.mock("antd", () => ({
 }));
 
 // Mock Card component
-jest.mock("../src/Pages/LandingPage/card", () => {
+jest.mock("../../../Pages/LandingPage/card", () => {
   return jest.fn(({ title, description }: any) => (
     <div data-testid="mock-card">
       <h3>{title}</h3>

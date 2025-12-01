@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { sendMsgs } from "../src/utils/Helper/sendMsg";
+import { sendMsgs } from "../../../utils/Helper/sendMsg";
 
 jest.mock("@keplr-wallet/cosmos", () => ({
   TendermintTxTracer: jest.fn().mockImplementation(() => ({
@@ -8,8 +8,8 @@ jest.mock("@keplr-wallet/cosmos", () => ({
   })),
 }));
 
-import { fetchAccountInfo } from "../src/utils/Helper/CommonHelper";
-jest.mock("../src/utils/Helper/CommonHelper", () => ({
+import { fetchAccountInfo } from "../../../utils/Helper/CommonHelper";
+jest.mock("../../../utils/Helper/CommonHelper", () => ({
   fetchAccountInfo: jest.fn(),
 }));
 

@@ -6,11 +6,11 @@ import {
   buildUpdatePlanStatusMessage,
   buildRegisterProviderMessage,
   buildUpdateProviderStatusMessage,
-} from "../src/service/BuildMessage/buildMessage";
-import { TYPE_URLS } from "../src/Constant/constants";
+} from "../buildMessage";
+import { TYPE_URLS } from "../../../Constant/constants";
 
 // Mock the proto-gen modules
-jest.mock("../src/proto-gen/src/codec/qubetics/plan/v3/msg", () => ({
+jest.mock("../../../proto-gen/src/codec/qubetics/plan/v3/msg", () => ({
   MsgCreatePlanRequest: {
     encode: jest.fn().mockReturnValue({
       finish: jest.fn().mockReturnValue(new Uint8Array([1, 2, 3])),
@@ -33,7 +33,7 @@ jest.mock("../src/proto-gen/src/codec/qubetics/plan/v3/msg", () => ({
   },
 }));
 
-jest.mock("../src/proto-gen/src/codec/qubetics/lease/v1/msg", () => ({
+jest.mock("../../../proto-gen/src/codec/qubetics/lease/v1/msg", () => ({
   MsgStartLeaseRequest: {
     encode: jest.fn().mockReturnValue({
       finish: jest.fn().mockReturnValue(new Uint8Array([13, 14, 15])),
@@ -41,7 +41,7 @@ jest.mock("../src/proto-gen/src/codec/qubetics/lease/v1/msg", () => ({
   },
 }));
 
-jest.mock("../src/proto-gen/src/codec/qubetics/provider/v3/msg", () => ({
+jest.mock("../../../proto-gen/src/codec/qubetics/provider/v3/msg", () => ({
   MsgRegisterProviderRequest: {
     encode: jest.fn().mockReturnValue({
       finish: jest.fn().mockReturnValue(new Uint8Array([16, 17, 18])),
@@ -54,7 +54,7 @@ jest.mock("../src/proto-gen/src/codec/qubetics/provider/v3/msg", () => ({
   },
 }));
 
-jest.mock("../src/Constant/constants", () => ({
+jest.mock("../../../Constant/constants", () => ({
   TYPE_URLS: {
     CREATE_PLAN: "/qubetics.plan.v3.MsgCreatePlan",
     LINK_NODE: "/qubetics.plan.v3.MsgLinkNode",

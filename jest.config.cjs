@@ -21,11 +21,16 @@ module.exports = {
     "^@/(.*)$": "<rootDir>/src/$1",
 
     "^.*Constant/envConstants$": "<rootDir>/__mocks__/envConstants.ts",
+
+    "^@keplr-wallet/cosmos$": "<rootDir>/__mocks__/keplr-cosmos.js",
+    "^@keplr-wallet/proto-types$": "<rootDir>/__mocks__/keplr-proto-types.js",
+    "^@keplr-wallet/common$": "<rootDir>/__mocks__/keplr-common.js",
+    "^@cosmjs/stargate$": "<rootDir>/__mocks__/cosmjs-stargate.js",
+    "^@cosmjs/proto-signing$": "<rootDir>/__mocks__/cosmjs-proto-signing.js",
   },
 
-  // ✅ Ignore proto-gen folder from tests
-  testPathIgnorePatterns: ["<rootDir>/src/proto-gen/"],
+  testMatch: ["**/__test__/**/*.[jt]s?(x)", "**/?(*.)+(test).[tj]s?(x)"],
 
-  // ✅ Ignore proto-gen folder from coverage
+  testPathIgnorePatterns: ["<rootDir>/src/proto-gen/"],
   coveragePathIgnorePatterns: ["<rootDir>/src/proto-gen/"],
 };

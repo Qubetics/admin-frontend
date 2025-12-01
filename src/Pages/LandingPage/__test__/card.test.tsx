@@ -1,12 +1,11 @@
-import "./polyfill";
 import React from "react";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 
-import Card, { type CardProps } from "../src/Pages/LandingPage/card";
+import Card, { type CardProps } from "../card";
 
 // Mock SCSS import
-jest.mock("../src/Pages/LandingPage/LandingPage.scss", () => ({}), {
+jest.mock("../../../Pages/LandingPage/LandingPage.scss", () => ({}), {
   virtual: true,
 });
 

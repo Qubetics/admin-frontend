@@ -8,7 +8,7 @@ import {
   waitFor,
   act,
 } from "@testing-library/react";
-import CreatePlanModal from "../src/Pages/Plans/createPlanModal";
+import CreatePlanModal from "../createPlanModal";
 
 const mockToastError = jest.fn();
 jest.mock("react-toastify", () => ({
@@ -18,20 +18,20 @@ jest.mock("react-toastify", () => ({
 }));
 
 const mockBuildMessage = jest.fn(() => "mock-message");
-jest.mock("../src/service/BuildMessage/buildMessage", () => ({
+jest.mock("../../../service/BuildMessage/buildMessage", () => ({
   buildCreatePlanMessage: (...a: any) => mockBuildMessage(...a),
 }));
 
 const mockTx = jest.fn();
-jest.mock("../src/service/processTransaction/processTransaction", () => ({
+jest.mock("../../../service/processTransaction/processTransaction", () => ({
   processTransaction: (...a: any) => mockTx(...a),
 }));
 
-jest.mock("../src/utils/Helper/CommonHelper", () => ({
+jest.mock("../../../utils/Helper/CommonHelper", () => ({
   ModifyNum: (v: any) => v,
 }));
 
-jest.mock("../src/Common/ButtonCustom/ButtonCustom", () => (props: any) => {
+jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => (props: any) => {
   return (
     <button data-testid="button-custom" onClick={props.onClick}>
       {props.label}
@@ -39,7 +39,7 @@ jest.mock("../src/Common/ButtonCustom/ButtonCustom", () => (props: any) => {
   );
 });
 
-jest.mock("../src/Constant/constants", () => ({
+jest.mock("../../../Constant/constants", () => ({
   ERROR_MESSAGES: {
     PRICE_LESS_THAN_1: "Price must be ≥ 1",
     PRICE_DECIMAL: "Price cannot contain decimals",
@@ -57,7 +57,7 @@ jest.mock("long", () => ({
   fromString: (v: any) => v,
 }));
 
-jest.mock("../src/Common/CustomInput/CustomInput", () => (props: any) => {
+jest.mock("../../../Common/CustomInput/CustomInput", () => (props: any) => {
   return (
     <input
       data-testid={props.name}
@@ -68,11 +68,11 @@ jest.mock("../src/Common/CustomInput/CustomInput", () => (props: any) => {
   );
 });
 
-jest.mock("../src/Common/NotificationModal/NotificationModal", () => {
+jest.mock("../../../Common/NotificationModal/NotificationModal", () => {
   return ({ show }: any) =>
     show ? <div data-testid="notif">Plan Created Successfully!</div> : null;
 });
-jest.mock("../src/Common/ButtonCustom/ButtonCustom", () => (props: any) => {
+jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => (props: any) => {
   return (
     <button data-testid="button-custom" onClick={props.onClick}>
       {props.label}

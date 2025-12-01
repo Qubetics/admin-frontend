@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 // __test__/processTransaction.test.tsx
-import { processTransaction } from "../src/service/processTransaction/processTransaction";
-import { simulateMsgs } from "../src/utils/Helper/stimulateMsg";
-import { sendMsgs } from "../src/utils/Helper/sendMsg";
+import { processTransaction } from "../processTransaction";
+import { simulateMsgs } from "../../../utils/Helper/stimulateMsg";
+import { sendMsgs } from "../../../utils/Helper/sendMsg";
 import { toast } from "react-toastify";
 
 // Mock external modules
-jest.mock("../src/utils/Helper/stimulateMsg", () => ({
+jest.mock("../../../utils/Helper/stimulateMsg", () => ({
   simulateMsgs: jest.fn(),
 }));
 
-jest.mock("../src/utils/Helper/sendMsg", () => ({
+jest.mock("../../../utils/Helper/sendMsg", () => ({
   sendMsgs: jest.fn(),
 }));
 

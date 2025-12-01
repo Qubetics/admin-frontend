@@ -1,6 +1,6 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import ButtonCustom from "../src/Common/ButtonCustom/ButtonCustom";
+import ButtonCustom from "../ButtonCustom";
 
 describe("ButtonCustom Component", () => {
   const defaultProps = {
