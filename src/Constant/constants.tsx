@@ -84,7 +84,7 @@ export const PROCESS_TRANSACTION_ERRORS = [
   { match: "node for plan not found", toast: "Node is not present in this plan", id: "node_not_in_plan" },
   { match: "duplicate node for plan", toast: "Node is linked to a plan", id: "duplicate_node" },
   { match: "invalid node status", toast: "Node address is not present on the chain", id: "node_not_present" },
-  {match:"duplicate provider", toast: "Provider exists login again", id: "duplicate_provider"}
+  {match:"duplicate provider", toast: "Provider Already Exists", id: "duplicate_provider"}
 ];
 export const defaultOnLimitChange = () => {};
 
