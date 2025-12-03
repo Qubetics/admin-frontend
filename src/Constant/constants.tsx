@@ -74,6 +74,7 @@ export const ERROR_MESSAGES = {
   PRICE_DECIMAL: "Price value cannot be in decimal",
   BANDWIDTH_LESS_THAN_1: "Plan bandwidth cannot be less than 1",
   BANDWIDTH_DECIMAL: "Plan bandwidth cannot be in decimal",
+  DISPOSABLE_EMAIL: "Sorry, but we do not accept your mail provider.",
 };
 
 export const PROCESS_TRANSACTION_ERRORS = [
