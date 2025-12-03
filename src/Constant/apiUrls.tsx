@@ -16,4 +16,5 @@ export const apiUrls = {
     `/api/v1/node/action?address=${nodeAddress}&status=${status}`,
   nodeCount: `/api/v1/node/count`,
   nodeRequestCount: `/api/v1/node/request-count`,
+  checkDisposableEmail: `/api/v1/auth/check-disposable-email`,
 };

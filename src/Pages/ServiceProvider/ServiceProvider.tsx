@@ -138,6 +138,22 @@ const ServiceProvider = () => {
 
     const minStakeAmount = await fetchStakeAmount();
 
+    try {
+      const emailCheck = await useGetApi({
+        endpoint: apiUrls.checkDisposableEmail,
+        method: apiMethods.POST,
+        body: { email: formData.email },
+      });
+
+      if (!emailCheck?.success) {
+        toast.error(emailCheck?.message || ERROR_MESSAGES.DISPOSABLE_EMAIL);
+        return;
+      }
+    } catch (err: any) {
+      toast.error(err?.message || ERROR_MESSAGES.DISPOSABLE_EMAIL);
+      return;
+    }
+
     if (Number(walletBalance) < minStakeAmount + 1) {
       toast.error(ERROR_MSG.LOW_BALANCE, { toastId: "low-balance" });
       return;
