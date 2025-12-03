@@ -70,9 +70,9 @@ export const hoursDropdown = [
 ];
 
 export const ERROR_MESSAGES = {
-  PRICE_LESS_THAN_1: "The price plan cannot be less than 1",
+  PRICE_LESS_THAN_1: "The price plan cannot be alphabetic characters",
   PRICE_DECIMAL: "Price value cannot be in decimal",
-  BANDWIDTH_LESS_THAN_1: "Plan bandwidth cannot be less than 1",
+  BANDWIDTH_LESS_THAN_1: "Plan bandwidth cannot be alphabetic characters",
   BANDWIDTH_DECIMAL: "Plan bandwidth cannot be in decimal",
 };
 
@@ -87,6 +87,6 @@ export const PROCESS_TRANSACTION_ERRORS = [
 ];
 export const defaultOnLimitChange = () => {};
 
-  export const emailRegex =/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+  export const emailRegex =/^(?!\s)(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   
-  export const nameRegex = /^[A-Za-z0-9_\s\-']+$/;
+  export const nameRegex = /^(?!\s)(?!.*\s$)(?!.*\s{2,})[\p{L}\p{M}\p{N}' .-]+$/u ;

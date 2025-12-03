@@ -28,14 +28,26 @@ function messageToAminoTransaction(signer: string, data: string) {
   };
 }
 
-export const computePubKey = (address: string, signature: string, signMessage: string) => {
+export const computePubKey = (
+  address: string,
+  signature: string,
+  signMessage: string
+) => {
   try {
-    const aminoEncoded = messageToAminoTransaction(address, Buffer.from(signMessage).toString("base64"));
+    const aminoEncoded = messageToAminoTransaction(
+      address,
+      Buffer.from(signMessage).toString("base64")
+    );
     const serialized = serializeSignDoc(aminoEncoded);
     const hashed = sha3.keccak_256(arrayify(serialized));
 
-    const signatureToCompare = `0x${Buffer.from(signature, "base64").toString("hex")}`;
-    const pubkeyComputed = signatureToPubkey(signatureToCompare, Buffer.from(hashed, "hex"));
+    const signatureToCompare = `0x${Buffer.from(signature, "base64").toString(
+      "hex"
+    )}`;
+    const pubkeyComputed = signatureToPubkey(
+      signatureToCompare,
+      Buffer.from(hashed, "hex")
+    );
 
     return pubkeyComputed;
   } catch (err) {
@@ -67,7 +79,9 @@ export const fetchAccountInfo = async (address: string) => {
     return response.account;
   } catch (e) {
     console.log(e, "ERROR");
-    console.error("This may be a new account. Please send some tokens to this account first.");
+    console.error(
+      "This may be a new account. Please send some tokens to this account first."
+    );
 
     return undefined;
   }
@@ -112,7 +126,10 @@ export const formatTimestamp = (timestamp: string) => {
 
   hours = hours % 12 || 12; // Convert to 12-hour format
 
-  return `${year}-${month}-${day} ${String(hours).padStart(2, "0")}:${minutes}${ampm}`;
+  return `${year}-${month}-${day} ${String(hours).padStart(
+    2,
+    "0"
+  )}:${minutes}${ampm}`;
 };
 
 export const Timestamp = (value: string | number | Date): string => {
@@ -132,7 +149,11 @@ export const Timestamp = (value: string | number | Date): string => {
   return date.toLocaleString("en-US", options);
 };
 
-export const truncateValue = (value: string, start: number = 4, end: number = 4) => {
+export const truncateValue = (
+  value: string,
+  start: number = 4,
+  end: number = 4
+) => {
   if (!value) return "";
   if (value.length <= start + end) return value; // no need to truncate if too short
   return `${value.slice(0, start)}...${value.slice(-end)}`;
@@ -170,7 +191,10 @@ export const formatBalance = (amount: any) => {
   });
 };
 
-export const getValueWithUnit = (value: string | number, unit: any = envConstants.currency) => {
+export const getValueWithUnit = (
+  value: string | number,
+  unit: any = envConstants.currency
+) => {
   let unitBn: BigNumber.Value;
   switch (unit) {
     case envConstants.currency:
@@ -226,7 +250,6 @@ export const fetchStakeAmount = async () => {
   return stake_amount;
 };
 
-
 export const toFirstCapitalCase = (str: string): string => {
   if (!str) return "";
   return str
@@ -235,23 +258,63 @@ export const toFirstCapitalCase = (str: string): string => {
     .join(" ");
 };
 
-  export const convertPlanString = (planStr?: any): any => {
-    if (!planStr) return "";
+export const convertPlanString = (planStr?: any): any => {
+  if (!planStr) return "";
 
-    // Split the string into numeric part and the rest
-    const [valueStr, ...rest] = planStr.split(" ");
-    const unitStr = rest.join(" "); // e.g., "TICS/month"
+  // Split the string into numeric part and the rest
+  const [valueStr, ...rest] = planStr.split(" ");
+  const unitStr = rest.join(" "); // e.g., "TICS/month"
 
-    // Convert the numeric part
-    const convertedValue = getValueWithUnit(valueStr);
+  // Convert the numeric part
+  const convertedValue = getValueWithUnit(valueStr);
 
-    // Return formatted string
-    return `${Number(convertedValue).toFixed(2)} ${unitStr}`;
-  };
+  // Return formatted string
+  return `${Number(convertedValue).toFixed(2)} ${unitStr}`;
+};
 
-export const truncateDecimals = (value: string, decimalPlaces: number): string => {
+export const truncateDecimals = (
+  value: string,
+  decimalPlaces: number
+): string => {
   if (!value || isNaN(Number(value))) return "";
   const num = Number(value);
   return num.toFixed(decimalPlaces);
+};
+
+export const sanitizeInput = (value: string, field: string): string => {
+  if (!value) return "";
+
+  const htmlTag = /<\/?[^>]+>/gi;
+  if (htmlTag.test(value)) return "";
+
+  const jsAttack = /(javascript:|onerror=|onload=|<script|<\/script)/gi;
+  if (jsAttack.test(value)) return "";
+
+  const sqlAttack = /\b(drop table|insert into|delete from|update .* set|select .* from)\b/gi;
+  if (sqlAttack.test(value)) return "";
+
+
+  if (field === "email") {
+    return value
+      .replace(/\s+/g, "")                 
+      .replace(/[^a-zA-Z0-9@._-]/g, "");   
+  }
+
+  if (field === "name") {
+    let clean = value.replace(/<\/?[^>]+>/g, ""); 
+    clean = clean.replace(/[^\w\s.'-]/g, "");      
+    clean = clean.replace(/^\s+/, "");             
+    clean = clean.replace(/\s{2,}/g, " ");         
+    return clean;
+  }
+
+  if (field === "website") {
+    return value
+      .replace(/"/g, "")        
+      .replace(/<|>/g, "")      
+      .trim();                  
+  }
+
+  return value;
 };
 

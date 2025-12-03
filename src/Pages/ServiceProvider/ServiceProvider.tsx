@@ -10,9 +10,22 @@ import {
 } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { toast } from "react-toastify";
-import { convertNodeToWallet, computePubKey, fetchStakeAmount } from "../../utils/Helper/CommonHelper";
+import {
+  convertNodeToWallet,
+  computePubKey,
+  fetchStakeAmount,
+  sanitizeInput,
+} from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { DESCRIPTION, emailRegex, ERROR_MSG, HEADING, nameRegex, provWalletPrefix, STATUS_ENUM } from "../../Constant/constants";
+import {
+  DESCRIPTION,
+  emailRegex,
+  ERROR_MSG,
+  HEADING,
+  nameRegex,
+  provWalletPrefix,
+  STATUS_ENUM,
+} from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { apiMethods } from "../../Constant/constants";
@@ -44,6 +57,7 @@ const ServiceProvider = () => {
     email: "",
     website: "",
   });
+
   const [errors, setErrors] = useState<FormErrors>({});
   const [showRegisterToast, setShowRegisterToast] = useState(false);
   const [showProviderToast, setShowProviderToast] = useState(false);
@@ -51,44 +65,48 @@ const ServiceProvider = () => {
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const { name, value } = e.target;
+    const { name, value } = e.target;
 
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
+    const safeValue = sanitizeInput(value, name);
 
-  setErrors((prev) => {
-    const newErrors = { ...prev };
+    setFormData((prev) => ({
+      ...prev,
+      [name]: safeValue,
+    }));
 
-    if (name === "name") {
-      if (!value.trim()) newErrors.name = "Name is required.";
-      else if (!nameRegex.test(value)) {
-         newErrors.name = "Name contains invalid characters.";
-       }
-      else if (value.trim().length < 3 || value.trim().length > 50) newErrors.name = "Name must be between 3 and 50 characters.";
-      else delete newErrors.name;
-    }
+    setErrors((prev) => {
+      const newErrors = { ...prev };
 
-    if (name === "email") {
-      if (!value.trim()) newErrors.email = "Email is required.";
-      else if (!/^[a-zA-Z0-9]/.test(value))
-        newErrors.email = "Email cannot start with special characters.";
-      else if (!emailRegex.test(value))
-        newErrors.email = "Please enter a valid email address.";
-      else delete newErrors.email;
-    }
+      if (name === "name") {
+        if (!safeValue) newErrors.name = "Name is required.";
+        else if (safeValue.length < 3 || safeValue.length > 50)
+          newErrors.name = "Name must be between 3 and 50 characters.";
+        else if (!nameRegex.test(safeValue))
+          newErrors.name = "Name contains invalid characters.";
+        else delete newErrors.name;
+      }
 
-    return newErrors;
-  });
-};
+      if (name === "email") {
+        if (!safeValue) newErrors.email = "Email is required.";
+        else if (!emailRegex.test(safeValue)) {
+          newErrors.email = "Please enter a valid email address.";
+        } else delete newErrors.email;
+      }
 
+      if (name === "website") {
+        delete newErrors.website;
+      }
+
+      return newErrors;
+    });
+  };
 
   const validateForm = (): boolean => {
     const newErrors: FormErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.email.trim()) newErrors.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email))
+      newErrors.email = "Please enter a valid email address.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -121,7 +139,7 @@ const ServiceProvider = () => {
     const minStakeAmount = await fetchStakeAmount();
 
     if (Number(walletBalance) < minStakeAmount + 1) {
-      toast.error(ERROR_MSG.LOW_BALANCE);
+      toast.error(ERROR_MSG.LOW_BALANCE, { toastId: "low-balance" });
       return;
     }
 
@@ -149,7 +167,11 @@ const ServiceProvider = () => {
       const keplr = (window as any)?.keplr;
       if (!keplr) return toast.error("Keplr wallet not found");
 
-      const { signature, pub_key } = await keplr.signArbitrary(envConstants.chainId, authData, authData);
+      const { signature, pub_key } = await keplr.signArbitrary(
+        envConstants.chainId,
+        authData,
+        authData
+      );
       if (!signature) return toast.error("Signature rejected");
 
       const pubKeyFromSignature = computePubKey(authData, signature, authData);
@@ -180,11 +202,10 @@ const ServiceProvider = () => {
     }
   };
   const isFormValid =
-  formData.name.trim() !== "" &&
-  formData.email.trim() !== "" &&
-  !errors.name &&
-  !errors.email;
-
+    formData.name.trim() !== "" &&
+    formData.email.trim() !== "" &&
+    !errors.name &&
+    !errors.email;
 
   return (
     <div className="mainContainer">
@@ -192,12 +213,12 @@ const ServiceProvider = () => {
       <div className="borderDiv borderDiv-bordered">
         <h4 className="borderDiv-header">Connect Keplr Wallet</h4>
         <p className="borderDiv-para">
-          Ensure that you are connected to the correct Keplr wallet before proceeding with the Service Provider
-          registration.
-          <br />
-          The wallet you connect will be used to verify your identity, manage your node registration, and handle all
-          related transactions on the blockchain. Connecting the wrong wallet may prevent successful registration or
-          cause discrepancies in ownership verification.
+          Make sure you're connected to the correct Keplr wallet before starting
+          your Service Provider registration. This wallet will be used to verify
+          your identity, register yourself as a provider, and manage all related
+          transactions on the Qubetics Blockchain. If you connect the wrong
+          wallet, your registration may fail or your ownership details may not
+          match correctly
         </p>
       </div>
 
@@ -206,7 +227,13 @@ const ServiceProvider = () => {
           <label>
             Name<span className="redText">*</span>
           </label>
-          <CustomInput type="text" name="name" placeholder="Enter name" value={formData.name} onChange={handleChange} />
+          <CustomInput
+            type="text"
+            name="name"
+            placeholder="Enter name"
+            value={formData.name}
+            onChange={handleChange}
+          />
           {errors.name && <div className="redText">{errors.name}</div>}
         </div>
         <div className="form-group">
@@ -214,7 +241,7 @@ const ServiceProvider = () => {
             Email Address<span className="redText">*</span>
           </label>
           <CustomInput
-            type="email"
+            type="text"
             name="email"
             placeholder="Enter your email address"
             value={formData.email}
@@ -233,7 +260,7 @@ const ServiceProvider = () => {
           />
           {errors.website && <div className="redText">{errors.website}</div>}
         </div>
-        <ButtonCustom label="Submit" disabled = {!isFormValid}/>
+        <ButtonCustom label="Submit" disabled={!isFormValid} />
       </form>
 
       <NotificationToast

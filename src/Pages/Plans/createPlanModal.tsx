@@ -4,7 +4,7 @@ import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
-import { ModifyNum } from "../../utils/Helper/CommonHelper";
+import { ModifyNum, sanitizeInput } from "../../utils/Helper/CommonHelper";
 import {
   ERROR_MESSAGES,
   gbToBytes,
@@ -37,28 +37,30 @@ const CreatePlanModal = ({
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    const safeValue = sanitizeInput(value, name);
+
     let errorMsg = "";
 
     if (name === "price") {
-      if (Number(value) < 1 || value === "-") {
+      if (Number(safeValue) < 1 || safeValue === "-") {
         errorMsg = ERROR_MESSAGES.PRICE_LESS_THAN_1;
-      } else if (value.includes(".")) {
+      } else if (safeValue.includes(".")) {
         errorMsg = ERROR_MESSAGES.PRICE_DECIMAL;
-      } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
+      } else if (!/^[1-9]\d*$/.test(safeValue) && safeValue !== "") {
         errorMsg = ERROR_MESSAGES.PRICE_LESS_THAN_1;
       }
     } else if (name === "bytes") {
-      if (Number(value) < 1 || value === "-") {
+      if (Number(safeValue) < 1 || safeValue === "-") {
         errorMsg = ERROR_MESSAGES.BANDWIDTH_LESS_THAN_1;
-      } else if (value.includes(".")) {
+      } else if (safeValue.includes(".")) {
         errorMsg = ERROR_MESSAGES.BANDWIDTH_DECIMAL;
-      } else if (!/^[1-9]\d*$/.test(value) && value !== "") {
+      } else if (!/^[1-9]\d*$/.test(safeValue) && safeValue !== "") {
         errorMsg = ERROR_MESSAGES.BANDWIDTH_LESS_THAN_1;
       }
     }
 
     if (errorMsg) {
-      if (value === "") {
+      if (safeValue === "") {
         setFormData((prev) => ({ ...prev, [name]: "" }));
         setErrors((prev) => ({ ...prev, [name]: "" }));
         return;
@@ -72,7 +74,7 @@ const CreatePlanModal = ({
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: safeValue,
     }));
 
     setErrors((prev) => ({
@@ -119,10 +121,7 @@ const CreatePlanModal = ({
     getAllPlan();
     setShowNotification(true);
   };
-  // const handleHide = () => {
-  //   setCreateShow(false);
-  //   setFormData(initialFormData);
-  // };
+
   const handleHide = () => {
     setCreateShow(false);
     setFormData(initialFormData);
