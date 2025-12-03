@@ -202,10 +202,10 @@ const ServiceProvider = () => {
     }
   };
   const isFormValid =
-    formData.name.trim() !== "" &&
-    formData.email.trim() !== "" &&
-    !errors.name &&
-    !errors.email;
+    formData?.name?.trim() !== "" &&
+    formData?.email?.trim() !== "" &&
+    !errors?.name &&
+    !errors?.email;
 
   return (
     <div className="mainContainer">

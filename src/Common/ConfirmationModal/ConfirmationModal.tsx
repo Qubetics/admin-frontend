@@ -27,8 +27,13 @@ const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   return createPortal(
     <div className="confirmation-overlay">
       <div className="confirmation-modal">
-        <button className="close-btn" onClick={onCancel}>
-          ×
+        <button
+          aria-label="Close modal"
+          className="close-btn"
+          onClick={onCancel}
+          type="button"
+        >
+          &times;
         </button>
 
         <strong>{heading}</strong>
