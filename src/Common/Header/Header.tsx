@@ -23,6 +23,7 @@ import ButtonCustom from "../ButtonCustom/ButtonCustom";
 import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
 import ProfileIcon from "../../assets/ProfileIcon.svg";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
 // Types
 interface KeplrWindow extends Window {
   keplr?: {
@@ -65,6 +66,7 @@ const Header = () => {
   const [balance, setBalance] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(false);
   const [isConnecting, setIsConnecting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -113,29 +115,29 @@ const Header = () => {
   }, []);
 
   const fetchAccountBalance = useCallback(async (address: string): Promise<void> => {
-    if (!address) {
-      console.warn("No address provided for balance fetch");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
-      const response = await api(uri);
-
-      if (response?.balances?.[0]?.amount) {
-        const balanceAmount = Number(response.balances[0].amount) / 1e18;
-        setBalance(balanceAmount);
-      } else {
-        setBalance(0);
+      if (!address) {
+        console.warn("No address provided for balance fetch");
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching account balance:", error);
-      setBalance(0);
-      toast.error("Failed to fetch account balance");
-    } finally {
-      setIsLoading(false);
-    }
+
+      setIsLoading(true);
+      try {
+        const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
+        const response = await api(uri);
+
+        if (response?.balances?.[0]?.amount) {
+          const balanceAmount = Number(response.balances[0].amount) / 1e18;
+          setBalance(balanceAmount);
+        } else {
+          setBalance(0);
+        }
+      } catch (error) {
+        console.error("Error fetching account balance:", error);
+        setBalance(0);
+        toast.error("Failed to fetch account balance");
+      } finally {
+        setIsLoading(false);
+      }
   }, []);
 
   const handleLogout = useCallback(async (): Promise<void> => {
@@ -232,7 +234,7 @@ const Header = () => {
         const { signature, pub_key } = await window.keplr.signArbitrary(chainId, address, message);
 
         if (!signature || !pub_key) {
-          toast.error("Failed to sign message");
+          toast.error("Failed to sign in");
           return false;
         }
 
@@ -260,7 +262,7 @@ const Header = () => {
           setProviderName("");
           if (errormassage.includes("role")) {
             toast.error("Role information missing or invalid");
-          } 
+          }
           if (data && !data?.data?.isExist) {
             setAuthData(address);
             toast.error("Register as a provider")
@@ -281,7 +283,7 @@ const Header = () => {
         if (error?.message?.includes("rejected")) {
           toast.error("Signing rejected by user");
         } else {
-          toast.error("Failed to sign message");
+          toast.error("Failed to sign in");
         }
 
         sessionStorage.clear();
@@ -381,7 +383,7 @@ const Header = () => {
                   <ButtonCustom
                     className="mobile-logout"
                     label={isConnecting ? "Logging out..." : "Logout"}
-                    onClick={handleLogout}
+                    onClick={() => setShowConfirmModal(true)}
                     disabled={isLoading}
                     type="button"
                   />
@@ -421,7 +423,11 @@ const Header = () => {
                       <p className="dropdown-item">
                         Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
                       </p>
-                      <button onClick={handleLogout} disabled={isLoading} className="dropdown-item logoutBtn">
+                      <button
+                        onClick={() => setShowConfirmModal(true)}
+                        disabled={isLoading}
+                        className="dropdown-item logoutBtn"
+                      >
                         {isConnecting ? "Logging in..." : "Logout"}
                       </button>
                     </div>
@@ -440,6 +446,18 @@ const Header = () => {
           </button>
         )}
       </div>
+      <ConfirmationModal
+        show={showConfirmModal}
+        heading="Logout"
+        description="Are you sure you want to logout?"
+        confirmLabel="Yes"
+        cancelLabel="No"
+        onConfirm={async () => {
+          await handleLogout();
+          setShowConfirmModal(false);
+        }}
+        onCancel={() => setShowConfirmModal(false)}
+      />
     </div>
   );
 };

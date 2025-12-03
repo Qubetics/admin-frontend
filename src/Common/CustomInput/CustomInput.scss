@@ -3,51 +3,47 @@
 .custom-input {
   width: 100%;
 
-  .input-field {
-    background: #080808;
-    border: 1px solid #080808;
-    padding: 14px;
-    border-radius: 7px;
-    font-size: 16px;
-    color: #ffffff;
-    outline: none;
-    width: 100%;
-
-    &::placeholder {
-      color: #a0a0a0;
-    }
-
-    &:focus {
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    // Remove arrows from number input (Chrome, Safari, Edge, Opera)
-    &[type="number"]::-webkit-inner-spin-button,
-    &[type="number"]::-webkit-outer-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
-    // Remove arrows from Firefox
-    &[type="number"] {
-      -moz-appearance: textfield;
-    }
-  }
-}
-.custom-input {
   .input-field,
   .select-field {
     width: 100%;
     padding: 12px 14px;
     border-radius: 8px;
     border: 1px solid #222328;
-    background: #141416;
-    color: #e9e9ea;
+    background: #141416 !important;
+    color: #e9e9ea !important;
     font-size: 14px;
     outline: none;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    transition: border-color 0.2s ease !important;
     -webkit-appearance: none;
   }
+
+  /* Focus */
+  .input-field:focus,
+  .select-field:focus {
+    border-color: #8b5cf6;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
+  }
+
+  .input-field:-webkit-autofill,
+  .input-field:-webkit-autofill:hover,
+  .input-field:-webkit-autofill:focus,
+  .input-field:-webkit-autofill:active {
+    -webkit-text-fill-color: #e9e9ea !important;
+    transition: background-color 9999s ease-in-out 0s,
+      color 9999s ease-in-out 0s !important;
+    background: #141416 !important;
+    box-shadow: 0 0 0px 1000px #141416 inset !important;
+  }
+
+  @keyframes autofill-fix {
+    from {
+      background: #141416;
+    }
+    to {
+      background: #141416;
+    }
+  }
+
   .chevron {
     position: absolute;
     right: 10px;
@@ -59,11 +55,6 @@
     background-image: url("../../assets/InputArrow.svg");
     background-repeat: no-repeat;
     background-size: 10px;
-  }
-  .input-field:focus,
-  .select-field:focus {
-    border-color: #8b5cf6;
-    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.12);
   }
 
   &.has-error .input-field,
