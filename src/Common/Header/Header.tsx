@@ -406,8 +406,8 @@ const Header = () => {
           ) : (
             width > 991 && (
               <>
-                <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
-                <div className="header__wallet-address customButton">
+                <span className="customButton balance-display ticsbtnPadding">{formatBalance(balance)} TICS</span>
+                <div className="header__wallet-address customButton ticsbtnPadding">
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>

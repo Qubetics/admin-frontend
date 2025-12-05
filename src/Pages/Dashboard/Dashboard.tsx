@@ -48,7 +48,7 @@ export default function Dashboard() {
   });
   const [lease, setLease] = useState(false);
   const [unLease, setUnLease] = useState(false);
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -433,7 +433,7 @@ export default function Dashboard() {
               <div className="modal-content">
                 <h2>Node Request</h2>
                 <p>Node Approved successfully!</p>
-                <div className="action-btns">
+                <div className="action-btns btns-mb">
                   <button className="gradient-btn" onClick={handleClose}>
                     OK
                   </button>
