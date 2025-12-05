@@ -341,7 +341,7 @@ const Header = () => {
     { path: Path.NODES, label: "Nodes" },
   ];
   const hasHeaderActions = location.pathname !== "/";
-  const hideNavItems = location.pathname === Path.SERVICE_PROVIDER;
+  const hideNavItems = location.pathname === Path.SERVICE_PROVIDER || location.pathname === Path.LANDING;
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   return (
