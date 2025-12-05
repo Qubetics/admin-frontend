@@ -27,6 +27,7 @@ jest.mock("../../../service/processTransaction/processTransaction", () => ({
 
 jest.mock("../../../utils/Helper/CommonHelper", () => ({
   ModifyNum: (v: any) => v,
+  sanitizeInput: (value: any) => value,
 }));
 
 jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => (props: any) => {

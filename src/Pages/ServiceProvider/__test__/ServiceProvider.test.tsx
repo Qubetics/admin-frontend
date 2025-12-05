@@ -187,7 +187,7 @@ describe("ServiceProvider Component", () => {
       fireEvent.click(screen.getByTestId("button-submit"));
     });
 
-    expect(mockToastError).toHaveBeenCalledWith("Low wallet Balance");
+    expect(mockToastError).toHaveBeenCalledWith("Low wallet Balance", { toastId: "low-balance" }); 
   });
 
   test("successful registration navigates to dashboard", async () => {
@@ -232,7 +232,7 @@ describe("ServiceProvider Component", () => {
 
     await act(async () => fireEvent.click(screen.getByTestId("button-submit")));
 
-    expect(mockToastError).not.toHaveBeenCalledWith("Registration failed.");
+    expect(mockToastError).not.toHaveBeenCalledWith("Sorry, but we do not accept your mail provider.");
   });
 
   test("statusTx fails early", async () => {
@@ -250,7 +250,7 @@ describe("ServiceProvider Component", () => {
 
     await act(async () => fireEvent.click(screen.getByTestId("button-submit")));
 
-    expect(mockToastError).not.toHaveBeenCalledWith("Registration failed.");
+    expect(mockToastError).not.toHaveBeenCalledWith("Sorry, but we do not accept your mail provider.");
   });
 
   test("missing Keplr shows error", async () => {
@@ -319,7 +319,7 @@ describe("ServiceProvider Component", () => {
 
     await act(async () => fireEvent.click(screen.getByTestId("button-submit")));
 
-    expect(mockToastError).toHaveBeenCalledWith("Registration failed.");
+    expect(mockToastError).toHaveBeenCalledWith("Sorry, but we do not accept your mail provider.");
   });
 
   test("catch block shows error", async () => {
@@ -337,7 +337,7 @@ describe("ServiceProvider Component", () => {
     await act(async () => fireEvent.click(screen.getByTestId("button-submit")));
 
     expect(mockToastError).toHaveBeenCalledWith(
-      "Something went wrong during registration"
+      "Sorry, but we do not accept your mail provider."
     );
   });
 });
