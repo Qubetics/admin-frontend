@@ -52,7 +52,10 @@ const Header = () => {
   // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
         setIsProfileOpen(false);
       }
     };
@@ -70,7 +73,8 @@ const Header = () => {
 
   const location = useLocation();
   const navigate = useNavigate();
-  const { authData, setAuthData, providerName, setProviderName } = useIsLoggedIn();
+  const { authData, setAuthData, providerName, setProviderName } =
+    useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
   // function to logo resize
@@ -114,7 +118,8 @@ const Header = () => {
     setIsMenuOpen((prev) => !prev);
   }, []);
 
-  const fetchAccountBalance = useCallback(async (address: string): Promise<void> => {
+  const fetchAccountBalance = useCallback(
+    async (address: string): Promise<void> => {
       if (!address) {
         console.warn("No address provided for balance fetch");
         return;
@@ -138,7 +143,9 @@ const Header = () => {
       } finally {
         setIsLoading(false);
       }
-  }, []);
+    },
+    []
+  );
 
   const handleLogout = useCallback(async (): Promise<void> => {
     if (isLoading) return;
@@ -147,7 +154,8 @@ const Header = () => {
     setAuthData("");
     setBalance(0);
 
-    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+    const pathname =
+      typeof window !== "undefined" ? window.location.pathname : "";
 
     if (pathname === Path.SERVICE_PROVIDER) {
       navigate(Path.LANDING);
@@ -181,7 +189,8 @@ const Header = () => {
   const connectKeplr = useCallback(async (): Promise<string | null> => {
     if (!window.keplr) {
       if (/Android/i.test(navigator.userAgent)) {
-        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+        window.location.href =
+          "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
       } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.location.href = "keplrwallet://";
       } else {
@@ -231,7 +240,11 @@ const Header = () => {
         const message = address;
         const chainId = envConstants.chainId;
 
-        const { signature, pub_key } = await window.keplr.signArbitrary(chainId, address, message);
+        const { signature, pub_key } = await window.keplr.signArbitrary(
+          chainId,
+          address,
+          message
+        );
 
         if (!signature || !pub_key) {
           toast.error("Failed to sign in");
@@ -265,10 +278,9 @@ const Header = () => {
           }
           if (data && !data?.data?.isExist) {
             setAuthData(address);
-            toast.error("Register as a provider")
+            toast.error("Register as a provider");
             navigate(Path.SERVICE_PROVIDER);
-
-          }else {
+          } else {
             toast.error("Authentication failed. Please try again.");
           }
           return false;
@@ -329,7 +341,7 @@ const Header = () => {
     { path: Path.NODES, label: "Nodes" },
   ];
   const hasHeaderActions = location.pathname !== "/";
-  const hideNavItems = location.pathname === Path.SERVICE_PROVIDER;
+  const hideNavItems = location.pathname === Path.SERVICE_PROVIDER || location.pathname === Path.LANDING;
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   return (
@@ -345,37 +357,45 @@ const Header = () => {
           </Link>
         </div>
         {hasHeaderActions && authData && (
-          <div className={`header__details ${isMenuOpen ? "active" : ""}`} ref={menuRef}>
-            {authData && !hideNavItems && (
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
+            {authData && (
               <>
-                <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
-                  {navigationItems.map(({ path, label }) => (
-                    <Link key={path} to={path} className={isActive(path)} onClick={() => setIsMenuOpen(false)}>
-                      {label}
-                    </Link>
-                  ))}
-                  <>
-                    {/* <div className="responsiveDrawerData">
-              <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
-              <div className="header__wallet-address customButton">
-                <div>{truncateValue(authData)}</div>
-                <CopyText text={authData} />
-              </div>
-              <ButtonCustom
-                // className="web-logout"
-                // label={isConnecting ? "Logging out..." : "Logout"}
-                label='logout'
-                onClick={handleLogout}
-                // disabled={isLoading}
-                type="button"
-              />
-              </div> */}
-                  </>
-                </nav>
+                {!hideNavItems && (
+                  <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
+                    {navigationItems.map(({ path, label }) => (
+                      <Link
+                        key={path}
+                        to={path}
+                        className={isActive(path)}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                    ))}
+                    <div className="responsiveDrawerData">
+                      <span className="customButton balance-display">
+                        {formatBalance(balance)} TICS
+                      </span>
+                      <div className="header__wallet-address customButton">
+                        <div>{truncateValue(authData)}</div>
+                        <CopyText text={authData} />
+                      </div>
+                      <ButtonCustom
+                        label="logout"
+                        onClick={handleLogout}
+                        type="button"
+                      />
+                    </div>
+                  </nav>
+                )}
+
                 <div className="responsiveDrawerData">
-                  <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
+                  <span className="customButton balance-display">
+                    {formatBalance(balance)} TICS
+                  </span>
                   <div className="header__wallet-address customButton">
                     <div>{truncateValue(authData)}</div>
                     <CopyText text={authData} />
@@ -406,22 +426,35 @@ const Header = () => {
           ) : (
             width > 991 && (
               <>
+<<<<<<< HEAD
                 <span className="customButton balance-display ticsbtnPadding">{formatBalance(balance)} TICS</span>
                 <div className="header__wallet-address customButton ticsbtnPadding">
+=======
+                <span className="customButton balance-display">
+                  {formatBalance(balance)} TICS
+                </span>
+                <div className="header__wallet-address customButton">
+>>>>>>> df762134802723143c074313d094b0cbcf04d5ed
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>
                 <div className="profile-container" ref={profileRef}>
-                  <div className="profile-icon" onClick={() => setIsProfileOpen(!isProfileOpen)}>
+                  <div
+                    className="profile-icon"
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  >
                     <img src={ProfileIcon} alt="Profile" />
                   </div>
                   {isProfileOpen && (
                     <div className="profile-dropdown">
                       {providerName && (
-                        <p className="dropdown-item">Provider Name: {toFirstCapitalCase(providerName)}</p>
+                        <p className="dropdown-item">
+                          Provider Name: {toFirstCapitalCase(providerName)}
+                        </p>
                       )}
                       <p className="dropdown-item">
-                        Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
+                        Provider Address: {truncateValue(provAddress)}{" "}
+                        <CopyText text={provAddress} />
                       </p>
                       <button
                         onClick={() => setShowConfirmModal(true)}
@@ -439,7 +472,11 @@ const Header = () => {
         </div>
 
         {hasHeaderActions && authData && (
-          <button className={`hamburger ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu} aria-label="Toggle menu">
+          <button
+            className={`hamburger ${isMenuOpen ? "active" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
             <span></span>
             <span></span>
             <span></span>
