@@ -53,3 +53,10 @@
 .onboarding-footer {
   margin-top: auto;
 }
+.headerBottomOnly {
+  @media #{mobile()} {
+    .header__details {
+      justify-content: flex-end !important;
+    }
+  }
+}

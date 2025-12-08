@@ -133,7 +133,13 @@
     gap: 20px;
     transition: all 0.3s ease-in-out;
     justify-content: space-between;
-    width: 100%;
+    width: 50%;
+    @media (max-width: 1326px) {
+      width: 40%;
+    }
+    @media (max-width: 1098px) {
+      width: 32%;
+    }
   }
 
   &__nav {
@@ -243,6 +249,9 @@
         padding: 7px;
       }
     }
+    .ticsbtnPadding {
+      min-width: 133px;
+    }
   }
 
   &__wallet-address {
@@ -302,12 +311,8 @@
     &__nav {
       display: flex !important;
       flex-direction: column;
-      align-items: flex-start;
-      width: 100%;
-
       a {
         width: 100%;
-        justify-content: flex-start;
       }
     }
 
@@ -400,8 +405,7 @@
     overflow: visible;
     animation: fadeIn 0.15s ease-out;
     padding: 20px;
-    
-    
+
     &::before {
       content: "";
       position: absolute;
@@ -419,14 +423,14 @@
         var(--clr-1),
         var(--clr-card)
       );
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
       pointer-events: none;
       inset: 0;
       padding: 2px;
-     
     }
 
     .dropdown-item {
@@ -452,7 +456,7 @@
         margin-bottom: 0;
       }
     }
-    .logoutBtn{
+    .logoutBtn {
       font-size: 16px;
     }
   }
@@ -466,5 +470,14 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.landing-header-logined {
+  @media #{mobile()} {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
   }
 }

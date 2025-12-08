@@ -331,9 +331,10 @@ const Header = () => {
   const hasHeaderActions = location.pathname !== "/";
   const hideNavItems = location.pathname === Path.SERVICE_PROVIDER || (!isExist && location.pathname === Path.LANDING);
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+const isLandingPage = location.pathname.startsWith(Path.LANDING) || location.pathname.startsWith(Path.SERVICE_PROVIDER);
 
   return (
-    <div className="header-main">
+     <div className={`header-main`}>
       <div className="header-main__bottom container">
         <div className="header__left">
           <Link to={Path.LANDING}>
@@ -355,18 +356,10 @@ const Header = () => {
                         {label}
                       </Link>
                     ))}
-                    <div className="responsiveDrawerData">
-                      <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
-                      <div className="header__wallet-address customButton">
-                        <div>{truncateValue(authData)}</div>
-                        <CopyText text={authData} />
-                      </div>
-                      <ButtonCustom label="logout" onClick={handleLogout} type="button" />
-                    </div>
                   </nav>
                 )}
 
-                <div className="responsiveDrawerData">
+                <div className={`responsiveDrawerData ${isLandingPage ? "landing-header-logined" : ""}`}>
                   <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
                   <div className="header__wallet-address customButton">
                     <div>{truncateValue(authData)}</div>
@@ -398,8 +391,8 @@ const Header = () => {
           ) : (
             width > 991 && (
               <>
-                <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
-                <div className="header__wallet-address customButton">
+                <span className="customButton balance-display ticsbtnPadding">{formatBalance(balance)} TICS</span>
+                <div className="header__wallet-address customButton ticsbtnPadding">
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>

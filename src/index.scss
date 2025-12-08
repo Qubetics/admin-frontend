@@ -478,12 +478,20 @@ body::-webkit-scrollbar {
         color: #fff;
         margin-bottom: s(20);
         font-weight: 600;
+        @media #{mobile()} {
+          font-size: s(20);
+          margin-bottom: s(10);
+        }
       }
 
       p {
         font-size: s(17);
         color: #a0a0a0;
         margin-bottom: s(34);
+        @media #{mobile()} {
+          font-size: s(14);
+          margin-bottom: s(24);
+        }
       }
 
       .action-btns {
@@ -520,7 +528,9 @@ body::-webkit-scrollbar {
           justify-content: center;
           height: s(50);
         }
-
+        @media #{mobile()} {
+          height: s(35);
+        }
         position: relative;
         display: inline-block;
         padding: s(12.5) s(20);
@@ -533,7 +543,10 @@ body::-webkit-scrollbar {
         border-radius: s(30);
         overflow: hidden;
         cursor: pointer;
-
+        @media #{mobile()} {
+          font-size: s(10);
+          padding: s(10);
+        }
         &::before {
           content: "";
           position: absolute;
@@ -849,9 +862,6 @@ h6 {
 
   @media (max-width: 991px) {
     display: block !important;
-    position: absolute;
-    bottom: 100px;
-    left: 15px;
   }
   span,
   .customButton,

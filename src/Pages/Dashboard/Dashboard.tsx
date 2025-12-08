@@ -433,7 +433,7 @@ export default function Dashboard() {
               <div className="modal-content">
                 <h2>Node Request</h2>
                 <p>Node Approved successfully!</p>
-                <div className="action-btns">
+                <div className="action-btns btns-mb">
                   <button className="gradient-btn" onClick={handleClose}>
                     OK
                   </button>

@@ -23,14 +23,19 @@
 
 .confirmation-modal {
   position: relative;
-  width: min(90vw, s(480));
+  max-width: s(480);
+  width: 100%;
   background: #111;
   padding: s(40) s(32);
   border-radius: s(20);
   text-align: center;
   color: #fff;
   box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
-
+  @media #{mobile()} {
+    padding: s(15);
+    max-width: s(300);
+    width: 100%;
+  }
   isolation: isolate;
 
   animation: scaleUp 0.25s ease-out;
@@ -68,6 +73,9 @@
   font-size: s(16);
   opacity: 0.85;
   margin: 0 0 s(28) 0;
+  @media (max-width: 991px) {
+    margin: 0 0 s(15) 0;
+  }
 }
 
 .confirmation-buttons {
