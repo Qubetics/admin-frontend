@@ -10,7 +10,7 @@ interface OnboardAuthLayoutProps {
 function OnboardAuthLayout({ children }: OnboardAuthLayoutProps) {
   return (
     <div className="onboarding-layout">
-      <header className="onboarding-header">
+      <header className="onboarding-header headerBottomOnly">
         <Header />
       </header>
       <main className="onboarding-main">

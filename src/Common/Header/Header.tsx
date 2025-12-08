@@ -375,20 +375,6 @@ const Header = () => {
                         {label}
                       </Link>
                     ))}
-                    <div className="responsiveDrawerData">
-                      <span className="customButton balance-display">
-                        {formatBalance(balance)} TICS
-                      </span>
-                      <div className="header__wallet-address customButton">
-                        <div>{truncateValue(authData)}</div>
-                        <CopyText text={authData} />
-                      </div>
-                      <ButtonCustom
-                        label="logout"
-                        onClick={handleLogout}
-                        type="button"
-                      />
-                    </div>
                   </nav>
                 )}
 
@@ -426,15 +412,8 @@ const Header = () => {
           ) : (
             width > 991 && (
               <>
-<<<<<<< HEAD
                 <span className="customButton balance-display ticsbtnPadding">{formatBalance(balance)} TICS</span>
                 <div className="header__wallet-address customButton ticsbtnPadding">
-=======
-                <span className="customButton balance-display">
-                  {formatBalance(balance)} TICS
-                </span>
-                <div className="header__wallet-address customButton">
->>>>>>> df762134802723143c074313d094b0cbcf04d5ed
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>

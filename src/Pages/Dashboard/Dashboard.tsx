@@ -48,7 +48,7 @@ export default function Dashboard() {
   });
   const [lease, setLease] = useState(false);
   const [unLease, setUnLease] = useState(false);
-  const [show, setShow] = useState(true);
+  const [show, setShow] = useState(false);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
