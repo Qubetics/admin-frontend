@@ -2,9 +2,9 @@
 require("@testing-library/jest-dom");
 const { TextEncoder, TextDecoder } = require("util");
 Object.assign(global, { TextEncoder, TextDecoder });
-if (typeof window !== 'undefined') {
-    window.TextEncoder = TextEncoder;
-    window.TextDecoder = TextDecoder;
+if (typeof window !== "undefined") {
+  window.TextEncoder = TextEncoder;
+  window.TextDecoder = TextDecoder;
 }
 console.log("Jest setup loaded, TextEncoder set:", !!global.TextEncoder);
 
@@ -21,4 +21,3 @@ Object.defineProperty(window, "matchMedia", {
     dispatchEvent: jest.fn(),
   })),
 });
-

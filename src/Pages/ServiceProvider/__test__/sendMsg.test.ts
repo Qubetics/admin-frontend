@@ -1,17 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { sendMsgs } from "../../../utils/Helper/sendMsg";
+const mockTraceTx = jest.fn().mockResolvedValue({ ok: true });
 
 jest.mock("@keplr-wallet/cosmos", () => ({
-  TendermintTxTracer: jest.fn().mockImplementation(() => ({
-    traceTx: jest.fn().mockResolvedValue({ ok: true }),
-  })),
+  TendermintTxTracer: jest.fn().mockImplementation(function (this: any) {
+    this.traceTx = mockTraceTx;
+  }),
 }));
 
-import { fetchAccountInfo } from "../../../utils/Helper/CommonHelper";
 jest.mock("../../../utils/Helper/CommonHelper", () => ({
   fetchAccountInfo: jest.fn(),
 }));
+
+import { sendMsgs } from "../../../utils/Helper/sendMsg";
+import { fetchAccountInfo } from "../../../utils/Helper/CommonHelper";
 
 describe("sendMsgs", () => {
   const mockKeplr: any = {

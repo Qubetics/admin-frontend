@@ -5,9 +5,7 @@ module.exports = {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
 
-  transformIgnorePatterns: [
-    "node_modules/(?!(@keplr-wallet|@cosmjs|axios|react-toastify)/)",
-  ],
+  transformIgnorePatterns: ["node_modules/(?!(@keplr-wallet|@cosmjs|axios|react-toastify)/)"],
 
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
