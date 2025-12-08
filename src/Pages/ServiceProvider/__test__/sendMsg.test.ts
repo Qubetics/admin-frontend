@@ -1,10 +1,11 @@
-const mockTraceTx = jest.fn().mockResolvedValue({ ok: true });
-
 jest.mock("@keplr-wallet/cosmos", () => ({
-  TendermintTxTracer: jest.fn().mockImplementation(function (this: any) {
-    this.traceTx = mockTraceTx;
-  }),
-}));
+  TendermintTxTracer: class MockTendermintTxTracer {
+    traceTx = jest.fn().mockResolvedValue({ ok: true });
+    constructor(_endpoint: string, _path: string) {
+      // Mock constructor
+    }
+  },
+}), { virtual: true });
 
 jest.mock("../../../utils/Helper/CommonHelper", () => ({
   fetchAccountInfo: jest.fn(),

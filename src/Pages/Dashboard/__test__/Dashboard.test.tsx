@@ -33,7 +33,14 @@ interface CopyTextProps {
 }
 
 // Mock failing libraries
-jest.mock('@keplr-wallet/cosmos', () => ({} as Record<string, never>), { virtual: true });
+jest.mock('@keplr-wallet/cosmos', () => ({
+  TendermintTxTracer: class MockTendermintTxTracer {
+    traceTx = jest.fn().mockResolvedValue({ ok: true });
+    constructor(_endpoint: string, _path: string) {
+      // Mock constructor
+    }
+  },
+} as Record<string, unknown>), { virtual: true });
 jest.mock('@keplr-wallet/proto-types', () => ({} as Record<string, never>), { virtual: true });
 jest.mock('@cosmjs/stargate', () => ({} as Record<string, never>), { virtual: true });
 jest.mock('@cosmjs/proto-signing', () => ({} as Record<string, never>), { virtual: true });

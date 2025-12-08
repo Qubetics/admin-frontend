@@ -4,4 +4,3 @@ if (typeof window !== 'undefined') {
     window.TextEncoder = TextEncoder;
     window.TextDecoder = TextDecoder;
 }
-console.log("Polyfills loaded");

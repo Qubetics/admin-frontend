@@ -1,12 +1,19 @@
 // React Testing Library setup
 require("@testing-library/jest-dom");
 const { TextEncoder, TextDecoder } = require("util");
+
+// Mock all console methods to suppress output during tests
+console.log = jest.fn();
+console.error = jest.fn();
+console.warn = jest.fn();
+console.info = jest.fn();
+console.debug = jest.fn();
+
 Object.assign(global, { TextEncoder, TextDecoder });
 if (typeof window !== "undefined") {
   window.TextEncoder = TextEncoder;
   window.TextDecoder = TextDecoder;
 }
-console.log("Jest setup loaded, TextEncoder set:", !!global.TextEncoder);
 
 Object.defineProperty(window, "matchMedia", {
   writable: true,
