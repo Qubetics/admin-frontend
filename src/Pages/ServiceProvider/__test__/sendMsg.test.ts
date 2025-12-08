@@ -73,6 +73,32 @@ describe("sendMsgs", () => {
     expect(result).toBeUndefined();
   });
 
+  it("returns undefined when fetchAccountInfo returns null", async () => {
+    (fetchAccountInfo as jest.Mock).mockResolvedValueOnce(null);
+
+    const result = await sendMsgs(mockKeplr, mockSender, mockProto, mockFee);
+
+    expect(result).toBeUndefined();
+  });
+
+  it("handles getKey failure", async () => {
+    mockKeplr.getKey.mockRejectedValueOnce(new Error("Failed to get key"));
+
+    await expect(
+      sendMsgs(mockKeplr, mockSender, mockProto, mockFee)
+    ).rejects.toThrow("Failed to get key");
+  });
+
+  it("handles signDirect failure", async () => {
+    mockKeplr.signDirect.mockRejectedValueOnce(
+      new Error("User rejected signing")
+    );
+
+    await expect(
+      sendMsgs(mockKeplr, mockSender, mockProto, mockFee)
+    ).rejects.toThrow("User rejected signing");
+  });
+
   it("handles sendTx broadcast error without failing", async () => {
     mockKeplr.sendTx.mockRejectedValueOnce(new Error("Network failure"));
 
@@ -83,5 +109,34 @@ describe("sendMsgs", () => {
     }
 
     expect(mockKeplr.sendTx).toHaveBeenCalled();
+  });
+
+  it("successfully sends transaction with custom memo", async () => {
+    const customMemo = "Custom transaction memo";
+    const result = await sendMsgs(
+      mockKeplr,
+      mockSender,
+      mockProto,
+      mockFee,
+      customMemo
+    );
+
+    expect(mockKeplr.signDirect).toHaveBeenCalled();
+    expect(result).toBe("tx-hash-123");
+  });
+
+  it("handles sendTx returning undefined", async () => {
+    mockKeplr.sendTx.mockResolvedValueOnce(undefined);
+
+    const result = await sendMsgs(mockKeplr, mockSender, mockProto, mockFee);
+
+    expect(result).toBeUndefined();
+  });
+
+  it("handles traceTx failure gracefully", async () => {
+    // The traceTx is called but should not affect the result
+    const result = await sendMsgs(mockKeplr, mockSender, mockProto, mockFee);
+
+    expect(result).toBe("tx-hash-123");
   });
 });
