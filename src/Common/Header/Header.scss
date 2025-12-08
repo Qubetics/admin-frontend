@@ -252,7 +252,6 @@
     .ticsbtnPadding {
       min-width: 133px;
     }
-
   }
 
   &__wallet-address {
@@ -471,5 +470,14 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+.landing-header-logined {
+  @media #{mobile()} {
+    display: flex !important;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
   }
 }
