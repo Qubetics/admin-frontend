@@ -8,16 +8,19 @@ interface AuthContextType {
   setProviderName: React.Dispatch<React.SetStateAction<string>>;
   loading: boolean;
   logout: () => void;
-  isExist: boolean;
-  setIsExist: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const MyLoggedInContext = createContext<AuthContextType | undefined>(undefined);
+export const MyLoggedInContext = createContext<AuthContextType | undefined>(
+  undefined
+);
 
-export const LoggedInProvider = ({ children }: { children: React.ReactNode }) => {
+export const LoggedInProvider = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
   const [authData, setAuthData] = useState<string>("");
   const [providerName, setProviderName] = useState<string>("");
-  const [isExist, setIsExist] = useState(false);
 
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -69,8 +72,6 @@ export const LoggedInProvider = ({ children }: { children: React.ReactNode }) =>
         setProviderName,
         loading,
         logout,
-        setIsExist,
-        isExist,
       }}
     >
       {children}

@@ -33,8 +33,6 @@ describe("LoggedInContext", () => {
       setProviderName: expect.any(Function),
       loading: false,
       logout: expect.any(Function),
-      setIsExist: expect.any(Function),
-      isExist: false,
     });
   });
 
