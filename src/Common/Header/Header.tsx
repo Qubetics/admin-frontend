@@ -278,9 +278,6 @@ const Header = () => {
             signature: { pub_key, signature },
           },
         });
-
-        console.log(success, "success", data, "data", message, "message");
-
         if (!success) {
           setIsExist(false);
           setProviderName("");
