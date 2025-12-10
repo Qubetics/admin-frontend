@@ -2,9 +2,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import Path from "../../Routing/Constant/RoutePaths";
 
 const RegisterPage = () => {
-  const providerName = localStorage.getItem("providerName");
-
-  if (providerName) {
+  const isExist = localStorage.getItem("isExist") === "true";
+  
+  if (isExist) {
     return <Navigate to={Path.DASHBOARD} replace />;
   }
 

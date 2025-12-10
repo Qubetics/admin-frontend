@@ -4,11 +4,11 @@ import Path from "../Constant/RoutePaths.tsx";
 import Loader from "../../Common/Loader/Loader.tsx";
 
 const Private = () => {
-  const { loading, authData, providerName } = useIsLoggedIn();
+  const { loading, authData, isExist } = useIsLoggedIn();
 
   if (loading) return <Loader />;
 
-  return authData != "" && providerName ? (
+  return authData != "" && isExist ? (
     <Outlet />
   ) : (
     <Navigate to={Path.LANDING} replace={true} />

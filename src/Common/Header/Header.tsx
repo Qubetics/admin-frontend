@@ -72,8 +72,14 @@ const Header = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { authData, setAuthData, providerName, setProviderName } =
-    useIsLoggedIn();
+  const {
+    authData,
+    setAuthData,
+    providerName,
+    setProviderName,
+    isExist,
+    setIsExist,
+  } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
   // function to logo resize
@@ -158,7 +164,7 @@ const Header = () => {
 
     if (
       pathname === Path.SERVICE_PROVIDER ||
-      (pathname === Path.LANDING && !providerName)
+      (pathname === Path.LANDING && !isExist)
     ) {
       navigate(Path.LANDING);
       return;
@@ -273,7 +279,10 @@ const Header = () => {
           },
         });
 
+        console.log(success, "success", data, "data", message, "message");
+
         if (!success) {
+          setIsExist(false);
           setProviderName("");
           if (errormassage.includes("role")) {
             toast.error("Role information missing or invalid");
@@ -291,6 +300,7 @@ const Header = () => {
         setProviderName(data?.data?.name);
         setAuthData(address);
         toast.success("Logged in Successfully ");
+        setIsExist(true);
         navigate("/dashboard");
         return true;
       } catch (error: any) {
@@ -345,7 +355,7 @@ const Header = () => {
   const hasHeaderActions = location.pathname !== "/";
   const hideNavItems =
     location.pathname === Path.SERVICE_PROVIDER ||
-    (!providerName && location.pathname === Path.LANDING);
+    (!isExist && location.pathname === Path.LANDING);
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
   const isLandingPage =
     location.pathname.startsWith(Path.LANDING) ||

@@ -302,7 +302,7 @@ export const sanitizeInput = (value: string, field: string): string => {
 
   if (field === "name") {
     let clean = value.replace(/<\/?[^>]+>/g, ""); 
-    clean = clean.replace(/[^\w\s.'-]/g, "");      
+    clean = clean.replace(/[^\p{L}\p{M}\p{N}\s.'-]/gu, "");      
     clean = clean.replace(/^\s+/, "");             
     clean = clean.replace(/\s{2,}/g, " ");         
     return clean;
