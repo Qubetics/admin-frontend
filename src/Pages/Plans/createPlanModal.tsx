@@ -115,7 +115,7 @@ const CreatePlanModal = ({
       return;
     }
     setFormData(initialFormData);
-    setCreateShow(false);
+    handleHide();
     // handleClose();
     // handleShow();
     getAllPlan();

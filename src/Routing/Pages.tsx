@@ -6,6 +6,7 @@ import Node from "../Pages/Node/Node.tsx";
 import LandingPage from "../Pages/LandingPage/LandingPage.tsx";
 import Dashboard from "../Pages/Dashboard/Dashboard.tsx";
 import ServiceProvider from "../Pages/ServiceProvider/ServiceProvider.tsx";
+import RegisterPage from "../Pages/Register/RegisterPage.tsx";
 
 // Pages function returning public and private pages
 export default function PAGES() {
@@ -13,7 +14,16 @@ export default function PAGES() {
     // Public pages - accessible without authentication
     PUBLIC_PAGES: [
       { path: Path.LANDING, element: <LandingPage /> },
-      { path: Path.SERVICE_PROVIDER, element: <ServiceProvider /> },
+      {
+        path: Path.SERVICE_PROVIDER,
+        element: <RegisterPage />,
+        children: [
+          {
+            path: Path.SERVICE_PROVIDER,
+            element: <ServiceProvider />,
+          },
+        ],
+      },
     ],
 
     // Private pages - require authentication
