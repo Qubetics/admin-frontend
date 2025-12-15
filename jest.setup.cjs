@@ -1,8 +1,6 @@
-// React Testing Library setup
 require("@testing-library/jest-dom");
 const { TextEncoder, TextDecoder } = require("util");
 
-// Mock all console methods to suppress output during tests
 console.log = jest.fn();
 console.error = jest.fn();
 console.warn = jest.fn();

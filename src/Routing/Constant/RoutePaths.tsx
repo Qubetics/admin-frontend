@@ -1,4 +1,3 @@
-// Routing paths
 const Path = {
   LOGIN: "/login",
   DASHBOARD: "/dashboard",
