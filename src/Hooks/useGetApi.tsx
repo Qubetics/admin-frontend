@@ -33,13 +33,6 @@ const useNetworkRequest = () => {
         message: response.data.message || "Success",
       };
     } catch (error: any) {
-      // if (checktoast) {
-      //   const hideOn = ![
-      //     "identity.user.already_registered",
-      //     "identity.user.is_pending",
-      //   ].includes(error?.message);
-      //   hideOn && updateToast("error", error?.message);
-      // }
       if (error?.response?.status === 401) {
         localStorage.removeItem("authData");
         sessionStorage.clear();

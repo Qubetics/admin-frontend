@@ -5,8 +5,8 @@ interface PaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
-  limit?: number,
-  onLimitChange?: (limit: number) => void
+  limit?: number;
+  onLimitChange?: (limit: number) => void;
 }
 
 const Pagination: React.FC<PaginationProps> = ({
@@ -14,9 +14,8 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   onPageChange,
   limit = 5,
-  onLimitChange = defaultOnLimitChange
+  onLimitChange = defaultOnLimitChange,
 }) => {
-  // Helper: generate page numbers
   const getPages = () => {
     const pages = [];
     for (let i = 1; i <= totalPages; i++) {
@@ -42,7 +41,7 @@ const Pagination: React.FC<PaginationProps> = ({
           ))}
         </select>
       </div>
-      {/* Prev button */}
+
       <div className="page-numbers">
         <button
           onClick={() => onPageChange(currentPage - 1)}
@@ -51,19 +50,16 @@ const Pagination: React.FC<PaginationProps> = ({
           {"<"}
         </button>
 
-        {/* Page numbers */}
         {getPages().map((page) => (
           <button
             key={page}
-            className={`rounded ${page === currentPage ? "active" : ""
-              }`}
+            className={`rounded ${page === currentPage ? "active" : ""}`}
             onClick={() => onPageChange(page)}
           >
             {page}
           </button>
         ))}
 
-        {/* Next button */}
         <button
           onClick={() => onPageChange(currentPage + 1)}
           disabled={currentPage === totalPages}
@@ -71,7 +67,6 @@ const Pagination: React.FC<PaginationProps> = ({
           {">"}
         </button>
       </div>
-
     </div>
   );
 };

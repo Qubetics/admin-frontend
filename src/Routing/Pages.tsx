@@ -8,10 +8,8 @@ import Dashboard from "../Pages/Dashboard/Dashboard.tsx";
 import ServiceProvider from "../Pages/ServiceProvider/ServiceProvider.tsx";
 import RegisterPage from "../Pages/Register/RegisterPage.tsx";
 
-// Pages function returning public and private pages
 export default function PAGES() {
   return {
-    // Public pages - accessible without authentication
     PUBLIC_PAGES: [
       { path: Path.LANDING, element: <LandingPage /> },
       {
@@ -26,7 +24,6 @@ export default function PAGES() {
       },
     ],
 
-    // Private pages - require authentication
     PRIVATE_PAGES: [
       {
         element: <DashboardLayout />,
@@ -36,8 +33,6 @@ export default function PAGES() {
           { path: Path.DASHBOARD, element: <Dashboard /> },
           { path: Path.PLANS, element: <Plans /> },
           { path: Path.NODES, element: <Node /> },
-
-          // Add more dashboard-related routes here as children
         ],
       },
     ],

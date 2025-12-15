@@ -78,16 +78,45 @@ export const ERROR_MESSAGES = {
 };
 
 export const PROCESS_TRANSACTION_ERRORS = [
-  { match: "Request rejected", toast: "Transaction rejected", id: "tx_rejected" },
-  { match: "gigabytes cannot be negative", toast: "Value can be negative", id: "negative_gb" },
-  { match: "account sequence mismatch", toast: "Account Mismatch", id: "account_mismatch" },
-  { match: "node for plan not found", toast: "Node is not present in this plan", id: "node_not_in_plan" },
-  { match: "duplicate node for plan", toast: "Node is linked to a plan", id: "duplicate_node" },
-  { match: "invalid node status", toast: "Node address is not present on the chain", id: "node_not_present" },
-  {match:"duplicate provider", toast: "Provider Already Exists", id: "duplicate_provider"}
+  {
+    match: "Request rejected",
+    toast: "Transaction rejected",
+    id: "tx_rejected",
+  },
+  {
+    match: "gigabytes cannot be negative",
+    toast: "Value can be negative",
+    id: "negative_gb",
+  },
+  {
+    match: "account sequence mismatch",
+    toast: "Account Mismatch",
+    id: "account_mismatch",
+  },
+  {
+    match: "node for plan not found",
+    toast: "Node is not present in this plan",
+    id: "node_not_in_plan",
+  },
+  {
+    match: "duplicate node for plan",
+    toast: "Node is linked to a plan",
+    id: "duplicate_node",
+  },
+  {
+    match: "invalid node status",
+    toast: "Node address is not present on the chain",
+    id: "node_not_present",
+  },
+  {
+    match: "duplicate provider",
+    toast: "Provider Already Exists",
+    id: "duplicate_provider",
+  },
 ];
 export const defaultOnLimitChange = () => {};
 
-  export const emailRegex =/^(?!\s)(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-  
-  export const nameRegex = /^(?!\s)(?!.*\s$)(?!.*\s{2,})[\p{L}\p{M}\p{N}' .-]+$/u ;
+export const emailRegex =
+  /^(?!\s)(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+export const nameRegex = /^(?!\s)(?!.*\s$)(?!.*\s{2,})[\p{L}\p{M}\p{N}' .-]+$/u;

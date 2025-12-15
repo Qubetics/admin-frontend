@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React from "react";
 import { render, act } from "@testing-library/react";
 import { LoggedInProvider, useIsLoggedIn } from "../LoggedInContext";
@@ -86,7 +85,9 @@ describe("LoggedInContext", () => {
 
     const spy = jest.spyOn(console, "error").mockImplementation(() => {});
 
-    expect(() => render(<TestComponent />)).toThrow("useIsLoggedIn must be used within a LoggedInProvider");
+    expect(() => render(<TestComponent />)).toThrow(
+      "useIsLoggedIn must be used within a LoggedInProvider"
+    );
 
     spy.mockRestore();
   });
@@ -98,7 +99,9 @@ describe("LoggedInContext", () => {
     localStorage.setItem("providerName", "Keplr");
     sessionStorage.setItem("something", "test");
 
-    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
 
     const TestComponent = () => {
       contextValue = useIsLoggedIn();
