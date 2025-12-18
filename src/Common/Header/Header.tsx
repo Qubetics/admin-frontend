@@ -24,24 +24,7 @@ import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
 import ProfileIcon from "../../assets/ProfileIcon.svg";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
-// Types
-interface KeplrWindow extends Window {
-  keplr?: {
-    enable: (chainId: string) => Promise<void>;
-    disable: (chainId: string) => Promise<void>;
-    getOfflineSigner: (chainId: string) => {
-      getAccounts: () => Promise<Array<{ address: string }>>;
-    };
-    signArbitrary: (
-      chainId: string,
-      address: string,
-      message: string
-    ) => Promise<{
-      signature: string;
-      pub_key: any;
-    }>;
-  };
-}
+import type { KeplrWindow } from "../../utils/Interfaces";
 
 declare const window: KeplrWindow;
 
@@ -49,7 +32,6 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -67,7 +49,7 @@ const Header = () => {
   }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [balance, setBalance] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const location = useLocation();
@@ -82,7 +64,6 @@ const Header = () => {
   } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
-  // function to logo resize
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const width = useCurrentWidth();
 
@@ -94,7 +75,7 @@ const Header = () => {
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-  // Close menu when clicking outside
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -130,7 +111,6 @@ const Header = () => {
         return;
       }
 
-      setIsLoading(true);
       try {
         const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
         const response = await api(uri);
@@ -170,7 +150,6 @@ const Header = () => {
       return;
     }
 
-    setIsLoading(true);
     try {
       const { success } = await useGetApi({
         endpoint: apiUrls.logout,
@@ -214,7 +193,6 @@ const Header = () => {
     }
 
     try {
-      // await window.keplr!.disable(chainId);
       await window.keplr!.enable(chainId);
 
       const offlineSigner = window.keplr!.getOfflineSigner(chainId);
@@ -417,7 +395,6 @@ const Header = () => {
           </div>
         )}
 
-        {/* Right Section */}
         <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
           {!authData ? (
             <ButtonCustom

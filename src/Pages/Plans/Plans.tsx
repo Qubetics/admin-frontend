@@ -38,7 +38,6 @@ const Plans = () => {
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const getAllPlan = async () => {
-    setIsLoading(true);
     const { success, data } = await useGetApi({
       endpoint: apiUrls.getAllPlan(authData),
     });
@@ -115,7 +114,7 @@ const Plans = () => {
 
             <tbody>
               {isLoading ? (
-                <TableSkeleton rows={4} columns={6}/>
+                <TableSkeleton rows={4} columns={6} />
               ) : planList.length === 0 ? (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center" }}>
@@ -129,9 +128,9 @@ const Plans = () => {
 
                     <td>
                       {row?.prices?.length > 0
-                        ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${String(
-                            row?.prices[0]?.denom
-                          ).toUpperCase()}`
+                        ? `${getValueWithUnit(
+                            row?.prices[0]?.quote_value
+                          )} ${String(row?.prices[0]?.denom).toUpperCase()}`
                         : "-"}
                     </td>
 

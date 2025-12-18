@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-expressions */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import CopyText from "../../Common/Copy/CopyText";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
 import { apiUrls } from "../../Constant/apiUrls";
@@ -18,15 +16,13 @@ function Node({ activeOverride }: NodeProps) {
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const useGetApi = useNetworkRequest();
 
   const effectiveActive = activeOverride ?? "active";
 
   const fetchData = async () => {
-    setIsLoading(true);
-
     const { success, data } = await useGetApi({
       endpoint: apiUrls.nodelist(effectiveActive, page, limit),
     });

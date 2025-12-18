@@ -1,20 +1,14 @@
 import { Component } from "react";
-import type { ErrorInfo, ReactNode } from "react";
+import type { ErrorInfo } from "react";
 import { useNavigate } from "react-router-dom";
 import Logo from "../assets/Logo.svg";
 import "./ErrorBoundary.scss";
 import Path from "../Routing/Constant/RoutePaths";
 import ButtonCustom from "../Common/ButtonCustom/ButtonCustom";
-
-interface ErrorBoundaryProps {
-  children: ReactNode;
-  fallback?: (error: Error | null) => ReactNode;
-}
-
-interface ErrorBoundaryState {
-  hasError: boolean;
-  error: Error | null;
-}
+import type {
+  ErrorBoundaryProps,
+  ErrorBoundaryState,
+} from "../utils/Interfaces";
 
 export default class ErrorBoundary extends Component<
   ErrorBoundaryProps,
@@ -59,13 +53,11 @@ export default class ErrorBoundary extends Component<
   }
 }
 
-// Export a hook version for functional components
 export function useErrorHandler() {
   const navigate = useNavigate();
 
   return (error: Error) => {
     console.error("Error caught by useErrorHandler:", error);
-    // You can add error reporting here
     navigate("/error", { state: { error: error.message } });
   };
 }

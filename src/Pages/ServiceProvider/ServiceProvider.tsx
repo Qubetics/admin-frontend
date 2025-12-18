@@ -34,18 +34,7 @@ import { envConstants } from "../../Constant/envConstants";
 import { useNavigate } from "react-router-dom";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import { getUserBalance } from "../../service/getUserBalance";
-
-interface ServiceProviderFormData {
-  name: string;
-  email: string;
-  website: string;
-}
-
-interface FormErrors {
-  name?: string;
-  email?: string;
-  website?: string;
-}
+import type { FormErrors, ServiceProviderFormData } from "../../utils/Interfaces";
 
 const ServiceProvider = () => {
   const useGetApi = useNetworkRequest();

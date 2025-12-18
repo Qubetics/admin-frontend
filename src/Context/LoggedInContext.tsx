@@ -1,16 +1,6 @@
 "use client";
 import { createContext, useContext, useEffect, useState } from "react";
-
-interface AuthContextType {
-  authData: string;
-  setAuthData: React.Dispatch<React.SetStateAction<string>>;
-  providerName: string;
-  setProviderName: React.Dispatch<React.SetStateAction<string>>;
-  loading: boolean;
-  logout: () => void;
-  isExist: boolean;
-  setIsExist: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import type { AuthContextType } from "../utils/Interfaces";
 
 export const MyLoggedInContext = createContext<AuthContextType | undefined>(
   undefined

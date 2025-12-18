@@ -23,32 +23,17 @@ import {
   bytesToGb,
   provWalletPrefix,
 } from "../../Constant/constants";
-import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
 import { Col, Row, Tooltip } from "antd";
 import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
-// import { linkNode } from "../../utils/Helper/CommonHelper";
-
-interface CardBoxProps {
-  title: string;
-  value: string | number;
-  icons?: any;
-}
-
-interface TableRow {
-  orgName: string;
-  email: string;
-  location: string;
-  nodeAddress: string;
-  bandwidth: string;
-  plan: string;
-  requestFor: string;
-  planId: string;
-  hours: string;
-}
+import type {
+  CardBoxProps,
+  RejectShowState,
+  TableRow,
+} from "../../utils/Interfaces";
 
 export default function Dashboard() {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
@@ -64,7 +49,7 @@ export default function Dashboard() {
   const [limit, setLimit] = useState<number>(5);
   const [activeAccount, setActiveAccount] = useState<any>();
   const [countAccount, setCountAccount] = useState<any>();
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -157,7 +142,6 @@ export default function Dashboard() {
       } catch (err: any) {
         toast.error("Something went wrong");
         console.error(err.message);
-        // setRejectShow(true);
       }
       return;
     }
@@ -181,7 +165,6 @@ export default function Dashboard() {
       toast.error(" lease Something went wrong");
       console.error(err.message, "err");
       return;
-      // setRejectShow(true);
     }
 
     try {
@@ -200,7 +183,6 @@ export default function Dashboard() {
     } catch (err: any) {
       toast.error("Something went wrong");
       console.error(err.message);
-      // setRejectShow(true);
     }
     fetchNodeRequestNumber();
   };
@@ -215,7 +197,6 @@ export default function Dashboard() {
   };
 
   const fetchData = async () => {
-    setIsLoading(true);
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
@@ -227,7 +208,6 @@ export default function Dashboard() {
       return;
     }
     setNodeList(data?.data?.nodeList);
-    // setTotalCount(data?.data?.count);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
   };
 
@@ -269,22 +249,11 @@ export default function Dashboard() {
   }, [nodeList?.length]);
 
   const cards: CardBoxProps[] = [
-    // { title: "Total Earnings", value: "2000 TICS" },
-    // {
-    //   icons: <NordsIcon />,
-    //   title: "All Nodes",
-    //   value: activeAccount?.totalCount || 0,
-    // },
     {
       icons: <CircleCheckIcon />,
       title: "Active Nodes",
       value: activeAccount?.activeCount || 0,
     },
-    /*     {
-      icons: <CircleCloseIcon />,
-      title: "Inactive Nodes",
-      value: activeAccount?.inactiveCount || 0,
-    }, */
   ];
 
   return (
@@ -424,7 +393,6 @@ export default function Dashboard() {
           </table>
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <Pagination
             currentPage={page}
