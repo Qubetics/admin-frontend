@@ -25,7 +25,7 @@ import {
   nameRegex,
   provWalletPrefix,
   STATUS_ENUM,
-  ERROR_MESSAGES
+  ERROR_MESSAGES,
 } from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
@@ -50,7 +50,7 @@ interface FormErrors {
 const ServiceProvider = () => {
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
-  const { authData } = useIsLoggedIn();
+  const { authData, setIsExist } = useIsLoggedIn();
 
   const [walletBalance, setWalletBalance] = useState("0");
   const [formData, setFormData] = useState<ServiceProviderFormData>({
@@ -209,6 +209,8 @@ const ServiceProvider = () => {
       if (success) {
         toast.success("Registration successful!");
         navigate("/dashboard");
+        localStorage.setItem("isExist", "true");
+        setIsExist(true);
       } else {
         toast.error("Registration failed.");
         setFormData({ name: "", email: "", website: "" });

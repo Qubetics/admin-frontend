@@ -72,9 +72,11 @@ jest.mock("../../../Pages/Plans/createPlanModal.tsx", () => {
   };
 });
 
-// mock inner loader
-jest.mock("../../../Common/Loader/InnerLoader.tsx", () => () => (
-  <div>Loading...</div>
+// mock table skeleton
+jest.mock("../../../Common/Loader/TableSkeleton.tsx", () => () => (
+  <tr>
+    <td colSpan={6}>Loading...</td>
+  </tr>
 ));
 
 describe("Plans Component", () => {

@@ -12,15 +12,24 @@ import {
   buildStartLeaseStatusMessage,
   buildUnlinkNodeMessage,
 } from "../../service/BuildMessage/buildMessage";
-import { convertNodeToWallet, convertPlanString, truncateValue } from "../../utils/Helper/CommonHelper";
-import { DESCRIPTION, HEADING, bytesToGb, provWalletPrefix } from "../../Constant/constants";
+import {
+  convertNodeToWallet,
+  convertPlanString,
+  truncateValue,
+} from "../../utils/Helper/CommonHelper";
+import {
+  DESCRIPTION,
+  HEADING,
+  bytesToGb,
+  provWalletPrefix,
+} from "../../Constant/constants";
 import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
 import { Col, Row, Tooltip } from "antd";
 import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
-// import InnerLoader from "../../Common/Loader/InnerLoader";
+import TableSkeleton from "../../Common/Loader/TableSkeleton";
 // import { linkNode } from "../../utils/Helper/CommonHelper";
 
 interface CardBoxProps {
@@ -55,7 +64,7 @@ export default function Dashboard() {
   const [limit, setLimit] = useState<number>(5);
   const [activeAccount, setActiveAccount] = useState<any>();
   const [countAccount, setCountAccount] = useState<any>();
-  // const [isLoading,setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
@@ -95,21 +104,19 @@ export default function Dashboard() {
   const [active, setActive] = useState("allrequest");
 
   const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
-  // const handleRejectShow = () => setRejectShow(true);
 
   const { authData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
 
-  // manage this in state
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const CardBox: React.FC<CardBoxProps> = ({ title, value, icons }) => {
     return (
-      <div className='card-box'>
-        <div className='card-box-icons'>{icons}</div>
-        <div className='right-text'>
-          <p className='card-title'>{title}</p>
-          <h2 className='card-value'>{value}</h2>
+      <div className="card-box">
+        <div className="card-box-icons">{icons}</div>
+        <div className="right-text">
+          <p className="card-title">{title}</p>
+          <h2 className="card-value">{value}</h2>
         </div>
       </div>
     );
@@ -128,7 +135,12 @@ export default function Dashboard() {
     return true;
   };
 
-  const onApproval = async (address: string, type: string, planId: string, hours: string) => {
+  const onApproval = async (
+    address: string,
+    type: string,
+    planId: string,
+    hours: string
+  ) => {
     if (type === "Unlink") {
       try {
         const message = buildUnlinkNodeMessage({
@@ -176,7 +188,7 @@ export default function Dashboard() {
       const message = buildLinkNodeMessage({
         from: provAddress,
         id: Long.fromString(planId),
-        nodeAddress: address, //node address
+        nodeAddress: address,
       });
       const TxHash = await processTransaction(message);
       if (!TxHash) {
@@ -186,7 +198,7 @@ export default function Dashboard() {
       if (!status) return;
       handleShow();
     } catch (err: any) {
-      toast.error("Something went wrong")
+      toast.error("Something went wrong");
       console.error(err.message);
       // setRejectShow(true);
     }
@@ -203,14 +215,14 @@ export default function Dashboard() {
   };
 
   const fetchData = async () => {
-    // setIsLoading(true)
+    setIsLoading(true);
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
       endpoint: apiUrls.nodeRequestedList(page, limit, active, authData),
     });
 
-    // setIsLoading(false)
+    setIsLoading(false);
     if (!success) {
       return;
     }
@@ -310,51 +322,53 @@ export default function Dashboard() {
         </div>
         <div className="outerTable">
           <table className="custom-table dashboard-table">
-            <thead>
-              <tr>
-                <th>Operator Name</th>
-                <th>Email Address</th>
-                <th>Location</th>
-                <th>Node Address</th>
-                <th>Bandwidth</th>
-                <th>Plan</th>
-                {active === "allrequest" && <th>Request Type</th>}
-                <th>Action</th>
-              </tr>
-            </thead>
+            {!isLoading && (
+              <thead>
+                <tr>
+                  <th>Operator Name</th>
+                  <th>Email Address</th>
+                  <th>Location</th>
+                  <th>Node Address</th>
+                  <th>Bandwidth</th>
+                  <th>Plan</th>
+                  {active === "allrequest" && <th>Request Type</th>}
+                  <th>Action</th>
+                </tr>
+              </thead>
+            )}
             <tbody>
-              {
-                // isLoading ? (
-                //   <tr>
-                //     <td colSpan={100}>
-                //    <InnerLoader/>
-                //     </td>
-                //   </tr>
+              {isLoading ? (
+                <TableSkeleton rows={2} columns={5} />
+              ) : nodeList?.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: "center" }}>
+                    No data found
+                  </td>
+                </tr>
+              ) : (
+                nodeList?.map((row, i) => (
+                  <tr key={i}>
+                    <td>{row?.orgName ? row?.orgName : "-"}</td>
 
-                // ) :
-                nodeList?.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} style={{ textAlign: "center" }}>
-                      No data found
+                    <td>
+                      <Tooltip title={row?.email}>
+                        <span>
+                          {row?.email ? truncateValue(row?.email, 3, 3) : "-"}
+                        </span>
+                      </Tooltip>
                     </td>
-                  </tr>
-                ) : (
-                  nodeList?.map((row, i) => {
-                    return (
-                      <tr key={i}>
-                        <td>{row?.orgName ? row?.orgName : "-"}</td>
-                        <td>
-                          <Tooltip title={row?.email}>
-                          <span>
-                            {row?.email ? truncateValue(row?.email, 3, 3) : "-"}
-                          </span>
-                          </Tooltip>
-                        </td>
 
-                        <td>{row?.location || "-"}</td>
-                        <td>
-                          <div  style={{ display: "flex", alignItems: "center", gap: "2px" }}>
-                          <Tooltip title={row?.nodeAddress}>
+                    <td>{row?.location || "-"}</td>
+
+                    <td>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "2px",
+                        }}
+                      >
+                        <Tooltip title={row?.nodeAddress}>
                           <span
                             className="address_nord"
                             style={{
@@ -365,51 +379,47 @@ export default function Dashboard() {
                           >
                             {truncateValue(row?.nodeAddress)}
                           </span>
-                          </Tooltip>
-                          <span className="copy-btn">
-                              <CopyText text={row?.nodeAddress} />
-                            </span>
-                            </div>
-                        </td>
-                        <td>
-                          {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
-                        </td>
-                        <td
-                          title={row?.plan ? convertPlanString(row?.plan) : "-"}
+                        </Tooltip>
+                        <span className="copy-btn">
+                          <CopyText text={row?.nodeAddress} />
+                        </span>
+                      </div>
+                    </td>
+
+                    <td>{bytesToGb(Number(row?.bandwidth)) + "GB" || ""}</td>
+
+                    <td title={row?.plan ? convertPlanString(row?.plan) : "-"}>
+                      {row?.plan ? convertPlanString(row?.plan) : "-"}
+                    </td>
+
+                    {active === "allrequest" && <td>{row?.requestFor}</td>}
+
+                    <td>
+                      <div className="action-btns">
+                        <button
+                          className="approve-btn"
+                          onClick={() =>
+                            onApproval(
+                              row?.nodeAddress,
+                              row?.requestFor,
+                              row?.planId,
+                              row?.hours
+                            )
+                          }
                         >
-                          {row?.plan
-                            ? convertPlanString(row?.plan)
-                            : "-"}
-                        </td>
-                        {active === "allrequest" && <td>{row?.requestFor}</td>}
-                        <td>
-                          <div className="action-btns">
-                            <button
-                              className="approve-btn"
-                              onClick={() =>
-                                onApproval(
-                                  row?.nodeAddress,
-                                  row?.requestFor,
-                                  row?.planId,
-                                  row?.hours
-                                )
-                              }
-                            >
-                              Approve
-                            </button>
-                            <button
-                              className="reject-btn"
-                              onClick={() => onReject(row?.nodeAddress)}
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )
-              }
+                          Approve
+                        </button>
+                        <button
+                          className="reject-btn"
+                          onClick={() => onReject(row?.nodeAddress)}
+                        >
+                          Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>

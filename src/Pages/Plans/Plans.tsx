@@ -7,13 +7,22 @@ import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import Pagination from "../../utils/pagination";
 import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
-import { STATUS_ENUM, bytesToGb, provWalletPrefix } from "../../Constant/constants";
+import {
+  STATUS_ENUM,
+  bytesToGb,
+  provWalletPrefix,
+} from "../../Constant/constants";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { Timestamp, convertNodeToWallet, formatDuration, getValueWithUnit } from "../../utils/Helper/CommonHelper";
-import InnerLoader from "../../Common/Loader/InnerLoader";
+import {
+  Timestamp,
+  convertNodeToWallet,
+  formatDuration,
+  getValueWithUnit,
+} from "../../utils/Helper/CommonHelper";
 import { toast } from "react-toastify";
+import TableSkeleton from "../../Common/Loader/TableSkeleton";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
@@ -38,7 +47,9 @@ const Plans = () => {
     if (!success) return;
 
     setPlanList(data?.data || []);
-    setTotalPages(data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1);
+    setTotalPages(
+      data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1
+    );
   };
 
   const handleClick = async (val: any) => {
@@ -50,7 +61,10 @@ const Plans = () => {
       const message = buildUpdatePlanStatusMessage({
         from: provAddress,
         id: Long.fromString(id),
-        status: val?.status === "active" ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE,
+        status:
+          val?.status === "active"
+            ? STATUS_ENUM.STATUS_INACTIVE
+            : STATUS_ENUM.STATUS_ACTIVE,
       });
 
       const TxHash = await processTransaction(message);
@@ -77,28 +91,31 @@ const Plans = () => {
     <div className="plans">
       <div className="plans__header">
         <h3>Plans List</h3>
-        <ButtonCustom className="btn_create" label="Create Plan" onClick={() => setCreateShow(true)} />
+        <ButtonCustom
+          className="btn_create"
+          label="Create Plan"
+          onClick={() => setCreateShow(true)}
+        />
       </div>
       <div className="custom-table-wrapper commonTable">
         <div className="outerTable">
-          <table className="custom-table plans-table ">
-            <thead>
-              <tr>
-                <th>Plan ID</th>
-                <th>Price</th>
-                <th>Bandwidth</th>
-                <th>Duration</th>
-                <th>Creation Date</th>
-                <th>Action</th>
-              </tr>
-            </thead>
+          <table className="custom-table plans-table">
+            {!isLoading && (
+              <thead>
+                <tr>
+                  <th>Plan ID</th>
+                  <th>Price</th>
+                  <th>Bandwidth</th>
+                  <th>Duration</th>
+                  <th>Creation Date</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+            )}
+
             <tbody>
               {isLoading ? (
-                <tr>
-                  <td colSpan={100}>
-                    <InnerLoader />
-                  </td>
-                </tr>
+                <TableSkeleton rows={4} columns={6}/>
               ) : planList.length === 0 ? (
                 <tr>
                   <td colSpan={6} style={{ textAlign: "center" }}>
@@ -109,6 +126,7 @@ const Plans = () => {
                 planList?.map((row: any) => (
                   <tr key={row?.id}>
                     <td>{row?.id}</td>
+
                     <td>
                       {row?.prices?.length > 0
                         ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${String(
@@ -116,13 +134,21 @@ const Plans = () => {
                           ).toUpperCase()}`
                         : "-"}
                     </td>
+
                     <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
+
                     <td>{formatDuration(Number(row?.hours))}</td>
+
                     <td>{Timestamp(row?.status_at)}</td>
+
                     <td>
                       <div className="action-btns">
                         <button
-                          className={`approve-btn ${row.status === "active" || isTxRunning ? "disablex" : ""}`}
+                          className={`approve-btn ${
+                            row.status === "active" || isTxRunning
+                              ? "disablex"
+                              : ""
+                          }`}
                           onClick={() => handleClick(row)}
                           disabled={row.status === "active" || isTxRunning}
                         >
@@ -137,20 +163,17 @@ const Plans = () => {
           </table>
         </div>
 
-        {/* Pagination */}
-        {
-          /* totalPages > 1 */ false && (
-            <Pagination
-              currentPage={page}
-              totalPages={totalPages}
-              onPageChange={(newPage: any) => setPage(newPage)}
-              limit={limit}
-              onLimitChange={(limit: number) => {
-                setLimit(limit), setPage(1);
-              }}
-            />
-          )
-        }
+        {false && (
+          <Pagination
+            currentPage={page}
+            totalPages={totalPages}
+            onPageChange={(newPage: any) => setPage(newPage)}
+            limit={limit}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
+          />
+        )}
 
         <CreatePlanModal
           createShow={createShow}

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CopyText from "../../Common/Copy/CopyText";
+import TableSkeleton from "../../Common/Loader/TableSkeleton";
 import { apiUrls } from "../../Constant/apiUrls";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { toFirstCapital } from "../../utils/Helper/CommonHelper";
@@ -12,63 +13,34 @@ type NodeProps = {
   activeOverride?: "active" | "inactive" | "allnodes";
 };
 
-// function Node() {
 function Node({ activeOverride }: NodeProps) {
   const [nodeList, setNodeList] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
-  // const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const useGetApi = useNetworkRequest();
 
-  // const buttons = [
-  //   {
-  //     label: "All Nodes",
-  //     value: "allnodes",
-  //     count: activeAccount?.totalCount || 0,
-  //   },
-  //   {
-  //     label: "Active",
-  //     value: "active",
-  //     count: activeAccount?.activeCount || 0,
-  //   },
-  //   {
-  //     label: "Inactive",
-  //     value: "inactive",
-  //     count: activeAccount?.inactiveCount || 0,
-  //   },
-  // ];
-  const [active] = useState("active");
-  const effectiveActive = activeOverride ?? active;
+  const effectiveActive = activeOverride ?? "active";
 
   const fetchData = async () => {
+    setIsLoading(true);
+
     const { success, data } = await useGetApi({
-      // endpoint: apiUrls.nodelist(active, page, limit),
       endpoint: apiUrls.nodelist(effectiveActive, page, limit),
     });
+    setIsLoading(false);
+
     if (!success) return;
     setNodeList(data?.data?.response);
     setTotalPages(data?.data?.total ? Math.ceil(data?.data?.total / limit) : 1);
   };
-  // const fetchNodeNumber = async () => {
-  //   const { success } = await useGetApi({
-  //     endpoint: apiUrls.nodeCount,
-  //   });
-
-  //   if (!success) {
-  //     console.log("unable to fetch the active account");
-  //     return;
-  //   }
-  // };
 
   useEffect(() => {
     fetchData();
-    // }, [page, limit, Active]);
   }, [page, limit, effectiveActive]);
-  // useEffect(() => {
-  //   fetchNodeNumber();
-  // }, []);
+
   const getStatusClass = (status: string) => {
     switch (status?.toLowerCase()) {
       case "active":
@@ -87,102 +59,76 @@ function Node({ activeOverride }: NodeProps) {
   };
 
   return (
-    <div className='node'>
-      <div className='node__header'>
+    <div className="node">
+      <div className="node__header">
         <h3>Node List</h3>
       </div>
-      {/* <div className="node__btns">
-        {buttons.map(({ count, label, value }) => (
-          <button
-            key={value}
-            className={active === value ? "active" : "dashboardBtn"}
-            onClick={() => setActive(value)}
-          >
-            {label} ({count})
-          </button>
-        ))}
-      </div> */}
 
-      <div className='custom-table-wrapper commonTable node-table'>
-        <div className='outerTable'>
-          <table className='custom-table'>
-            <thead>
-              <tr>
-                <th>Operator Name</th>
-                <th>Node Address</th>
-                {/* {active !== "active" && active !== "inactive" && (
-                  <th>Node Status</th>
-                )} */}
-                {effectiveActive !== "active" && effectiveActive !== "inactive" && <th>Node Status</th>}
-                <th>Request Type</th>
-                <th>Request Status</th>
-              </tr>
-            </thead>
+      <div className="custom-table-wrapper commonTable node-table">
+        <div className="outerTable">
+          <table className="custom-table">
+            {!isLoading && (
+              <thead>
+                <tr>
+                  <th>Operator Name</th>
+                  <th>Node Address</th>
+
+                  {effectiveActive !== "active" &&
+                    effectiveActive !== "inactive" && <th>Node Status</th>}
+                  <th>Request Type</th>
+                  <th>Request Status</th>
+                </tr>
+              </thead>
+            )}
             <tbody>
-              {
-                // isLoading ? (
-                //   <tr>
-                //     <td colSpan={100}>
-                //    <InnerLoader/>
-                //     </td>
-                //   </tr>
-
-                // ):
-                nodeList.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} style={{ textAlign: "center" }}>
-                      No data found
+              {isLoading ? (
+                <TableSkeleton rows={2} columns={4} />
+              ) : nodeList.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: "center" }}>
+                    No data found
+                  </td>
+                </tr>
+              ) : (
+                nodeList?.map((row, i) => (
+                  <tr key={i}>
+                    <td>{row?.orgName ? row?.orgName : "-"}</td>
+                    <td>
+                      <span
+                        className="address_nord"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                        }}
+                      >
+                        {row?.nodeAddress}
+                        <div className="copy-btn">
+                          <CopyText text={row?.nodeAddress} />
+                        </div>
+                      </span>
                     </td>
-                  </tr>
-                ) : (
-                  nodeList?.map((row, i) => (
-                    <tr key={i}>
-                      <td>{row?.orgName ? row?.orgName : "-"}</td>
-                      <td>
-                        <span
-                          className='address_nord'
-                          style={{
-                            display: "inline-flex",
-                            alignItems: "center",
-                            gap: "6px",
-                          }}
-                        >
-                          {row?.nodeAddress}
-                          <div className='copy-btn'>
-                            <CopyText text={row?.nodeAddress} />
-                          </div>
-                        </span>
-                      </td>
-                      {/* {active !== "active" && active !== "inactive" && (
+                    {effectiveActive !== "active" &&
+                      effectiveActive !== "inactive" && (
                         <td>
                           <span className={getStatusClass(row?.nodeStatus)}>
                             {row?.nodeStatus || "-"}
                           </span>
                         </td>
-                      )} */}
-                      {effectiveActive !== "active" &&
-                        effectiveActive !== "inactive" && (
-                          <td>
-                            <span className={getStatusClass(row?.nodeStatus)}>
-                              {row?.nodeStatus || "-"}
-                            </span>
-                          </td>
-                        )}
-                      <td>{row?.requestFor}</td>
-                      <td>
-                        <span className={getStatusClass(row?.status)}>
-                          {toFirstCapital(row?.status) || "-"}
-                        </span>
-                      </td>
-                    </tr>
-                  ))
-                )
-              }
+                      )}
+                    <td>{row?.requestFor}</td>
+                    <td>
+                      <span className={getStatusClass(row?.status)}>
+                        {toFirstCapital(row?.status) || "-"}
+                      </span>
+                    </td>
+                  </tr>
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <Pagination
             currentPage={page}
