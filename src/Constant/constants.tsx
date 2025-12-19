@@ -120,3 +120,13 @@ export const emailRegex =
   /^(?!\s)(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
 export const nameRegex = /^(?!\s)(?!.*\s$)(?!.*\s{2,})[\p{L}\p{M}\p{N}' .-]+$/u;
+
+export const activeStatus = "active";
+
+export const errMessages = {
+  somethingErr: "Something went wrong",
+  leaseErr: "Lease something went wrong",
+};
+
+export const linkStatus = { link: "link", unlink: "Unlink" };
+export const requestStatus = { approve: "APPROVED", rejected: "REJECTED" };

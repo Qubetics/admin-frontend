@@ -16,6 +16,7 @@ import { envConstants } from "../../Constant/envConstants";
 
 import bech32 from "bech32";
 import { DECIMAL_PLACES } from "../../Constant/constants";
+import type { ButtonItem } from "../Interfaces";
 
 function messageToAminoTransaction(signer: string, data: string) {
   return {
@@ -302,3 +303,54 @@ export const sanitizeInput = (value: string, field: string): string => {
 
   return value;
 };
+
+export const getStatusClass = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "status-badge active";
+    case "inactive":
+      return "status-badge inactive";
+    case "pending":
+      return "status-badge pending";
+    case "approved":
+      return "status-badge approved";
+    case "rejected":
+      return "status-badge rejected";
+    default:
+      return "status-badge default";
+  }
+};
+
+export const buttons = (countAccount?: {
+  totalCount?: number;
+  linkCount?: number;
+  UnlinkCount?: number;
+}): ButtonItem[] => [
+  {
+    label: (
+      <>
+        All <span>Requests</span>
+      </>
+    ),
+    value: "allrequest",
+    count: countAccount?.totalCount ?? 0,
+  },
+  {
+    label: (
+      <>
+        Link <span>Requests</span>
+      </>
+    ),
+    value: "Link",
+    count: countAccount?.linkCount ?? 0,
+  },
+  {
+    label: (
+      <>
+        Unlink <span>Requests</span>
+      </>
+    ),
+    value: "Unlink",
+    count: countAccount?.UnlinkCount ?? 0,
+  },
+];

@@ -1,4 +1,4 @@
-import type { ButtonCustomProps } from "../../Interface/CustomComp.interface";
+import type { ButtonCustomProps } from "../../utils/Interfaces";
 import "./ButtonCustom.scss";
 
 function ButtonCustom(props: ButtonCustomProps) {

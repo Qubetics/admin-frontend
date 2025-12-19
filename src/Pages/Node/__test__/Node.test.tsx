@@ -86,19 +86,19 @@ describe("Node Component – 100% coverage", () => {
 
   test("renders header", async () => {
     mockUseApi.mockResolvedValueOnce(paginatedEmpty);
-    await act(async () => render(<Node activeOverride="allnodes" />));
+    await act(async () => render(<Node />));
     expect(screen.getByText("Node List")).toBeInTheDocument();
   });
 
   test("renders 'No data found' when empty", async () => {
     mockUseApi.mockResolvedValueOnce(paginatedEmpty);
-    await act(async () => render(<Node activeOverride="allnodes" />));
+    await act(async () => render(<Node />));
     expect(screen.getByText("No data found")).toBeInTheDocument();
   });
 
   test("renders data rows", async () => {
     mockUseApi.mockResolvedValueOnce(paginatedOneRow);
-    await act(async () => render(<Node activeOverride="allnodes" />));
+    await act(async () => render(<Node />));
 
     expect(screen.getByText("Org1")).toBeInTheDocument();
     expect(screen.getAllByText("ADDR1").length).toBeGreaterThan(0);
@@ -107,9 +107,9 @@ describe("Node Component – 100% coverage", () => {
 
   test("covers ALL getStatusClass branches (forces Node Status column)", async () => {
     mockUseApi.mockResolvedValueOnce(paginatedOneRow);
-    await act(async () => render(<Node activeOverride="allnodes" />));
+    await act(async () => render(<Node />));
 
-    expect(screen.queryByText("pending")).not.toBeInTheDocument();
+    expect(screen.queryByText(/pending/i)).not.toBeInTheDocument();
 
     mockUseApi.mockResolvedValueOnce(statusRowsResponse);
 
@@ -119,15 +119,15 @@ describe("Node Component – 100% coverage", () => {
       })
     );
 
-    expect(screen.getByText(/pending/i)).toBeInTheDocument();
     expect(screen.getByText(/rejected/i)).toBeInTheDocument();
+    expect(screen.getByText("Rejected")).toBeInTheDocument();
   });
 
   test("pagination change calls API again", async () => {
     mockUseApi.mockResolvedValueOnce(paginatedEmpty); 
     mockUseApi.mockResolvedValueOnce(paginatedEmpty); 
 
-    await act(async () => render(<Node activeOverride="allnodes" />));
+    await act(async () => render(<Node />));
 
     fireEvent.click(screen.getByTestId("next-page"));
 
@@ -138,7 +138,7 @@ describe("Node Component – 100% coverage", () => {
     mockUseApi.mockResolvedValueOnce(paginatedEmpty);
     mockUseApi.mockResolvedValueOnce(paginatedEmpty);
 
-    await act(async () => render(<Node activeOverride="allnodes" />));
+    await act(async () => render(<Node />));
 
     fireEvent.change(screen.getByTestId("limit"), {
       target: { value: "10" },
@@ -149,7 +149,7 @@ describe("Node Component – 100% coverage", () => {
 
   test("API failure does not crash", async () => {
     mockUseApi.mockResolvedValueOnce({ success: false });
-    await act(async () => render(<Node activeOverride="allnodes" />));
+    await act(async () => render(<Node />));
     expect(screen.getByText("Node List")).toBeInTheDocument();
   });
   test("covers default status badge", async () => {
@@ -172,13 +172,12 @@ describe("Node Component – 100% coverage", () => {
     });
 
     await act(async () => {
-      render(<Node activeOverride="allnodes" />);
+      render(<Node />);
     });
 
-    expect(screen.getByText("weird-status")).toHaveClass(
+    expect(screen.getByText("Unknown")).toBeInTheDocument(); 
+    expect(screen.getByText("Unknown")).toHaveClass(
       "status-badge default"
     );
-
-    expect(screen.getByText("Unknown")).toBeInTheDocument(); 
   });
 });

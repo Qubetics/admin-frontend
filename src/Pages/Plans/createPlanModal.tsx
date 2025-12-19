@@ -13,7 +13,7 @@ import {
 import { toast } from "react-toastify";
 import CustomInput from "../../Common/CustomInput/CustomInput";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
-import type { CreatePlanModalProps } from "../../utils/Interfaces/plan.interface";
+import type { CreatePlanModalProps } from "../../utils/Interfaces";
 
 const CreatePlanModal = ({
   createShow,
@@ -27,7 +27,7 @@ const CreatePlanModal = ({
     price: "",
   };
   const [formData, setFormData] = useState(initialFormData);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({
     price: "",
     bytes: "",
@@ -83,19 +83,11 @@ const CreatePlanModal = ({
     }));
   };
 
-  // const handleClose = () => {
-  //   getAllPlan();
-  //   setShow(false);
-  // };
-  // const handleShow = () => setShow(true);
-
   const handleClick = async () => {
     if (!formData.bytes || !formData.hours || !formData.price) {
-      // console.log("All fields are required");
       toast.error("All field are required");
       return;
     }
-    setIsLoading(true);
     const message = buildCreatePlanMessage({
       from: provAddress,
       gigabytes: Long.fromString(gbToBytes(formData?.bytes)),
@@ -116,8 +108,6 @@ const CreatePlanModal = ({
     }
     setFormData(initialFormData);
     handleHide();
-    // handleClose();
-    // handleShow();
     getAllPlan();
     setShowNotification(true);
   };
@@ -144,22 +134,6 @@ const CreatePlanModal = ({
 
   return (
     <>
-      {/* <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton></Modal.Header>
-        <Modal.Body>
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h2>dVPN Plan</h2>
-              <p>Plan Created Successfully!</p>
-              <div className="action-btns">
-                <button className="gradient-btn">Ok</button>
-                <ButtonCustom label="OK" onClick={handleClose} />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal> */}
-
       <Modal show={createShow} onHide={handleHide} centered>
         <Modal.Header closeButton>
           <h2>Create Plan</h2>

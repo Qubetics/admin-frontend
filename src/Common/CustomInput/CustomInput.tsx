@@ -1,17 +1,6 @@
 import React from "react";
 import "./CustomInput.scss";
-
-type Option = { label: string; value: string | number };
-
-interface CustomInputProps {
-  type?: string;
-  name: string;
-  disable?: boolean;
-  value?: string | number;
-  placeholder?: string;
-  onChange?: (e: any) => void;
-  options?: Option[];
-}
+import type { CustomInputProps } from "../../utils/Interfaces";
 
 const CustomInput: React.FC<CustomInputProps> = ({
   type = "text",

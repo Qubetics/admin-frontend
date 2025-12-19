@@ -11,13 +11,7 @@ const useNetworkRequest = () => {
   const { setAuthData } = useIsLoggedIn();
   const navigate = useNavigate();
 
-  const useGetApi = async ({
-    endpoint,
-    method,
-    body,
-    url,
-  }: // checktoast,
-  any) => {
+  const useGetApi = async ({ endpoint, method, body, url }: any) => {
     try {
       const response = await axios({
         method: method || apiMethods.GET,

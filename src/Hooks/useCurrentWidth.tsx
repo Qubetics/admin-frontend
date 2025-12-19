@@ -5,7 +5,7 @@ const getWidth = () =>
   document.documentElement.clientWidth ||
   document.body.clientWidth;
 
-export default function useCurrentWidth() {
+const useCurrentWidth = () => {
   const [width, setWidth] = useState(getWidth());
 
   useEffect(() => {
@@ -28,4 +28,5 @@ export default function useCurrentWidth() {
   }, []);
 
   return width;
-}
+};
+export default useCurrentWidth;
