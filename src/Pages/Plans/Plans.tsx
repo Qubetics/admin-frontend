@@ -5,10 +5,10 @@ import { apiUrls } from "../../Constant/apiUrls";
 import type { Plan } from "../../utils/Interfaces";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
-import Pagination from "../../utils/pagination";
 import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
 import {
   STATUS_ENUM,
+  activeStatus,
   bytesToGb,
   provWalletPrefix,
 } from "../../Constant/constants";
@@ -27,9 +27,6 @@ import TableSkeleton from "../../Common/Loader/TableSkeleton";
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(5);
-  const [totalPages, setTotalPages] = useState<number>(0);
   const useGetApi = useNetworkRequest();
   const { authData } = useIsLoggedIn();
   const [createShow, setCreateShow] = useState(false);
@@ -46,12 +43,9 @@ const Plans = () => {
     if (!success) return;
 
     setPlanList(data?.data || []);
-    setTotalPages(
-      data?.total?.total ? Math.ceil(data?.total?.total / limit) : 1
-    );
   };
 
-  const handleClick = async (val: any) => {
+  const handleClick = async (val: Plan) => {
     const id = val?.id;
 
     setIsTxRunning(true);
@@ -61,7 +55,7 @@ const Plans = () => {
         from: provAddress,
         id: Long.fromString(id),
         status:
-          val?.status === "active"
+          val?.status === activeStatus
             ? STATUS_ENUM.STATUS_INACTIVE
             : STATUS_ENUM.STATUS_ACTIVE,
       });
@@ -84,7 +78,7 @@ const Plans = () => {
 
   useEffect(() => {
     getAllPlan();
-  }, [page, limit]);
+  });
 
   return (
     <div className="plans">
@@ -122,7 +116,7 @@ const Plans = () => {
                   </td>
                 </tr>
               ) : (
-                planList?.map((row: any) => (
+                planList?.map((row: Plan) => (
                   <tr key={row?.id}>
                     <td>{row?.id}</td>
 
@@ -144,14 +138,16 @@ const Plans = () => {
                       <div className="action-btns">
                         <button
                           className={`approve-btn ${
-                            row.status === "active" || isTxRunning
+                            row.status === activeStatus || isTxRunning
                               ? "disablex"
                               : ""
                           }`}
                           onClick={() => handleClick(row)}
-                          disabled={row.status === "active" || isTxRunning}
+                          disabled={row.status === activeStatus || isTxRunning}
                         >
-                          {row.status === "active" ? "Activated" : "Activate"}
+                          {row.status === activeStatus
+                            ? "Activated"
+                            : "Activate"}
                         </button>
                       </div>
                     </td>
@@ -161,18 +157,6 @@ const Plans = () => {
             </tbody>
           </table>
         </div>
-
-        {false && (
-          <Pagination
-            currentPage={page}
-            totalPages={totalPages}
-            onPageChange={(newPage: any) => setPage(newPage)}
-            limit={limit}
-            onLimitChange={(limit: number) => {
-              setLimit(limit), setPage(1);
-            }}
-          />
-        )}
 
         <CreatePlanModal
           createShow={createShow}

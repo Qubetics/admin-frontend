@@ -50,6 +50,7 @@ jest.mock("../../../Constant/constants.tsx", () => ({
     STATUS_ACTIVE: 1,
     STATUS_INACTIVE: 0,
   },
+  activeStatus: "active",
 }));
 
 // mock message builder

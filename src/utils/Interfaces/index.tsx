@@ -5,7 +5,7 @@ export interface Plan {
   prov_address: string;
   gigabytes: string;
   hours: string;
-  prices: { denom: string; amount: string }[];
+  prices: { denom: string; amount: string, quote_value: string }[];
   status: string;
   status_at: string;
 }
@@ -159,3 +159,19 @@ export interface CustomInputProps {
   onChange?: (e: any) => void;
   options?: Option[];
 }
+
+export type ButtonItem = {
+  label: React.ReactNode;
+  value: string;
+  count: number;
+};
+
+export type ConfirmationModalProps = {
+  show: boolean;
+  heading?: string;
+  description?: string;
+  confirmLabel?: string;
+  cancelLabel?: string;
+  onConfirm: () => void;
+  onCancel: () => void;
+};

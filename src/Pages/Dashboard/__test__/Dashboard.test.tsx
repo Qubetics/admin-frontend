@@ -55,6 +55,11 @@ jest.mock('../../../utils/Helper/CommonHelper', () => ({
     getValueWithUnit: jest.fn(),
     truncateValue: jest.fn(),
     convertPlanString: jest.fn(),
+    buttons: jest.fn(() => [
+        { label: 'All Requests', value: 'allrequest', count: 0 },
+        { label: 'Link Requests', value: 'Link', count: 0 },
+        { label: 'Unlink Requests', value: 'Unlink', count: 0 }
+    ]),
 }));
 jest.mock('react-toastify', () => ({
     toast: {

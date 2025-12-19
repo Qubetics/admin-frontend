@@ -13,6 +13,7 @@ import {
   buildUnlinkNodeMessage,
 } from "../../service/BuildMessage/buildMessage";
 import {
+  buttons,
   convertNodeToWallet,
   convertPlanString,
   truncateValue,
@@ -22,6 +23,9 @@ import {
   HEADING,
   bytesToGb,
   provWalletPrefix,
+  errMessages,
+  linkStatus,
+  requestStatus,
 } from "../../Constant/constants";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import CopyText from "../../Common/Copy/CopyText";
@@ -55,36 +59,6 @@ export default function Dashboard() {
   const handleShow = () => {
     setShow(true);
   };
-
-  const buttons = [
-    {
-      label: (
-        <>
-          All <span>Requests</span>
-        </>
-      ),
-      value: "allrequest",
-      count: countAccount?.totalCount || 0,
-    },
-    {
-      label: (
-        <>
-          Link <span>Requests</span>
-        </>
-      ),
-      value: "Link",
-      count: countAccount?.linkCount || 0,
-    },
-    {
-      label: (
-        <>
-          Unlink <span>Requests</span>
-        </>
-      ),
-      value: "Unlink",
-      count: countAccount?.UnlinkCount || 0,
-    },
-  ];
 
   const [active, setActive] = useState("allrequest");
 
@@ -126,7 +100,7 @@ export default function Dashboard() {
     planId: string,
     hours: string
   ) => {
-    if (type === "Unlink") {
+    if (type === linkStatus.unlink) {
       try {
         const message = buildUnlinkNodeMessage({
           from: provAddress,
@@ -138,10 +112,10 @@ export default function Dashboard() {
           return;
         }
         setShow(true);
-        await updateStatus(address, "APPROVED");
+        await updateStatus(address, requestStatus.approve);
       } catch (err: any) {
-        toast.error("Something went wrong");
-        console.error(err.message);
+        toast.error(errMessages.somethingErr);
+        console.error(err?.message);
       }
       return;
     }
@@ -162,8 +136,8 @@ export default function Dashboard() {
         setLease(true);
       }
     } catch (err: any) {
-      toast.error(" lease Something went wrong");
-      console.error(err.message, "err");
+      toast.error(errMessages.leaseErr);
+      console.error(err?.message, "err");
       return;
     }
 
@@ -177,12 +151,12 @@ export default function Dashboard() {
       if (!TxHash) {
         return;
       }
-      const status = await updateStatus(address, "APPROVED");
+      const status = await updateStatus(address, requestStatus.approve);
       if (!status) return;
       handleShow();
     } catch (err: any) {
-      toast.error("Something went wrong");
-      console.error(err.message);
+      toast.error(errMessages.somethingErr);
+      console.error(err?.message);
     }
     fetchNodeRequestNumber();
   };
@@ -193,10 +167,11 @@ export default function Dashboard() {
 
   const handleRejectCall = async (address: string) => {
     handleRejectClose();
-    await updateStatus(address, "REJECTED");
+    await updateStatus(address, requestStatus.rejected);
   };
 
   const fetchData = async () => {
+    setIsLoading(true);
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
@@ -279,7 +254,7 @@ export default function Dashboard() {
       <div className="custom-table-wrapper commonTable">
         <h3 className="table-title">Node Requests</h3>
         <div className="node__btns">
-          {buttons.map(({ label, value, count }) => (
+          {buttons(countAccount).map(({ label, value, count }) => (
             <button
               key={value}
               className={active === value ? "active" : "dashboardBtn"}

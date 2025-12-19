@@ -1,17 +1,17 @@
+import { useEffect, useState } from "react";
 import CopyText from "../../Common/Copy/CopyText";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
 import { apiUrls } from "../../Constant/apiUrls";
 import useNetworkRequest from "../../Hooks/useGetApi";
-import { toFirstCapital } from "../../utils/Helper/CommonHelper";
+import {
+  getStatusClass,
+  toFirstCapital,
+} from "../../utils/Helper/CommonHelper";
 import Pagination from "../../utils/pagination";
 import "./Node.scss";
-import { useEffect, useState } from "react";
+import { activeStatus } from "../../Constant/constants";
 
-type NodeProps = {
-  activeOverride?: "active" | "inactive" | "allnodes";
-};
-
-function Node({ activeOverride }: NodeProps) {
+function Node() {
   const [nodeList, setNodeList] = useState<any[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
@@ -20,11 +20,9 @@ function Node({ activeOverride }: NodeProps) {
 
   const useGetApi = useNetworkRequest();
 
-  const effectiveActive = activeOverride ?? "active";
-
   const fetchData = async () => {
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodelist(effectiveActive, page, limit),
+      endpoint: apiUrls.nodelist(activeStatus, page, limit),
     });
     setIsLoading(false);
 
@@ -35,24 +33,7 @@ function Node({ activeOverride }: NodeProps) {
 
   useEffect(() => {
     fetchData();
-  }, [page, limit, effectiveActive]);
-
-  const getStatusClass = (status: string) => {
-    switch (status?.toLowerCase()) {
-      case "active":
-        return "status-badge active";
-      case "inactive":
-        return "status-badge inactive";
-      case "pending":
-        return "status-badge pending";
-      case "approved":
-        return "status-badge approved";
-      case "rejected":
-        return "status-badge rejected";
-      default:
-        return "status-badge default";
-    }
-  };
+  }, [page, limit]);
 
   return (
     <div className="node">
@@ -68,9 +49,6 @@ function Node({ activeOverride }: NodeProps) {
                 <tr>
                   <th>Operator Name</th>
                   <th>Node Address</th>
-
-                  {effectiveActive !== "active" &&
-                    effectiveActive !== "inactive" && <th>Node Status</th>}
                   <th>Request Type</th>
                   <th>Request Status</th>
                 </tr>
@@ -104,14 +82,6 @@ function Node({ activeOverride }: NodeProps) {
                         </div>
                       </span>
                     </td>
-                    {effectiveActive !== "active" &&
-                      effectiveActive !== "inactive" && (
-                        <td>
-                          <span className={getStatusClass(row?.nodeStatus)}>
-                            {row?.nodeStatus || "-"}
-                          </span>
-                        </td>
-                      )}
                     <td>{row?.requestFor}</td>
                     <td>
                       <span className={getStatusClass(row?.status)}>

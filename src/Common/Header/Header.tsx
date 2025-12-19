@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 
 import "./Header.scss";
 import Logo from "../../assets/Logo.svg";
-import mobLogo from "../../assets/MobileLogo.svg";
 import Path from "../../Routing/Constant/RoutePaths";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
@@ -64,17 +63,7 @@ const Header = () => {
   } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const width = useCurrentWidth();
-
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -341,11 +330,7 @@ const Header = () => {
       <div className="header-main__bottom container">
         <div className="header__left">
           <Link to={Path.LANDING}>
-            {isMobile ? (
-              <img src={mobLogo} alt="Mobile Logo" className="mobile-logo" />
-            ) : (
-              <img src={Logo} alt="Web Logo" className="web-logo" />
-            )}
+            <img src={Logo} alt="Web Logo" className="web-logo" />
           </Link>
         </div>
         {hasHeaderActions && authData && (
