@@ -7,8 +7,7 @@ import LandingPage from "../Pages/LandingPage/LandingPage.tsx";
 import Dashboard from "../Pages/Dashboard/Dashboard.tsx";
 import ServiceProvider from "../Pages/ServiceProvider/ServiceProvider.tsx";
 import RegisterPage from "../Pages/Register/RegisterPage.tsx";
-
-export default function PAGES() {
+const PAGES = () => {
   return {
     PUBLIC_PAGES: [
       { path: Path.LANDING, element: <LandingPage /> },
@@ -37,4 +36,5 @@ export default function PAGES() {
       },
     ],
   };
-}
+};
+export default PAGES;

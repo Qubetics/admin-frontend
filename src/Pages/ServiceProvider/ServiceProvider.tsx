@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import CustomInput from "../../Common/CustomInput/CustomInput";

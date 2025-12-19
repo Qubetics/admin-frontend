@@ -4,8 +4,7 @@ import { Tooltip } from "antd";
 import { NewCopyIcon } from "../../assets/StoreAsset/StoreAsset.tsx";
 import type { CopyTextProps } from "../../utils/Interfaces/index.tsx";
 
-
-export default function CopyText({ text }: CopyTextProps) {
+const CopyText = ({ text }: CopyTextProps) => {
   const [copied, setCopied] = useState<boolean>(false);
 
   const handleCopyClick = async (e: React.MouseEvent<HTMLDivElement>) => {
@@ -20,10 +19,11 @@ export default function CopyText({ text }: CopyTextProps) {
   };
 
   return (
-    <Tooltip title={copied ? "Copied" : "Copy"} className='copyIconToolTip'>
+    <Tooltip title={copied ? "Copied" : "Copy"} className="copyIconToolTip">
       <div onClick={handleCopyClick} style={{ zIndex: 1, cursor: "pointer" }}>
         {copied ? <CheckOutlined /> : <NewCopyIcon />}
       </div>
     </Tooltip>
   );
-}
+};
+export default CopyText;

@@ -38,8 +38,7 @@ import type {
   RejectShowState,
   TableRow,
 } from "../../utils/Interfaces";
-
-export default function Dashboard() {
+const Dashboard = () => {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
     show: false,
     nodeAddress: null,
@@ -434,4 +433,6 @@ export default function Dashboard() {
       />
     </div>
   );
-}
+};
+
+export default Dashboard;

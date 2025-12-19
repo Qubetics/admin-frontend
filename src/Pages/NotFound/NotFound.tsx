@@ -4,7 +4,7 @@ import Header from "../../Common/Header/Header";
 import "./NotFound.scss";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 
-export default function NotFound() {
+const NotFound = () => {
   const navigate = useNavigate();
 
   const handleGoHome = () => {
@@ -35,4 +35,5 @@ export default function NotFound() {
       <Footer />
     </>
   );
-}
+};
+export default NotFound;
