@@ -862,14 +862,21 @@ h6 {
 
   @media (max-width: 991px) {
     display: block !important;
+    width: 100%;
+    padding: 10px;
+    span,
+    .customButton,
+    button {
+      padding: 10px !important;
+    }
   }
   span,
   .customButton,
   button {
     @media (max-width: 991px) {
       display: flex !important;
-      max-width: 150px;
-      margin-bottom: 10px;
+      max-width: 100%;
+      margin-bottom: 18px;
     }
   }
 }

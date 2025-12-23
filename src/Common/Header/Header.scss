@@ -75,6 +75,9 @@
     justify-content: center;
     width: 100%;
     max-width: 200px;
+    @media (max-width: 991px) {
+      max-width: 100%;
+    }
   }
 
   &.connect-wallet-mobile {
@@ -88,7 +91,6 @@
   &.connect-wallet-desktop {
     display: flex;
   }
-  
 
   @media (min-width: 992px) {
     &.web-logout {
