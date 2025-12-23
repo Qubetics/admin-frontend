@@ -1,11 +1,7 @@
-import type { ReactNode } from 'react';
 import "./OnboardAuthLayout.scss";
 import Header from "../../Header/Header";
 import Footer from "../../Footer/Footer";
-
-interface OnboardAuthLayoutProps {
-  children?: ReactNode;
-}
+import type { OnboardAuthLayoutProps } from "../../../utils/Interfaces";
 
 function OnboardAuthLayout({ children }: OnboardAuthLayoutProps) {
   return (
@@ -14,9 +10,7 @@ function OnboardAuthLayout({ children }: OnboardAuthLayoutProps) {
         <Header />
       </header>
       <main className="onboarding-main">
-        <div className="login-container">
-          {children}
-        </div>
+        <div className="login-container">{children}</div>
       </main>
       <footer className="onboarding-footer">
         <Footer />

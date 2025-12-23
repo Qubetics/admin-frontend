@@ -3,7 +3,6 @@
 .node {
   margin-top: 40px;
 
-
   &__header {
     display: flex;
     justify-content: space-between;
@@ -72,7 +71,7 @@
         max-width: 160px;
       }
 
-      @media(max-width: 991px) {
+      @media (max-width: 991px) {
         font-size: 12px;
         max-width: 140px;
       }
@@ -80,7 +79,7 @@
       span {
         margin-left: 5px;
 
-        @media(max-width: 479px) {
+        @media (max-width: 479px) {
           display: none;
         }
       }
@@ -107,7 +106,7 @@
           max-width: 160px;
         }
 
-        @media(max-width: 991px) {
+        @media (max-width: 991px) {
           font-size: 12px;
           max-width: 140px;
         }
@@ -118,16 +117,18 @@
           inset: 0;
           padding: 2px;
           border-radius: 28px;
-          background: conic-gradient(var(--clr-card),
-              var(--clr-1),
-              var(--clr-2),
-              var(--clr-3),
-              var(--clr-4),
-              var(--clr-5),
-              var(--clr-6),
-              var(--clr-2),
-              var(--clr-1),
-              var(--clr-card));
+          background: conic-gradient(
+            var(--clr-card),
+            var(--clr-1),
+            var(--clr-2),
+            var(--clr-3),
+            var(--clr-4),
+            var(--clr-5),
+            var(--clr-6),
+            var(--clr-2),
+            var(--clr-1),
+            var(--clr-card)
+          );
           animation: rotate 2.5s linear infinite;
           -webkit-mask: linear-gradient(#fff 0 0) content-box,
             linear-gradient(#fff 0 0);
@@ -177,11 +178,10 @@
               display: flex;
               align-items: center;
 
-              >div,
+              > div,
               svg {
                 display: flex;
                 align-items: center;
-                width: 100%;
                 height: 100%;
               }
             }
@@ -192,7 +192,7 @@
   }
 
   .commonTable {
-    margin-top: 50px;
+    margin-top: 20px;
 
     @media (max-width: 1679px) {
       margin-top: 40px;
@@ -213,8 +213,6 @@
     .inactive {
       color: #ff3b30;
     }
-
-
   }
 }
 

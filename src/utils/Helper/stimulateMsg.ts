@@ -11,14 +11,20 @@ import { PubKey } from "@keplr-wallet/proto-types/cosmos/crypto/secp256k1/keys";
 import { api, fetchAccountInfo } from "./CommonHelper";
 import { envConstants } from "../../Constant/envConstants";
 import { Buffer } from "buffer";
+import { ChainInfo, Keplr } from "@keplr-wallet/types";
 
 export const simulateMsgs = async (
-  keplr,
-  chainId,
-  sender,
-  proto,
-  fee,
-  memo
+  keplr: Keplr,
+  chainId: ChainInfo,
+  sender: string,
+  proto: Any[],
+  fee: [
+    {
+      denom: string;
+      amount: string;
+    }
+  ],
+  memo: string = ""
 ) => {
   const account = await fetchAccountInfo(sender);
 

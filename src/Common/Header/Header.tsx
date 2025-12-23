@@ -4,78 +4,81 @@ import { toast } from "react-toastify";
 
 import "./Header.scss";
 import Logo from "../../assets/Logo.svg";
-import mobLogo from "../../assets/MobileLogo.svg";
 import Path from "../../Routing/Constant/RoutePaths";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
 import { envConstants } from "../../Constant/envConstants";
-import { apiMethods } from "../../Constant/constants";
+import { apiMethods, provWalletPrefix } from "../../Constant/constants";
 import {
   api,
   computePubKey,
+  convertNodeToWallet,
   formatBalance,
+  toFirstCapitalCase,
   truncateValue,
 } from "../../utils/Helper/CommonHelper";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
 import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
-
-// Types
-interface KeplrWindow extends Window {
-  keplr?: {
-    enable: (chainId: string) => Promise<void>;
-    disable: (chainId: string) => Promise<void>;
-    getOfflineSigner: (chainId: string) => {
-      getAccounts: () => Promise<Array<{ address: string }>>;
-    };
-    signArbitrary: (
-      chainId: string,
-      address: string,
-      message: string
-    ) => Promise<{
-      signature: string;
-      pub_key: any;
-    }>;
-  };
-}
+import ProfileIcon from "../../assets/ProfileIcon.svg";
+import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
+import type { KeplrWindow } from "../../utils/Interfaces";
 
 declare const window: KeplrWindow;
 
 const Header = () => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [balance, setBalance] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isConnecting, setIsConnecting] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
 
-  const location = useLocation();
-  const navigate = useNavigate();
-  const { authData, setAuthData } = useIsLoggedIn();
-  const useGetApi = useNetworkRequest();
-  const menuRef = useRef<HTMLDivElement>(null);
-  // function to logo resize
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
-  const width=useCurrentWidth();
-
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node) && !(event.target as Element).closest('.hamburger')) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
+        setIsProfileOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [balance, setBalance] = useState<number>(0);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isConnecting, setIsConnecting] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const {
+    authData,
+    setAuthData,
+    providerName,
+    setProviderName,
+    isExist,
+    setIsExist,
+  } = useIsLoggedIn();
+  const useGetApi = useNetworkRequest();
+  const menuRef = useRef<HTMLDivElement>(null);
+  const width = useCurrentWidth();
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !(event.target as Element).closest(".hamburger")
+      ) {
         setIsMenuOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
@@ -97,7 +100,6 @@ const Header = () => {
         return;
       }
 
-      setIsLoading(true);
       try {
         const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
         const response = await api(uri);
@@ -125,7 +127,18 @@ const Header = () => {
     sessionStorage.clear();
     setAuthData("");
     setBalance(0);
-    setIsLoading(true);
+
+    const pathname =
+      typeof window !== "undefined" ? window.location.pathname : "";
+
+    if (
+      pathname === Path.SERVICE_PROVIDER ||
+      (pathname === Path.LANDING && !isExist)
+    ) {
+      navigate(Path.LANDING);
+      return;
+    }
+
     try {
       const { success } = await useGetApi({
         endpoint: apiUrls.logout,
@@ -138,6 +151,7 @@ const Header = () => {
       sessionStorage.clear();
       setAuthData("");
       setBalance(0);
+      toast.success("Logged out successfully");
 
       navigate("/landing");
     } catch (error) {
@@ -151,7 +165,8 @@ const Header = () => {
   const connectKeplr = useCallback(async (): Promise<string | null> => {
     if (!window.keplr) {
       if (/Android/i.test(navigator.userAgent)) {
-        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+        window.location.href =
+          "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
       } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.location.href = "keplrwallet://";
       } else {
@@ -167,7 +182,6 @@ const Header = () => {
     }
 
     try {
-      // await window.keplr!.disable(chainId);
       await window.keplr!.enable(chainId);
 
       const offlineSigner = window.keplr!.getOfflineSigner(chainId);
@@ -208,7 +222,7 @@ const Header = () => {
         );
 
         if (!signature || !pub_key) {
-          toast.error("Failed to sign message");
+          toast.error("Failed to sign in");
           return false;
         }
 
@@ -218,7 +232,11 @@ const Header = () => {
           toast.error("Could not compute public key from signature");
           return false;
         }
-        const { success, message: errormassage } = await useGetApi({
+        const {
+          success,
+          data,
+          message: errormassage,
+        } = await useGetApi({
           endpoint: apiUrls.login,
           method: apiMethods.POST,
           body: {
@@ -227,23 +245,33 @@ const Header = () => {
             signature: { pub_key, signature },
           },
         });
-
         if (!success) {
+          setIsExist(false);
+          setProviderName("");
           if (errormassage.includes("role")) {
             toast.error("Role information missing or invalid");
+          }
+          if (data && !data?.data?.isExist) {
+            setAuthData(address);
+            toast.error("Register as a provider");
+            navigate(Path.SERVICE_PROVIDER);
           } else {
             toast.error("Authentication failed. Please try again.");
           }
           return false;
         }
+
+        setProviderName(data?.data?.name);
         setAuthData(address);
+        toast.success("Logged in Successfully ");
+        setIsExist(true);
         navigate("/dashboard");
         return true;
       } catch (error: any) {
         if (error?.message?.includes("rejected")) {
           toast.error("Signing rejected by user");
         } else {
-          toast.error("Failed to sign message");
+          toast.error("Failed to sign in");
         }
 
         sessionStorage.clear();
@@ -271,7 +299,6 @@ const Header = () => {
     }
   }, [connectKeplr, signMessage, isConnecting]);
 
-
   useEffect(() => {
     if (authData) {
       fetchAccountBalance(authData);
@@ -289,109 +316,145 @@ const Header = () => {
     { path: Path.PLANS, label: "Plans" },
     { path: Path.NODES, label: "Nodes" },
   ];
-  const hasHeaderActions = location.pathname !== '/';
+  const hasHeaderActions = location.pathname !== "/";
+  const hideNavItems =
+    location.pathname === Path.SERVICE_PROVIDER ||
+    (!isExist && location.pathname === Path.LANDING);
+  const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+  const isLandingPage =
+    location.pathname.startsWith(Path.LANDING) ||
+    location.pathname.startsWith(Path.SERVICE_PROVIDER);
 
   return (
-    <div className="header-main">
+    <div className={`header-main`}>
       <div className="header-main__bottom container">
         <div className="header__left">
           <Link to={Path.LANDING}>
-            {isMobile ? (
-              <img src={mobLogo} alt="Mobile Logo" className="mobile-logo" />
-            ) : (
-              <img src={Logo} alt="Web Logo" className="web-logo" />
-            )}
+            <img src={Logo} alt="Web Logo" className="web-logo" />
           </Link>
         </div>
-        {hasHeaderActions && authData &&(
-          <div className={`header__details ${isMenuOpen ? 'active' : ''}`} ref={menuRef}>
+        {hasHeaderActions && authData && (
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
             {authData && (
               <>
-                <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
-                  {navigationItems.map(({ path, label }) => (
-                    <Link
-                      key={path}
-                      to={path}
-                      className={isActive(path)}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {label}
-                    </Link>
-                  ))}
-                   <>
-              {/* <div className="responsiveDrawerData">
-              <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
-              <div className="header__wallet-address customButton">
-                <div>{truncateValue(authData)}</div>
-                <CopyText text={authData} />
-              </div>
-              <ButtonCustom
-                // className="web-logout"
-                // label={isConnecting ? "Logging out..." : "Logout"}
-                label='logout'
-                onClick={handleLogout}
-                // disabled={isLoading}
-                type="button"
-              />
-              </div> */}
-            </>
-                </nav>
-                <div className="responsiveDrawerData">
-                <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
-              <div className="header__wallet-address customButton">
-                <div>{truncateValue(authData)}</div>
-                <CopyText text={authData} />
-              </div>
-                <ButtonCustom
-                  className="mobile-logout"
-                  label={isConnecting ? "Logging out..." : "Logout"}
-                  onClick={handleLogout}
-                  disabled={isLoading}
-                  type="button"
-                />
+                {!hideNavItems && (
+                  <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
+                    {navigationItems.map(({ path, label }) => (
+                      <Link
+                        key={path}
+                        to={path}
+                        className={isActive(path)}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
+                        {label}
+                      </Link>
+                    ))}
+                  </nav>
+                )}
+
+                <div
+                  className={`responsiveDrawerData ${
+                    isLandingPage ? "landing-header-logined" : ""
+                  }`}
+                >
+                  <span className="customButton balance-display">
+                    {formatBalance(balance)} TICS
+                  </span>
+                  <div className="header__wallet-address customButton">
+                    <div>{truncateValue(authData)}</div>
+                    <CopyText text={authData} />
+                  </div>
+                  <ButtonCustom
+                    className="mobile-logout"
+                    label={isConnecting ? "Logging out..." : "Logout"}
+                    onClick={() => setShowConfirmModal(true)}
+                    disabled={isLoading}
+                    type="button"
+                  />
                 </div>
               </>
             )}
-          </div>)}
+          </div>
+        )}
 
-        {/* Right Section */}
+        {hasHeaderActions && !authData && (
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
+            <div className="responsiveDrawerData">
+              <ButtonCustom
+                className="connect-wallet-mobile"
+                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
+                type="button"
+                onClick={handleWalletConnect}
+                disabled={isConnecting}
+              />
+            </div>
+          </div>
+        )}
+
         <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
           {!authData ? (
-            <ButtonCustom
-              label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-              type="button"
-              tabIndex={3}
-              onClick={handleWalletConnect}
-              disabled={isConnecting}
-            />
-          ) : (
-            width > 991 && (<>
-              <span className="customButton balance-display">
-                {formatBalance(balance)} TICS
-              </span>
-              <div className="header__wallet-address customButton">
-                <div>{truncateValue(authData)}</div>
-                <CopyText text={authData} />
-              </div>
+            <>
               <ButtonCustom
-                className="web-logout"
-                label={isConnecting ? "Logging out..." : "Logout"}
-                onClick={handleLogout}
-                disabled={isLoading}
+                className="connect-wallet-desktop"
+                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
                 type="button"
+                tabIndex={3}
+                onClick={handleWalletConnect}
+                disabled={isConnecting}
               />
-            </>)
+            </>
+          ) : (
+            width > 991 && (
+              <>
+                <span className="customButton balance-display ticsbtnPadding">
+                  {formatBalance(balance)} TICS
+                </span>
+                <div className="header__wallet-address customButton ticsbtnPadding">
+                  <div>{truncateValue(authData)}</div>
+                  <CopyText text={authData} />
+                </div>
+                <div className="profile-container" ref={profileRef}>
+                  <div
+                    className="profile-icon"
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  >
+                    <img src={ProfileIcon} alt="Profile" />
+                  </div>
+                  {isProfileOpen && (
+                    <div className="profile-dropdown">
+                      {providerName && (
+                        <p className="dropdown-item">
+                          Provider Name: {toFirstCapitalCase(providerName)}
+                        </p>
+                      )}
+                      <p className="dropdown-item">
+                        Provider Address: {truncateValue(provAddress)}{" "}
+                        <CopyText text={provAddress} />
+                      </p>
+                      <button
+                        onClick={() => setShowConfirmModal(true)}
+                        disabled={isLoading}
+                        className="dropdown-item logoutBtn"
+                      >
+                        {isConnecting ? "Logging in..." : "Logout"}
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )
           )}
-
         </div>
 
-        {hasHeaderActions && authData && (
+        {hasHeaderActions && (
           <button
-            className={`hamburger ${isMenuOpen ? 'active' : ''}`}
+            className={`hamburger ${isMenuOpen ? "active" : ""}`}
             onClick={toggleMenu}
             aria-label="Toggle menu"
           >
@@ -401,6 +464,18 @@ const Header = () => {
           </button>
         )}
       </div>
+      <ConfirmationModal
+        show={showConfirmModal}
+        heading="Logout"
+        description="Are you sure you want to logout?"
+        confirmLabel="Yes"
+        cancelLabel="No"
+        onConfirm={async () => {
+          await handleLogout();
+          setShowConfirmModal(false);
+        }}
+        onCancel={() => setShowConfirmModal(false)}
+      />
     </div>
   );
 };

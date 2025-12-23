@@ -13,8 +13,9 @@ import {
   buildUnlinkNodeMessage,
 } from "../../service/BuildMessage/buildMessage";
 import {
+  buttons,
   convertNodeToWallet,
-  getValueWithUnit,
+  convertPlanString,
   truncateValue,
 } from "../../utils/Helper/CommonHelper";
 import {
@@ -22,35 +23,22 @@ import {
   HEADING,
   bytesToGb,
   provWalletPrefix,
+  errMessages,
+  linkStatus,
+  requestStatus,
 } from "../../Constant/constants";
-import type { RejectShowState } from "../../Interface/CustomComp.interface";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import CopyText from "../../Common/Copy/CopyText";
 import { toast } from "react-toastify";
-import { Col, Row } from "antd";
-import { CircleCheckIcon, CircleCloseIcon, NordsIcon } from "../../assets/SvgIcon/SvgIcon";
-// import InnerLoader from "../../Common/Loader/InnerLoader";
-// import { linkNode } from "../../utils/Helper/CommonHelper";
-
-interface CardBoxProps {
-  title: string;
-  value: string | number;
-  icons?: any;
-}
-
-interface TableRow {
-  orgName: string;
-  email: string;
-  location: string;
-  nodeAddress: string;
-  bandwidth: string;
-  plan: string;
-  requestFor: string;
-  planId: string;
-  hours: string;
-}
-
-export default function Dashboard() {
+import { Col, Row, Tooltip } from "antd";
+import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
+import TableSkeleton from "../../Common/Loader/TableSkeleton";
+import type {
+  CardBoxProps,
+  RejectShowState,
+  TableRow,
+} from "../../utils/Interfaces";
+const Dashboard = () => {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
     show: false,
     nodeAddress: null,
@@ -64,48 +52,26 @@ export default function Dashboard() {
   const [limit, setLimit] = useState<number>(5);
   const [activeAccount, setActiveAccount] = useState<any>();
   const [countAccount, setCountAccount] = useState<any>();
-  // const [isLoading,setIsLoading]=useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleClose = () => setShow(false);
   const handleShow = () => {
     setShow(true);
   };
 
-  const buttons = [
-    {
-      label: <>All <span>Requests</span></>,
-      value: "allrequest",
-      count: countAccount?.totalCount || 0,
-    },
-    {
-      label: <>Link <span>Requests</span></>,
-      value: "Link",
-      count: countAccount?.linkCount || 0,
-    },
-    {
-      label: <>Unlink <span>Requests</span></>,
-      value: "Unlink",
-      count: countAccount?.UnlinkCount || 0,
-    },
-  ];
-
   const [active, setActive] = useState("allrequest");
 
   const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
-  // const handleRejectShow = () => setRejectShow(true);
 
   const { authData } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
 
-  // manage this in state
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
   const CardBox: React.FC<CardBoxProps> = ({ title, value, icons }) => {
     return (
       <div className="card-box">
-        <div className="card-box-icons">
-          {icons}
-        </div>
+        <div className="card-box-icons">{icons}</div>
         <div className="right-text">
           <p className="card-title">{title}</p>
           <h2 className="card-value">{value}</h2>
@@ -133,7 +99,7 @@ export default function Dashboard() {
     planId: string,
     hours: string
   ) => {
-    if (type === "Unlink") {
+    if (type === linkStatus.unlink) {
       try {
         const message = buildUnlinkNodeMessage({
           from: provAddress,
@@ -145,11 +111,10 @@ export default function Dashboard() {
           return;
         }
         setShow(true);
-        await updateStatus(address, "APPROVED");
+        await updateStatus(address, requestStatus.approve);
       } catch (err: any) {
-        toast.error("Something wentwrong");
-        console.error(err.message);
-        // setRejectShow(true);
+        toast.error(errMessages.somethingErr);
+        console.error(err?.message);
       }
       return;
     }
@@ -165,37 +130,34 @@ export default function Dashboard() {
 
       const res = await processTransaction(leaseMessage);
       if (!res) {
-        setUnLease(true)
-      }
-      else {
-        setLease(true)
-
+        setUnLease(true);
+      } else {
+        setLease(true);
       }
     } catch (err: any) {
-      console.error(err.message, "err");
-      // setRejectShow(true);
+      toast.error(errMessages.leaseErr);
+      console.error(err?.message, "err");
+      return;
     }
 
     try {
       const message = buildLinkNodeMessage({
         from: provAddress,
         id: Long.fromString(planId),
-        nodeAddress: address, //node address
+        nodeAddress: address,
       });
       const TxHash = await processTransaction(message);
       if (!TxHash) {
-        console.error("Transaction failed");
         return;
       }
-      const status = await updateStatus(address, "APPROVED");
+      const status = await updateStatus(address, requestStatus.approve);
       if (!status) return;
       handleShow();
     } catch (err: any) {
-      console.error(err.message);
-      // setRejectShow(true);
+      toast.error(errMessages.somethingErr);
+      console.error(err?.message);
     }
     fetchNodeRequestNumber();
-
   };
 
   const onReject = (nodeAddress: string) => {
@@ -204,23 +166,22 @@ export default function Dashboard() {
 
   const handleRejectCall = async (address: string) => {
     handleRejectClose();
-    await updateStatus(address, "REJECTED");
+    await updateStatus(address, requestStatus.rejected);
   };
 
   const fetchData = async () => {
-    // setIsLoading(true)
+    setIsLoading(true);
     setNodeList([]);
     setTotalPages(0);
     const { success, data } = await useGetApi({
-      endpoint: apiUrls.nodeRequestedList(page, limit, active),
+      endpoint: apiUrls.nodeRequestedList(page, limit, active, authData),
     });
 
-    // setIsLoading(false)
+    setIsLoading(false);
     if (!success) {
       return;
     }
     setNodeList(data?.data?.nodeList);
-    // setTotalCount(data?.data?.count);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
   };
 
@@ -252,20 +213,6 @@ export default function Dashboard() {
     setLimit(5);
   };
 
-  const convertPlanString = (planStr?: any): any => {
-    if (!planStr) return '';
-
-    // Split the string into numeric part and the rest
-    const [valueStr, ...rest] = planStr.split(' ');
-    const unitStr = rest.join(' '); // e.g., "TICS/month"
-
-    // Convert the numeric part
-    const convertedValue = getValueWithUnit(valueStr);
-
-    // Return formatted string
-    return `${convertedValue} ${unitStr}`;
-  };
-
   useEffect(() => {
     fetchData();
   }, [page, limit, active]);
@@ -273,13 +220,14 @@ export default function Dashboard() {
   useEffect(() => {
     fetchNodeNumber();
     fetchNodeRequestNumber();
-  }, [nodeList.length]);
+  }, [nodeList?.length]);
 
   const cards: CardBoxProps[] = [
-    // { title: "Total Earnings", value: "2000 TICS" },
-    { icons: <NordsIcon />, title: "All Nodes", value: activeAccount?.totalCount || 0 },
-    { icons: <CircleCheckIcon />, title: "Active Nodes", value: activeAccount?.activeCount || 0 },
-    { icons: <CircleCloseIcon />, title: "Inactive Nodes", value: activeAccount?.inactiveCount || 0 },
+    {
+      icons: <CircleCheckIcon />,
+      title: "Active Nodes",
+      value: activeAccount?.activeCount || 0,
+    },
   ];
 
   return (
@@ -291,7 +239,12 @@ export default function Dashboard() {
         <Row gutter={[25, 20]} className="card-row">
           {cards.map((card, index) => (
             <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
-              <CardBox key={index} title={card.title} value={card.value} icons={card.icons} />
+              <CardBox
+                key={index}
+                title={card.title}
+                value={card.value}
+                icons={card.icons}
+              />
             </Col>
           ))}
         </Row>
@@ -300,7 +253,7 @@ export default function Dashboard() {
       <div className="custom-table-wrapper commonTable">
         <h3 className="table-title">Node Requests</h3>
         <div className="node__btns">
-          {buttons.map(({ label, value, count }) => (
+          {buttons(countAccount).map(({ label, value, count }) => (
             <button
               key={value}
               className={active === value ? "active" : "dashboardBtn"}
@@ -312,91 +265,117 @@ export default function Dashboard() {
         </div>
         <div className="outerTable">
           <table className="custom-table dashboard-table">
-            <thead>
-              <tr>
-                <th>Operator Name</th>
-                <th>Email Address</th>
-                <th>Location</th>
-                <th>Node Address</th>
-                <th>Bandwidth</th>
-                <th>Plan</th>
-                {active === "allrequest" && <th>Request Type</th>}
-                <th>Action</th>
-              </tr>
-            </thead>
+            {!isLoading && (
+              <thead>
+                <tr>
+                  <th>Operator Name</th>
+                  <th>Email Address</th>
+                  <th>Location</th>
+                  <th>Node Address</th>
+                  <th>Bandwidth</th>
+                  <th>Plan</th>
+                  {active === "allrequest" && <th>Request Type</th>}
+                  <th>Action</th>
+                </tr>
+              </thead>
+            )}
             <tbody>
-              {
-                // isLoading ? (
-                //   <tr>
-                //     <td colSpan={100}>
-                //    <InnerLoader/>
-                //     </td>
-                //   </tr>
+              {isLoading ? (
+                <TableSkeleton rows={2} columns={5} />
+              ) : nodeList?.length === 0 ? (
+                <tr>
+                  <td colSpan={8} style={{ textAlign: "center" }}>
+                    No data found
+                  </td>
+                </tr>
+              ) : (
+                nodeList?.map((row, i) => (
+                  <tr key={i}>
+                    <td>{row?.orgName ? row?.orgName : "-"}</td>
 
-                // ) :
-                nodeList?.length === 0 ? (
-                  <tr>
-                    <td colSpan={8} style={{ textAlign: "center" }}>
-                      No data found
+                    <td>
+                      <Tooltip title={row?.email}>
+                        <span>
+                          {row?.email ? truncateValue(row?.email, 3, 3) : "-"}
+                        </span>
+                      </Tooltip>
+                    </td>
+
+                    <td>{row?.location || "-"}</td>
+
+                    <td>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "2px",
+                        }}
+                      >
+                        <Tooltip title={row?.nodeAddress}>
+                          <span
+                            className="address_nord"
+                            style={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              gap: "6px",
+                            }}
+                          >
+                            {truncateValue(row?.nodeAddress)}
+                          </span>
+                        </Tooltip>
+                        <span className="copy-btn">
+                          <CopyText text={row?.nodeAddress} />
+                        </span>
+                      </div>
+                    </td>
+
+                    <td>{bytesToGb(Number(row?.bandwidth)) + "GB" || ""}</td>
+
+                    <td title={row?.plan ? convertPlanString(row?.plan) : "-"}>
+                      {row?.plan ? convertPlanString(row?.plan) : "-"}
+                    </td>
+
+                    {active === "allrequest" && <td>{row?.requestFor}</td>}
+
+                    <td>
+                      <div className="action-btns">
+                        <button
+                          className="approve-btn"
+                          onClick={() =>
+                            onApproval(
+                              row?.nodeAddress,
+                              row?.requestFor,
+                              row?.planId,
+                              row?.hours
+                            )
+                          }
+                        >
+                          Approve
+                        </button>
+                        <button
+                          className="reject-btn"
+                          onClick={() => onReject(row?.nodeAddress)}
+                        >
+                          Reject
+                        </button>
+                      </div>
                     </td>
                   </tr>
-                ) : (
-                  nodeList?.map((row, i) => {
-                    return (
-                      <tr key={i}>
-                        <td>{row?.orgName ? row?.orgName : "-"}</td>
-                        <td>{row?.email ? row?.email : "-"}</td>
-                        <td>{row?.location || "-"}</td>
-                        <td>
-                          <span className="address_nord" style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>{truncateValue(row?.nodeAddress)}
-                            <div className="copy-btn"><CopyText text={row?.nodeAddress} /></div>
-                          </span>
-                        </td>
-                        <td>
-                          {bytesToGb(Number(row?.bandwidth)) + " GB" || ""}
-                        </td>
-                        <td>{row?.plan ? convertPlanString(row?.plan) : "-"}</td>
-                        {active === "allrequest" && <td>{row?.requestFor}</td>}
-                        <td>
-                          <div className="action-btns">
-                            <button
-                              className="approve-btn"
-                              onClick={() =>
-                                onApproval(
-                                  row?.nodeAddress,
-                                  row?.requestFor,
-                                  row?.planId,
-                                  row?.hours
-                                )
-                              }
-                            >
-                              Approve
-                            </button>
-                            <button
-                              className="reject-btn"
-                              onClick={() => onReject(row?.nodeAddress)}
-                            >
-                              Reject
-                            </button>
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  })
-                )
-              }
+                ))
+              )}
             </tbody>
           </table>
         </div>
 
-        {/* Pagination */}
         {totalPages > 1 && (
           <Pagination
             currentPage={page}
             totalPages={totalPages}
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
-            onLimitChange={(limit: number) => { setLimit(limit), setPage(1) }}
+            onLimitChange={(limit: number) => {
+              setLimit(limit), setPage(1);
+            }}
           />
         )}
         <Modal show={show} onHide={handleClose} centered>
@@ -406,7 +385,7 @@ export default function Dashboard() {
               <div className="modal-content">
                 <h2>Node Request</h2>
                 <p>Node Approved successfully!</p>
-                <div className="action-btns">
+                <div className="action-btns btns-mb">
                   <button className="gradient-btn" onClick={handleClose}>
                     OK
                   </button>
@@ -454,4 +433,6 @@ export default function Dashboard() {
       />
     </div>
   );
-}
+};
+
+export default Dashboard;

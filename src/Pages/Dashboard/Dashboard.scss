@@ -147,7 +147,7 @@
   }
 
   .commonTable {
-    margin-top: 50px;
+    margin-top: 20px;
 
     @media (max-width: 1679px) {
       margin-top: 40px;
@@ -331,4 +331,7 @@
       }
     }
   }
+}
+.btns-mb{
+  margin-bottom: 10px;
 }

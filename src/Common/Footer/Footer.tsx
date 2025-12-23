@@ -29,22 +29,38 @@ const Footer = () => {
             <h5 className="footer__section-title">Quick Links</h5>
             <ul className="footer__links">
               <li>
-                <a target="blank" href={`${envConstants.explorer_link}/token`} className="footer__link">
+                <a
+                  target="_blank"
+                  href={`${envConstants.explorer_link}/token`}
+                  className="footer__link"
+                >
                   Tokens
                 </a>
               </li>
               <li>
-                <a target="blank" href={`${envConstants.explorer_link}/blocks`} className="footer__link">
+                <a
+                  target="_blank"
+                  href={`${envConstants.explorer_link}/blocks`}
+                  className="footer__link"
+                >
                   Blockchain
                 </a>
               </li>
               <li>
-                <a target="blank" href={`${envConstants.explorer_link}/validators`} className="footer__link">
+                <a
+                  target="_blank"
+                  href={`${envConstants.explorer_link}/validators`}
+                  className="footer__link"
+                >
                   Validators
                 </a>
               </li>
               <li>
-                <a target="blank" href={`${envConstants.explorer_link}/nodes`} className="footer__link">
+                <a
+                  target="_blank"
+                  href={`${envConstants.explorer_link}/nodes`}
+                  className="footer__link"
+                >
                   Nodes
                 </a>
               </li>
@@ -56,7 +72,8 @@ const Footer = () => {
             <ul className="footer__links">
               <li>
                 <a
-                  target="blank" href="https://www.qubetics.com/privacy-policy"
+                  target="_blank"
+                  href="https://www.qubetics.com/privacy-policy"
                   className="footer__link"
                 >
                   Privacy Policy
@@ -64,7 +81,8 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  target="blank" href="https://www.qubetics.com/terms-of-use"
+                  target="_blank"
+                  href="https://www.qubetics.com/terms-of-use"
                   className="footer__link"
                 >
                   Terms of Service
@@ -79,7 +97,8 @@ const Footer = () => {
             <ul className="footer__links">
               <li>
                 <a
-                  target="blank" href="https://validator.qubetics.com/"
+                  target="_blank"
+                  href="https://validator.qubetics.com/"
                   className="footer__link"
                 >
                   Qubetics Validator App
@@ -87,7 +106,8 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  target="blank" href="https://delegator.qubetics.com/"
+                  target="_blank"
+                  href="https://delegator.qubetics.com/"
                   className="footer__link"
                 >
                   Qubetics Delegator App
@@ -104,13 +124,18 @@ const Footer = () => {
                 </a>
               </li> */}
               <li>
-                <a target="blank" href="https://ide.qubetics.com" className="footer__link">
+                <a
+                  target="_blank"
+                  href="https://ide.qubetics.com"
+                  className="footer__link"
+                >
                   Qubetics IDE
                 </a>
               </li>
               <li>
                 <a
-                  target="blank" href="https://qubeqode.qubetics.com"
+                  target="_blank"
+                  href="https://qubeqode.qubetics.com"
                   className="footer__link"
                 >
                   QubeQode
@@ -118,10 +143,11 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  target="blank" href="https://qubeqode.qubetics.com"
+                  target="_blank"
+                  href={envConstants.explorer_link}
                   className="footer__link"
                 >
-                  Quebetics dVPN
+                  Qubetics dVPN
                 </a>
               </li>
             </ul>
@@ -132,25 +158,38 @@ const Footer = () => {
             <h5 className="footer__section-title">Resources</h5>
             <ul className="footer__links">
               <li>
-                <a target="blank" href="https://www.qubetics.com/" className="footer__link">
+                <a
+                  target="_blank"
+                  href="https://www.qubetics.com/"
+                  className="footer__link"
+                >
                   Official Web
                 </a>
               </li>
               <li>
-                <a target="blank" href="https://docs.qubetics.com/" className="footer__link">
+                <a
+                  target="_blank"
+                  href="https://docs.qubetics.com/"
+                  className="footer__link"
+                >
                   Qubetics Network Documentation
                 </a>
               </li>
               <li>
                 <a
-                  target="blank" href="https://qubetics.gitbook.io/qubetics-docs"
+                  target="_blank"
+                  href="https://qubetics.gitbook.io/qubetics-docs"
                   className="footer__link"
                 >
                   Qubetics Documentation
                 </a>
               </li>
               <li>
-                <a target="blank" href="https://github.com/Qubetics" className="footer__link">
+                <a
+                  target="_blank"
+                  href="https://github.com/Qubetics"
+                  className="footer__link"
+                >
                   GitHub
                 </a>
               </li>
@@ -161,40 +200,50 @@ const Footer = () => {
           <h4>Get in touch!</h4>
           <div className="footer__social__items">
             <a
-              target="blank" href="https://x.com/qubetics?mx=2"
+              target="_blank"
+              href="https://x.com/qubetics?mx=2"
               className="footer__social-link"
             >
               <img src={x} alt="" />
             </a>
-            <a target="blank" href="https://t.me/qubetics" className="footer__social-link">
+            <a
+              target="_blank"
+              href="https://t.me/qubetics"
+              className="footer__social-link"
+            >
               <img src={Telegram} alt="" />
             </a>
             <a
-              target="blank" href="https://discord.com/invite/KHfSNbzdSE"
+              target="_blank"
+              href="https://discord.com/invite/KHfSNbzdSE"
               className="footer__social-link"
             >
               <img src={Discord} alt="" />
             </a>
             <a
-              target="blank" href="https://www.youtube.com/@Qubetics"
+              target="_blank"
+              href="https://www.youtube.com/@Qubetics"
               className="footer__social-link"
             >
               <img src={YouTube} alt="" />
             </a>
             <a
-              target="blank" href="https://www.instagram.com/qubetics"
+              target="_blank"
+              href="https://www.instagram.com/qubetics"
               className="footer__social-link"
             >
               <img src={Instagram} alt="" />
             </a>{" "}
             <a
-              target="blank" href="https://www.tiktok.com/@qubetics"
+              target="_blank"
+              href="https://www.tiktok.com/@qubetics"
               className="footer__social-link"
             >
               <img src={TickTok} alt="" />
             </a>{" "}
             <a
-              target="blank" href="https://coinmarketcap.com/currencies/qubetics/"
+              target="_blank"
+              href="https://coinmarketcap.com/currencies/qubetics/"
               className="footer__social-link"
             >
               <img src={coinmarketcap} alt="" />

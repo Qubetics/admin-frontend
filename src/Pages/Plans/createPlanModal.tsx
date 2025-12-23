@@ -4,46 +4,67 @@ import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
-import { ModifyNum } from "../../utils/Helper/CommonHelper";
-import { gbToBytes } from "../../Constant/constants";
+import { ModifyNum, sanitizeInput } from "../../utils/Helper/CommonHelper";
+import {
+  ERROR_MESSAGES,
+  gbToBytes,
+  hoursDropdown,
+} from "../../Constant/constants";
 import { toast } from "react-toastify";
 import CustomInput from "../../Common/CustomInput/CustomInput";
+import NotificationToast from "../../Common/NotificationModal/NotificationModal";
+import type { CreatePlanModalProps } from "../../utils/Interfaces";
 
-const createPlanModal = ({
+const CreatePlanModal = ({
   createShow,
   setCreateShow,
   getAllPlan,
   provAddress,
-}: any) => {
+}: CreatePlanModalProps) => {
   const initialFormData = {
-    hours: "720",
+    hours: "",
     bytes: "",
     price: "",
   };
   const [formData, setFormData] = useState(initialFormData);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({
     price: "",
     bytes: "",
     hours: "",
   });
+  const [showNotification, setShowNotification] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    let errorMsg = "";
-    if (!/^[1-9]\d*$/.test(value) && value !== "") {
-      errorMsg = "Only positive numbers allowed";
-    } else if (name === "hours" && value !== "" && Number(value) < 720) {
-      errorMsg = "Minimum value is 720";
+    const safeValue = sanitizeInput(value, name);
 
-      setFormData((prev) => ({
-        ...prev,
-        [name]: value,
-      }));
-  
+    let errorMsg = "";
+
+    if (name === "price") {
+      if (Number(safeValue) < 1 || safeValue === "-") {
+        errorMsg = ERROR_MESSAGES.PRICE_LESS_THAN_1;
+      } else if (safeValue.includes(".")) {
+        errorMsg = ERROR_MESSAGES.PRICE_DECIMAL;
+      } else if (!/^[1-9]\d*$/.test(safeValue) && safeValue !== "") {
+        errorMsg = ERROR_MESSAGES.PRICE_LESS_THAN_1;
+      }
+    } else if (name === "bytes") {
+      if (Number(safeValue) < 1 || safeValue === "-") {
+        errorMsg = ERROR_MESSAGES.BANDWIDTH_LESS_THAN_1;
+      } else if (safeValue.includes(".")) {
+        errorMsg = ERROR_MESSAGES.BANDWIDTH_DECIMAL;
+      } else if (!/^[1-9]\d*$/.test(safeValue) && safeValue !== "") {
+        errorMsg = ERROR_MESSAGES.BANDWIDTH_LESS_THAN_1;
+      }
     }
-  
+
     if (errorMsg) {
+      if (safeValue === "") {
+        setFormData((prev) => ({ ...prev, [name]: "" }));
+        setErrors((prev) => ({ ...prev, [name]: "" }));
+        return;
+      }
       setErrors((prev) => ({
         ...prev,
         [name]: errorMsg,
@@ -53,7 +74,7 @@ const createPlanModal = ({
 
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: safeValue,
     }));
 
     setErrors((prev) => ({
@@ -62,20 +83,11 @@ const createPlanModal = ({
     }));
   };
 
-  const [show, setShow] = useState(false);
-  const handleClose = () => {
-    getAllPlan();
-    setShow(false);
-  };
-  const handleShow = () => setShow(true);
-
   const handleClick = async () => {
     if (!formData.bytes || !formData.hours || !formData.price) {
-      // console.log("All fields are required");
       toast.error("All field are required");
       return;
     }
-    setIsLoading(true);
     const message = buildCreatePlanMessage({
       from: provAddress,
       gigabytes: Long.fromString(gbToBytes(formData?.bytes)),
@@ -95,33 +107,33 @@ const createPlanModal = ({
       return;
     }
     setFormData(initialFormData);
-    setCreateShow(false);
-    // handleClose();
-    handleShow();
+    handleHide();
+    getAllPlan();
+    setShowNotification(true);
   };
+
   const handleHide = () => {
     setCreateShow(false);
-    setFormData(initialFormData)
-  }
+    setFormData(initialFormData);
+
+    setErrors({
+      price: "",
+      bytes: "",
+      hours: "",
+    });
+    setShowNotification(false);
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
 
   return (
     <>
-      <Modal show={show} onHide={handleClose} centered>
-        <Modal.Header closeButton></Modal.Header>
-        <Modal.Body>
-          <div className="modal-overlay">
-            <div className="modal-content">
-              <h2>dVPN Plan</h2>
-              <p>Plan Created Successfully!</p>
-              <div className="action-btns">
-                {/* <button className="gradient-btn">Ok</button> */}
-                <ButtonCustom label="OK" onClick={handleClose} />
-              </div>
-            </div>
-          </div>
-        </Modal.Body>
-      </Modal>
-
       <Modal show={createShow} onHide={handleHide} centered>
         <Modal.Header closeButton>
           <h2>Create Plan</h2>
@@ -134,51 +146,77 @@ const createPlanModal = ({
                 <CustomInput
                   type="text"
                   name="price"
-                  placeholder="Enter Plan Price"
+                  placeholder="Enter Plan Price in TICS"
                   value={formData.price}
                   onChange={handleChange}
                 />
-                {errors.price && <p style={{ color: "red", fontSize: "12px" }}>{errors.price}</p>}
+                {errors.price && (
+                  <p style={{ color: "red", fontSize: "12px" }}>
+                    {errors.price}
+                  </p>
+                )}
               </div>
 
               <div className="form-group">
-                <label>Plan GB</label>
+                <label>Plan Bandwidth</label>
                 <CustomInput
                   type="text"
                   name="bytes"
-                  placeholder="Enter GB"
+                  placeholder="Enter Bandwidth in GB"
                   value={formData.bytes}
                   onChange={handleChange}
                 />
-                {errors.bytes && <p style={{ color: "red", fontSize: "12px" }}>{errors.bytes}</p>}
+                {errors.bytes && (
+                  <p style={{ color: "red", fontSize: "12px" }}>
+                    {errors.bytes}
+                  </p>
+                )}
               </div>
+
               <div className="create-form">
                 <div className="form-group">
-                  <label>Validity (Hours)</label>
+                  <label>Duration</label>
                   <CustomInput
-                    type="text"
+                    type="select"
                     name="hours"
-                    placeholder="Enter Validity (hours)"
+                    placeholder="Choose"
                     value={formData.hours}
-                    disable={true}
+                    onChange={handleInputChange}
+                    disable={false}
+                    options={hoursDropdown}
                   />
-                  {errors.hours && <p style={{ color: "red", fontSize: "12px" }}>{errors.hours}</p>}
+                  {errors.hours && (
+                    <p style={{ color: "red", fontSize: "12px" }}>
+                      {errors.hours}
+                    </p>
+                  )}
                 </div>
               </div>
-              <div className="create-btn">
 
-              <ButtonCustom
-                label="Create"
-                onClick={handleClick}
-                disabled={isLoading || !formData.bytes || !formData.hours || !formData.price}
-              />
+              <div className="create-btn">
+                <ButtonCustom
+                  label="Create"
+                  onClick={handleClick}
+                  disabled={
+                    isLoading ||
+                    !formData.bytes ||
+                    !formData.hours ||
+                    !formData.price
+                  }
+                />
               </div>
             </div>
           </div>
         </Modal.Body>
       </Modal>
+      <NotificationToast
+        show={showNotification}
+        handleClose={() => setShowNotification(false)}
+        heading="Plan"
+        description="Plan Created Successfully!"
+      />
     </>
   );
 };
 
-export default createPlanModal;
+export default CreatePlanModal;

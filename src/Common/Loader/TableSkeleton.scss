@@ -1,0 +1,45 @@
+$borderCard: rgba(255, 255, 255, 0.1490196078);
+
+@keyframes animateSkeleton {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0 50%;
+  }
+}
+
+.tableLoader .ant-skeleton.ant-skeleton-active .ant-skeleton-title,
+.tableLoader .ant-skeleton.ant-skeleton-active .ant-skeleton-avatar,
+.tableLoader .ant-skeleton.ant-skeleton-active .ant-skeleton-paragraph > li {
+  background: linear-gradient(
+    90deg,
+    rgba(111, 106, 106, 0.76) 25%,
+    rgba(204, 204, 204, 0.76) 37%,
+    rgba(85, 85, 85, 0.77) 63%
+  );
+  background-size: 400% 100%;
+  animation: animateSkeleton 1.4s ease infinite;
+}
+
+.table-skeleton-row .ant-skeleton-content .ant-skeleton-paragraph > li {
+  width: 100%;
+  height: 14px;
+  border-radius: 8px;
+  padding: 5px 5px;
+  margin: 5px 5px;
+}
+
+.table-skeleton-row
+  .ant-skeleton.ant-skeleton-active
+  .ant-skeleton-paragraph
+  > li {
+  background: linear-gradient(
+    90deg,
+    rgba(90, 90, 90, 0.9) 25%,
+    rgba(130, 130, 130, 0.9) 37%,
+    rgba(90, 90, 90, 0.9) 63%
+  );
+  background-size: 400% 100%;
+  animation: animateSkeleton 1.4s ease infinite;
+}

@@ -2,15 +2,13 @@ import { useState } from "react";
 import { CheckOutlined } from "@ant-design/icons";
 import { Tooltip } from "antd";
 import { NewCopyIcon } from "../../assets/StoreAsset/StoreAsset.tsx";
+import type { CopyTextProps } from "../../utils/Interfaces/index.tsx";
 
-interface CopyTextProps {
-  text: string;
-}
-
-export default function CopyText({ text }: CopyTextProps) {
+const CopyText = ({ text }: CopyTextProps) => {
   const [copied, setCopied] = useState<boolean>(false);
 
-  const handleCopyClick = async () => {
+  const handleCopyClick = async (e: React.MouseEvent<HTMLDivElement>) => {
+    e.stopPropagation();
     try {
       await navigator.clipboard.writeText(text);
       setCopied(true);
@@ -27,4 +25,5 @@ export default function CopyText({ text }: CopyTextProps) {
       </div>
     </Tooltip>
   );
-}
+};
+export default CopyText;

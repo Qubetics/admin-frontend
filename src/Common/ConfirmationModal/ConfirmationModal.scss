@@ -1,0 +1,130 @@
+@use "../../utils/functions.scss" as *;
+
+.confirmation-overlay {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  z-index: 2000;
+  animation: fadeIn 0.25s ease-out;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+}
+
+.confirmation-modal {
+  position: relative;
+  max-width: s(480);
+  width: 100%;
+  background: #111;
+  padding: s(40) s(32);
+  border-radius: s(20);
+  text-align: center;
+  color: #fff;
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.4);
+  @media #{mobile()} {
+    padding: s(15);
+    max-width: s(300);
+    width: 100%;
+  }
+  isolation: isolate;
+
+  animation: scaleUp 0.25s ease-out;
+
+  @keyframes scaleUp {
+    from {
+      transform: scale(0.85);
+      opacity: 0;
+    }
+    to {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+  border: 1px solid #3b393c;
+}
+
+@keyframes rotate {
+  0% {
+    --gradient-angle: 0deg;
+  }
+  100% {
+    --gradient-angle: 360deg;
+  }
+}
+
+.confirmation-modal strong {
+  font-size: s(22);
+  font-weight: 600;
+  margin-bottom: s(10);
+  display: block;
+}
+
+.confirmation-modal p {
+  font-size: s(16);
+  opacity: 0.85;
+  margin: 0 0 s(28) 0;
+  @media (max-width: 991px) {
+    margin: 0 0 s(15) 0;
+  }
+}
+
+.confirmation-buttons {
+  display: flex;
+  justify-content: center;
+  gap: s(14);
+  .no-btn {
+    background-color: #000;
+    &::before {
+      background: unset;
+    }
+  }
+}
+
+.yes-btn,
+.no-btn {
+  min-width: s(120);
+}
+
+.close-btn {
+  position: absolute;
+  top: s(15);
+  right: s(15);
+  font-size: 2rem;
+  color: #aaa;
+  background: none;
+  border: none;
+  cursor: pointer;
+
+  transition: 0.2s ease;
+
+  &:hover {
+    color: #fff;
+  }
+}
+
+@media (max-width: 480px) {
+  .confirmation-modal {
+    padding: s(28) s(22);
+    width: 92vw;
+  }
+
+  .confirmation-buttons {
+    flex-direction: column;
+    gap: s(12);
+  }
+
+  .yes-btn,
+  .no-btn {
+    width: 100%;
+  }
+}

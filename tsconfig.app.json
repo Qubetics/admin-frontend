@@ -24,8 +24,8 @@
     "noUncheckedSideEffectImports": true,
 
     /* Prevent TypeScript from pulling in Babel types */
-    "types": ["node"]
+    "types": ["node", "jest", "@testing-library/jest-dom"]
   },
-  "include": ["src"],
-  "exclude": ["src/proto-gen"] 
+  "include": ["src", "__test__", "src/setupTests.ts"],
+  "exclude": ["src/proto-gen"]
 }

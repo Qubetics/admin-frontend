@@ -1,16 +1,10 @@
 // @ts-nocheck
-import { isMsgSend } from "@cosmjs/launchpad";
 import { envConstants } from "../../Constant/envConstants";
 import { simulateMsgs } from "../../utils/Helper/stimulateMsg";
-import { MsgSend } from "../../proto-gen/src/codec/cosmos/bank/v1beta1/tx";
-import { TYPE_URLS } from "../../Constant/constants";
 import { sendMsgs } from "../../utils/Helper/sendMsg";
-import Long from "long";
-import { calculateFee, GasPrice } from "@cosmjs-evm/stargate";
-import { Dec, DecUtils } from "@keplr-wallet/unit";
-import { buildCreatePlanMessage } from "../BuildMessage/buildMessage";
+
 import { toast } from "react-toastify";
-import NotificationToast from "../../Common/NotificationModal/NotificationModal";
+import { PROCESS_TRANSACTION_ERRORS } from "../../Constant/constants";
 
 export const processTransaction = async (message) => {
   if (window?.keplr) {
@@ -31,9 +25,7 @@ export const processTransaction = async (message) => {
 
       if (gasUsed > 0) {
         const gasLimit = Math.floor(gasUsed * 1.3);
-        const feeAmount = Math.ceil(
-          envConstants.gas_limit * gasPrice
-        ).toString();
+        const feeAmount = Math.ceil(envConstants.gas_limit * gasPrice).toString();
         const res = await sendMsgs(window.keplr, key.bech32Address, [message], {
           amount: [{ denom: "tics", amount: feeAmount }],
           gas: Math.floor(gasUsed * 1.5).toString(),
@@ -44,11 +36,11 @@ export const processTransaction = async (message) => {
       }
     } catch (error) {
       const message = error?.message || String(error);
-      if (message.includes("Request rejected")) {
-        toast.error("Transaction rejected");
-        return false;
-      } else  if(message.includes("gigabytes cannot be negative")){
-        toast.error("Value can be negative");
+
+      for (const err of PROCESS_TRANSACTION_ERRORS) {
+        if (message && message.includes(err.match)) {
+          toast.error(err.toast, { toastId: err.id });
+        }
       }
 
       console.log(error, "error while signing transaction");

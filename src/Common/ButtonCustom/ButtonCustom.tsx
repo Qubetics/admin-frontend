@@ -1,4 +1,4 @@
-import type { ButtonCustomProps } from "../../Interface/CustomComp.interface";
+import type { ButtonCustomProps } from "../../utils/Interfaces";
 import "./ButtonCustom.scss";
 
 function ButtonCustom(props: ButtonCustomProps) {
@@ -9,7 +9,7 @@ function ButtonCustom(props: ButtonCustomProps) {
     <button
       className={`customButton ${className ? className : ""} ${
         bordered ? "customButton-bordered" : ""
-      } ${disabled? "disabled" : ""}`}
+      } ${disabled ? "disabled" : ""}`}
       onClick={onClick}
       type={type}
       disabled={disabled}

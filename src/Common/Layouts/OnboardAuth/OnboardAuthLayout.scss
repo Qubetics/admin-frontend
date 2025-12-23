@@ -28,7 +28,7 @@
   align-items: center;
   box-sizing: border-box;
   padding-top: 100px;
-  padding-bottom: 50px;
+  padding-bottom: 169px;
 
   @media (max-width: 1679px) {
     padding-top: 90px;
@@ -52,4 +52,11 @@
 
 .onboarding-footer {
   margin-top: auto;
+}
+.headerBottomOnly {
+  @media #{mobile()} {
+    .header__details {
+      justify-content: flex-end !important;
+    }
+  }
 }

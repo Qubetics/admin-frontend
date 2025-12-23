@@ -4,15 +4,25 @@ import DashboardLayout from "../Common/Layouts/DashboardLayout/DashboardLayout";
 import Plans from "../Pages/Plans/Plans.tsx";
 import Node from "../Pages/Node/Node.tsx";
 import LandingPage from "../Pages/LandingPage/LandingPage.tsx";
- import Dashboard from "../Pages/Dashboard/Dashboard.tsx";
-
-// Pages function returning public and private pages
-export default function PAGES() {
+import Dashboard from "../Pages/Dashboard/Dashboard.tsx";
+import ServiceProvider from "../Pages/ServiceProvider/ServiceProvider.tsx";
+import RegisterPage from "../Pages/Register/RegisterPage.tsx";
+const PAGES = () => {
   return {
-    // Public pages - accessible without authentication
-    PUBLIC_PAGES: [{ path: Path.LANDING, element: <LandingPage /> }],
+    PUBLIC_PAGES: [
+      { path: Path.LANDING, element: <LandingPage /> },
+      {
+        path: Path.SERVICE_PROVIDER,
+        element: <RegisterPage />,
+        children: [
+          {
+            path: Path.SERVICE_PROVIDER,
+            element: <ServiceProvider />,
+          },
+        ],
+      },
+    ],
 
-    // Private pages - require authentication
     PRIVATE_PAGES: [
       {
         element: <DashboardLayout />,
@@ -22,10 +32,9 @@ export default function PAGES() {
           { path: Path.DASHBOARD, element: <Dashboard /> },
           { path: Path.PLANS, element: <Plans /> },
           { path: Path.NODES, element: <Node /> },
-
-          // Add more dashboard-related routes here as children
         ],
       },
     ],
   };
-}
+};
+export default PAGES;
