@@ -380,15 +380,35 @@ const Header = () => {
           </div>
         )}
 
+        {hasHeaderActions && !authData && (
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
+            <div className="responsiveDrawerData">
+              <ButtonCustom
+                className="connect-wallet-mobile"
+                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
+                type="button"
+                onClick={handleWalletConnect}
+                disabled={isConnecting}
+              />
+            </div>
+          </div>
+        )}
+
         <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
           {!authData ? (
-            <ButtonCustom
-              label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-              type="button"
-              tabIndex={3}
-              onClick={handleWalletConnect}
-              disabled={isConnecting}
-            />
+            <>
+              <ButtonCustom
+                className="connect-wallet-desktop"
+                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
+                type="button"
+                tabIndex={3}
+                onClick={handleWalletConnect}
+                disabled={isConnecting}
+              />
+            </>
           ) : (
             width > 991 && (
               <>
@@ -432,7 +452,7 @@ const Header = () => {
           )}
         </div>
 
-        {hasHeaderActions && authData && (
+        {hasHeaderActions && (
           <button
             className={`hamburger ${isMenuOpen ? "active" : ""}`}
             onClick={toggleMenu}
