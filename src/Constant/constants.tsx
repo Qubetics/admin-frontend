@@ -45,15 +45,13 @@ export const STATUS_ENUM = {
 export const HEADING = {
   LEASE_NODE: "NODE Provided On Lease",
   EXIST_LEASE: "Existing Leased Node",
-  REGISTER_PROVIDER: "Registering Provider",
-  PROVIDER_STATUS: "Updating Provider Status",
+  REGISTER_PROVIDER: "Provider registered succesfully",
+  PROVIDER_STATUS: "Provider Status updated Succesfully",
 };
 
 export const DESCRIPTION = {
   LEASE_NODE: "Node provided on lease successfully!",
   EXIST_LEASE: "This node already exists within the ecosystem!",
-  REGISTER_PROVIDER: "Provider registered succesfully",
-  PROVIDER_STATUS: "Provider Status updated Succesfully",
 };
 
 export const UNDEFINED = "undefined";

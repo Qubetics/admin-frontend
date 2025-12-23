@@ -4,8 +4,8 @@ import "./NotificationModal.scss";
 type NotificationToastProps = {
   show: boolean;
   handleClose: () => void;
-  heading: string;
-  description: string;
+  heading?: string;
+  description?: string;
 };
 
 const NotificationToast: React.FC<NotificationToastProps> = ({
@@ -15,6 +15,7 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
   description,
 }) => {
   if (!show) return null;
+
   useEffect(() => {
     if (show) {
       const timer = setTimeout(() => {
@@ -24,12 +25,11 @@ const NotificationToast: React.FC<NotificationToastProps> = ({
     }
   }, [show, handleClose]);
 
-
   return (
     <div className="notification-toast">
       <div className="toast-content">
-        <strong>{heading}</strong>
-        <p>{description}</p>
+        {heading && <strong>{heading}</strong>}
+       {description && <p>{description}</p>}
       </div>
     </div>
   );

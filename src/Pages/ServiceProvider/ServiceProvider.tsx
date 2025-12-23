@@ -16,7 +16,6 @@ import {
 } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import {
-  DESCRIPTION,
   emailRegex,
   ERROR_MSG,
   HEADING,
@@ -32,12 +31,15 @@ import { envConstants } from "../../Constant/envConstants";
 import { useNavigate } from "react-router-dom";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import { getUserBalance } from "../../service/getUserBalance";
-import type { FormErrors, ServiceProviderFormData } from "../../utils/Interfaces";
+import type {
+  FormErrors,
+  ServiceProviderFormData,
+} from "../../utils/Interfaces";
 
 const ServiceProvider = () => {
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
-  const { authData, setIsExist } = useIsLoggedIn();
+  const { authData, setIsExist, setProviderName } = useIsLoggedIn();
 
   const [walletBalance, setWalletBalance] = useState("0");
   const [formData, setFormData] = useState<ServiceProviderFormData>({
@@ -194,10 +196,10 @@ const ServiceProvider = () => {
       });
 
       if (success) {
+        setProviderName(formData?.name);
+        setIsExist(true);
         toast.success("Registration successful!");
         navigate("/dashboard");
-        localStorage.setItem("isExist", "true");
-        setIsExist(true);
       } else {
         toast.error("Registration failed.");
         setFormData({ name: "", email: "", website: "" });
@@ -273,14 +275,12 @@ const ServiceProvider = () => {
         show={showRegisterToast}
         handleClose={() => setShowRegisterToast(false)}
         heading={HEADING.REGISTER_PROVIDER}
-        description={DESCRIPTION.REGISTER_PROVIDER}
       />
 
       <NotificationToast
         show={showProviderToast}
         handleClose={() => setShowProviderToast(false)}
         heading={HEADING.PROVIDER_STATUS}
-        description={DESCRIPTION.PROVIDER_STATUS}
       />
     </div>
   );
