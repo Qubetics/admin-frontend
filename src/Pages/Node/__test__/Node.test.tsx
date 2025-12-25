@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import Node from "../Node";
 
 jest.mock("../../../Common/Copy/CopyText", () => ({
@@ -21,10 +15,7 @@ jest.mock("../../../utils/pagination", () => ({
         NEXT
       </button>
 
-      <select
-        data-testid="limit"
-        onChange={(e) => onLimitChange(Number(e.target.value))}
-      >
+      <select data-testid="limit" onChange={(e) => onLimitChange(Number(e.target.value))}>
         <option value="5">5</option>
         <option value="10">10</option>
       </select>
@@ -37,7 +28,6 @@ jest.mock("../../../Hooks/useGetApi", () => ({
   __esModule: true,
   default: () => mockUseApi,
 }));
-
 
 const paginatedEmpty = {
   success: true,
@@ -177,8 +167,8 @@ describe("Node Component – 100% coverage", () => {
   });
 
   test("pagination change calls API again", async () => {
-    mockUseApi.mockResolvedValueOnce(paginatedSixRows); 
-    mockUseApi.mockResolvedValueOnce(paginatedSixRows); 
+    mockUseApi.mockResolvedValueOnce(paginatedSixRows);
+    mockUseApi.mockResolvedValueOnce(paginatedSixRows);
 
     await act(async () => render(<Node />));
 
@@ -218,7 +208,7 @@ describe("Node Component – 100% coverage", () => {
             {
               orgName: "OrgX",
               nodeAddress: "ADDRX",
-              nodeStatus: "weird-status", 
+              nodeStatus: "weird-status",
               requestFor: "Update",
               status: "unknown",
             },
@@ -235,9 +225,7 @@ describe("Node Component – 100% coverage", () => {
     await waitFor(() => {
       expect(screen.getByText("Unknown")).toBeInTheDocument();
     });
-    
-    expect(screen.getByText("Unknown")).toHaveClass(
-      "status-badge default"
-    );
+
+    expect(screen.getByText("Unknown")).toHaveClass("status-badge default");
   });
 });
