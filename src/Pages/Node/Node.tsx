@@ -3,10 +3,7 @@ import CopyText from "../../Common/Copy/CopyText";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
 import { apiUrls } from "../../Constant/apiUrls";
 import useNetworkRequest from "../../Hooks/useGetApi";
-import {
-  getStatusClass,
-  toFirstCapital,
-} from "../../utils/Helper/CommonHelper";
+import { getStatusClass, toFirstCapital } from "../../utils/Helper/CommonHelper";
 import Pagination from "../../utils/pagination";
 import "./Node.scss";
 import { activeStatus } from "../../Constant/constants";
@@ -84,9 +81,7 @@ function Node() {
                     </td>
                     <td>{row?.requestFor}</td>
                     <td>
-                      <span className={getStatusClass(row?.status)}>
-                        {toFirstCapital(row?.status) || "-"}
-                      </span>
+                      <span className={getStatusClass(row?.status)}>{toFirstCapital(row?.status) || "-"}</span>
                     </td>
                   </tr>
                 ))
@@ -95,7 +90,7 @@ function Node() {
           </table>
         </div>
 
-        {totalPages > 1 && (
+        {nodeList?.length > 5 && !isLoading && (
           <Pagination
             currentPage={page}
             totalPages={totalPages}
