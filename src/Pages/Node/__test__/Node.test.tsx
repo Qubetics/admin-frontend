@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, waitFor, act } from "@testing-library/react";
 import Node from "../Node";
 
 jest.mock("../../../Common/Copy/CopyText", () => ({
@@ -21,10 +15,7 @@ jest.mock("../../../utils/pagination", () => ({
         NEXT
       </button>
 
-      <select
-        data-testid="limit"
-        onChange={(e) => onLimitChange(Number(e.target.value))}
-      >
+      <select data-testid="limit" onChange={(e) => onLimitChange(Number(e.target.value))}>
         <option value="5">5</option>
         <option value="10">10</option>
       </select>
@@ -37,7 +28,6 @@ jest.mock("../../../Hooks/useGetApi", () => ({
   __esModule: true,
   default: () => mockUseApi,
 }));
-
 
 const paginatedEmpty = {
   success: true,
@@ -54,6 +44,54 @@ const paginatedOneRow = {
           nodeAddress: "ADDR1",
           requestFor: "Unlink",
           status: "rejected",
+        },
+      ],
+      total: 10,
+    },
+  },
+};
+
+// Mock data with 6 rows to trigger pagination (needs > 5 rows)
+const paginatedSixRows = {
+  success: true,
+  data: {
+    data: {
+      response: [
+        {
+          orgName: "Org1",
+          nodeAddress: "ADDR1",
+          requestFor: "Unlink",
+          status: "rejected",
+        },
+        {
+          orgName: "Org2",
+          nodeAddress: "ADDR2",
+          requestFor: "Link",
+          status: "approved",
+        },
+        {
+          orgName: "Org3",
+          nodeAddress: "ADDR3",
+          requestFor: "Update",
+          status: "pending",
+        },
+        {
+          orgName: "Org4",
+          nodeAddress: "ADDR4",
+          requestFor: "Unlink",
+          status: "rejected",
+        },
+        {
+          orgName: "Org5",
+          nodeAddress: "ADDR5",
+          requestFor: "Link",
+          status: "approved",
+        },
+        {
+          orgName: "Org6",
+          nodeAddress: "ADDR6",
+          requestFor: "Update",
+          status: "active",
         },
       ],
       total: 10,
@@ -106,12 +144,16 @@ describe("Node Component – 100% coverage", () => {
   });
 
   test("covers ALL getStatusClass branches (forces Node Status column)", async () => {
-    mockUseApi.mockResolvedValueOnce(paginatedOneRow);
+    mockUseApi.mockResolvedValueOnce(paginatedSixRows);
+    mockUseApi.mockResolvedValueOnce(statusRowsResponse);
+
     await act(async () => render(<Node />));
 
-    expect(screen.queryByText(/pending/i)).not.toBeInTheDocument();
+    // Wait for initial data to load
+    await waitFor(() => expect(screen.getByText("Org1")).toBeInTheDocument());
 
-    mockUseApi.mockResolvedValueOnce(statusRowsResponse);
+    // Verify pagination is present
+    await waitFor(() => expect(screen.getByTestId("limit")).toBeInTheDocument());
 
     await act(async () =>
       fireEvent.change(screen.getByTestId("limit"), {
@@ -119,15 +161,18 @@ describe("Node Component – 100% coverage", () => {
       })
     );
 
-    expect(screen.getByText(/rejected/i)).toBeInTheDocument();
+    // Wait for the second API call and new data to render
+    await waitFor(() => expect(screen.getByText(/rejected/i)).toBeInTheDocument());
     expect(screen.getByText("Rejected")).toBeInTheDocument();
   });
 
   test("pagination change calls API again", async () => {
-    mockUseApi.mockResolvedValueOnce(paginatedEmpty); 
-    mockUseApi.mockResolvedValueOnce(paginatedEmpty); 
+    mockUseApi.mockResolvedValueOnce(paginatedSixRows);
+    mockUseApi.mockResolvedValueOnce(paginatedSixRows);
 
     await act(async () => render(<Node />));
+
+    await waitFor(() => expect(screen.getByTestId("next-page")).toBeInTheDocument());
 
     fireEvent.click(screen.getByTestId("next-page"));
 
@@ -135,10 +180,12 @@ describe("Node Component – 100% coverage", () => {
   });
 
   test("limit change triggers setPage + setLimit", async () => {
-    mockUseApi.mockResolvedValueOnce(paginatedEmpty);
-    mockUseApi.mockResolvedValueOnce(paginatedEmpty);
+    mockUseApi.mockResolvedValueOnce(paginatedSixRows);
+    mockUseApi.mockResolvedValueOnce(paginatedSixRows);
 
     await act(async () => render(<Node />));
+
+    await waitFor(() => expect(screen.getByTestId("limit")).toBeInTheDocument());
 
     fireEvent.change(screen.getByTestId("limit"), {
       target: { value: "10" },
@@ -161,7 +208,7 @@ describe("Node Component – 100% coverage", () => {
             {
               orgName: "OrgX",
               nodeAddress: "ADDRX",
-              nodeStatus: "weird-status", 
+              nodeStatus: "weird-status",
               requestFor: "Update",
               status: "unknown",
             },
@@ -175,9 +222,10 @@ describe("Node Component – 100% coverage", () => {
       render(<Node />);
     });
 
-    expect(screen.getByText("Unknown")).toBeInTheDocument(); 
-    expect(screen.getByText("Unknown")).toHaveClass(
-      "status-badge default"
-    );
+    await waitFor(() => {
+      expect(screen.getByText("Unknown")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("Unknown")).toHaveClass("status-badge default");
   });
 });
