@@ -3,10 +3,7 @@ import CopyText from "../../Common/Copy/CopyText";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
 import { apiUrls } from "../../Constant/apiUrls";
 import useNetworkRequest from "../../Hooks/useGetApi";
-import {
-  getStatusClass,
-  toFirstCapital,
-} from "../../utils/Helper/CommonHelper";
+import { getStatusClass, toFirstCapital } from "../../utils/Helper/CommonHelper";
 import Pagination from "../../utils/pagination";
 import "./Node.scss";
 import { activeStatus } from "../../Constant/constants";
@@ -17,6 +14,7 @@ function Node() {
   const [totalPages, setTotalPages] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [isLoading, setIsLoading] = useState(true);
+  const [total, setTotal] = useState<number>(0);
 
   const useGetApi = useNetworkRequest();
 
@@ -28,6 +26,7 @@ function Node() {
 
     if (!success) return;
     setNodeList(data?.data?.response);
+    setTotal(data?.data?.total || 0);
     setTotalPages(data?.data?.total ? Math.ceil(data?.data?.total / limit) : 1);
   };
 
@@ -84,9 +83,7 @@ function Node() {
                     </td>
                     <td>{row?.requestFor}</td>
                     <td>
-                      <span className={getStatusClass(row?.status)}>
-                        {toFirstCapital(row?.status) || "-"}
-                      </span>
+                      <span className={getStatusClass(row?.status)}>{toFirstCapital(row?.status) || "-"}</span>
                     </td>
                   </tr>
                 ))
@@ -95,7 +92,7 @@ function Node() {
           </table>
         </div>
 
-        {totalPages > 1 && (
+        {total > 5 && !isLoading && (
           <Pagination
             currentPage={page}
             totalPages={totalPages}
