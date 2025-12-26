@@ -38,6 +38,10 @@ const useNetworkRequest = () => {
           message: "Session expired. Please log in again.",
         };
       }
+      if (error?.response?.status === 429) {
+        toast.error("Too many requests. Please try again later.", { toastId: "too-many-requests" });
+        navigate("/landing");
+      }
       return {
         success: false,
         message: error?.response?.data?.message,
