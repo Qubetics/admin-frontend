@@ -5,29 +5,20 @@ import Long from "long";
 import { buildCreatePlanMessage } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { ModifyNum, sanitizeInput } from "../../utils/Helper/CommonHelper";
-import {
-  ERROR_MESSAGES,
-  gbToBytes,
-  hoursDropdown,
-} from "../../Constant/constants";
+import { ERROR_MESSAGES, gbToBytes, hoursDropdown } from "../../Constant/constants";
 import { toast } from "react-toastify";
 import CustomInput from "../../Common/CustomInput/CustomInput";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import type { CreatePlanModalProps } from "../../utils/Interfaces";
 
-const CreatePlanModal = ({
-  createShow,
-  setCreateShow,
-  getAllPlan,
-  provAddress,
-}: CreatePlanModalProps) => {
+const CreatePlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }: CreatePlanModalProps) => {
   const initialFormData = {
     hours: "",
     bytes: "",
     price: "",
   };
   const [formData, setFormData] = useState(initialFormData);
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({
     price: "",
     bytes: "",
@@ -84,6 +75,7 @@ const CreatePlanModal = ({
   };
 
   const handleClick = async () => {
+    setIsLoading(true);
     if (!formData.bytes || !formData.hours || !formData.price) {
       toast.error("All field are required");
       return;
@@ -150,11 +142,7 @@ const CreatePlanModal = ({
                   value={formData.price}
                   onChange={handleChange}
                 />
-                {errors.price && (
-                  <p style={{ color: "red", fontSize: "12px" }}>
-                    {errors.price}
-                  </p>
-                )}
+                {errors.price && <p style={{ color: "red", fontSize: "12px" }}>{errors.price}</p>}
               </div>
 
               <div className="form-group">
@@ -166,11 +154,7 @@ const CreatePlanModal = ({
                   value={formData.bytes}
                   onChange={handleChange}
                 />
-                {errors.bytes && (
-                  <p style={{ color: "red", fontSize: "12px" }}>
-                    {errors.bytes}
-                  </p>
-                )}
+                {errors.bytes && <p style={{ color: "red", fontSize: "12px" }}>{errors.bytes}</p>}
               </div>
 
               <div className="create-form">
@@ -185,11 +169,7 @@ const CreatePlanModal = ({
                     disable={false}
                     options={hoursDropdown}
                   />
-                  {errors.hours && (
-                    <p style={{ color: "red", fontSize: "12px" }}>
-                      {errors.hours}
-                    </p>
-                  )}
+                  {errors.hours && <p style={{ color: "red", fontSize: "12px" }}>{errors.hours}</p>}
                 </div>
               </div>
 
@@ -197,12 +177,7 @@ const CreatePlanModal = ({
                 <ButtonCustom
                   label="Create"
                   onClick={handleClick}
-                  disabled={
-                    isLoading ||
-                    !formData.bytes ||
-                    !formData.hours ||
-                    !formData.price
-                  }
+                  disabled={isLoading || !formData.bytes || !formData.hours || !formData.price}
                 />
               </div>
             </div>
