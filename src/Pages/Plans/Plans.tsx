@@ -6,21 +6,11 @@ import type { Plan } from "../../utils/Interfaces";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import CreatePlanModal from "./createPlanModal";
 import { buildUpdatePlanStatusMessage } from "../../service/BuildMessage/buildMessage";
-import {
-  STATUS_ENUM,
-  activeStatus,
-  bytesToGb,
-  provWalletPrefix,
-} from "../../Constant/constants";
+import { STATUS_ENUM, activeStatus, bytesToGb, provWalletPrefix } from "../../Constant/constants";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import {
-  Timestamp,
-  convertNodeToWallet,
-  formatDuration,
-  getValueWithUnit,
-} from "../../utils/Helper/CommonHelper";
+import { Timestamp, convertNodeToWallet, formatDuration, getValueWithUnit } from "../../utils/Helper/CommonHelper";
 import { toast } from "react-toastify";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
 
@@ -54,10 +44,7 @@ const Plans = () => {
       const message = buildUpdatePlanStatusMessage({
         from: provAddress,
         id: Long.fromString(id),
-        status:
-          val?.status === activeStatus
-            ? STATUS_ENUM.STATUS_INACTIVE
-            : STATUS_ENUM.STATUS_ACTIVE,
+        status: val?.status === activeStatus ? STATUS_ENUM.STATUS_INACTIVE : STATUS_ENUM.STATUS_ACTIVE,
       });
 
       const TxHash = await processTransaction(message);
@@ -78,17 +65,13 @@ const Plans = () => {
 
   useEffect(() => {
     getAllPlan();
-  });
+  }, []);
 
   return (
     <div className="plans">
       <div className="plans__header">
         <h3>Plans List</h3>
-        <ButtonCustom
-          className="btn_create"
-          label="Create Plan"
-          onClick={() => setCreateShow(true)}
-        />
+        <ButtonCustom className="btn_create" label="Create Plan" onClick={() => setCreateShow(true)} />
       </div>
       <div className="custom-table-wrapper commonTable">
         <div className="outerTable">
@@ -122,9 +105,9 @@ const Plans = () => {
 
                     <td>
                       {row?.prices?.length > 0
-                        ? `${getValueWithUnit(
-                            row?.prices[0]?.quote_value
-                          )} ${String(row?.prices[0]?.denom).toUpperCase()}`
+                        ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${String(
+                            row?.prices[0]?.denom
+                          ).toUpperCase()}`
                         : "-"}
                     </td>
 
@@ -137,17 +120,11 @@ const Plans = () => {
                     <td>
                       <div className="action-btns">
                         <button
-                          className={`approve-btn ${
-                            row.status === activeStatus || isTxRunning
-                              ? "disablex"
-                              : ""
-                          }`}
+                          className={`approve-btn ${row.status === activeStatus || isTxRunning ? "disablex" : ""}`}
                           onClick={() => handleClick(row)}
                           disabled={row.status === activeStatus || isTxRunning}
                         >
-                          {row.status === activeStatus
-                            ? "Activated"
-                            : "Activate"}
+                          {row.status === activeStatus ? "Activated" : "Activate"}
                         </button>
                       </div>
                     </td>
