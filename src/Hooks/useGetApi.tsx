@@ -4,12 +4,10 @@ import axios from "axios";
 import { apiMethods } from "../Constant/constants";
 import { envConstants } from "../Constant/envConstants";
 import { useIsLoggedIn } from "../Context/LoggedInContext";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const useNetworkRequest = () => {
-  const { setAuthData } = useIsLoggedIn();
-  const navigate = useNavigate();
+  const { logout } = useIsLoggedIn();
 
   const useGetApi = async ({ endpoint, method, body, url }: any) => {
     try {
@@ -28,11 +26,8 @@ const useNetworkRequest = () => {
       };
     } catch (error: any) {
       if (error?.response?.status === 401) {
-        localStorage.removeItem("authData");
-        sessionStorage.clear();
-        setAuthData("");
         toast.error("Unauthorized Access", { toastId: "unauthorized" });
-        navigate("/landing");
+        logout();
         return {
           success: false,
           message: "Session expired. Please log in again.",
@@ -40,7 +35,6 @@ const useNetworkRequest = () => {
       }
       if (error?.response?.status === 429) {
         toast.error("Too many requests. Please try again later.", { toastId: "too-many-requests" });
-        navigate("/landing");
       }
       return {
         success: false,

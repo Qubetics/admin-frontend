@@ -12,12 +12,7 @@ import {
   buildStartLeaseStatusMessage,
   buildUnlinkNodeMessage,
 } from "../../service/BuildMessage/buildMessage";
-import {
-  buttons,
-  convertNodeToWallet,
-  convertPlanString,
-  truncateValue,
-} from "../../utils/Helper/CommonHelper";
+import { buttons, convertNodeToWallet, convertPlanString, truncateValue } from "../../utils/Helper/CommonHelper";
 import {
   DESCRIPTION,
   HEADING,
@@ -33,11 +28,7 @@ import { toast } from "react-toastify";
 import { Col, Row, Tooltip } from "antd";
 import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
-import type {
-  CardBoxProps,
-  RejectShowState,
-  TableRow,
-} from "../../utils/Interfaces";
+import type { CardBoxProps, RejectShowState, TableRow } from "../../utils/Interfaces";
 const Dashboard = () => {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
     show: false,
@@ -49,6 +40,7 @@ const Dashboard = () => {
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [total, setTotal] = useState<number>(0);
   const [limit, setLimit] = useState<number>(5);
   const [activeAccount, setActiveAccount] = useState<any>();
   const [countAccount, setCountAccount] = useState<any>();
@@ -93,12 +85,7 @@ const Dashboard = () => {
     return true;
   };
 
-  const onApproval = async (
-    address: string,
-    type: string,
-    planId: string,
-    hours: string
-  ) => {
+  const onApproval = async (address: string, type: string, planId: string, hours: string) => {
     if (type === linkStatus.unlink) {
       try {
         const message = buildUnlinkNodeMessage({
@@ -183,6 +170,7 @@ const Dashboard = () => {
     }
     setNodeList(data?.data?.nodeList);
     setTotalPages(data?.total ? Math.ceil(data?.total / limit) : 1);
+    setTotal(data?.total);
   };
 
   const fetchNodeNumber = async () => {
@@ -239,12 +227,7 @@ const Dashboard = () => {
         <Row gutter={[25, 20]} className="card-row">
           {cards.map((card, index) => (
             <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
-              <CardBox
-                key={index}
-                title={card.title}
-                value={card.value}
-                icons={card.icons}
-              />
+              <CardBox key={index} title={card.title} value={card.value} icons={card.icons} />
             </Col>
           ))}
         </Row>
@@ -295,9 +278,7 @@ const Dashboard = () => {
 
                     <td>
                       <Tooltip title={row?.email}>
-                        <span>
-                          {row?.email ? truncateValue(row?.email, 3, 3) : "-"}
-                        </span>
+                        <span>{row?.email ? truncateValue(row?.email, 3, 3) : "-"}</span>
                       </Tooltip>
                     </td>
 
@@ -341,21 +322,11 @@ const Dashboard = () => {
                       <div className="action-btns">
                         <button
                           className="approve-btn"
-                          onClick={() =>
-                            onApproval(
-                              row?.nodeAddress,
-                              row?.requestFor,
-                              row?.planId,
-                              row?.hours
-                            )
-                          }
+                          onClick={() => onApproval(row?.nodeAddress, row?.requestFor, row?.planId, row?.hours)}
                         >
                           Approve
                         </button>
-                        <button
-                          className="reject-btn"
-                          onClick={() => onReject(row?.nodeAddress)}
-                        >
+                        <button className="reject-btn" onClick={() => onReject(row?.nodeAddress)}>
                           Reject
                         </button>
                       </div>
@@ -367,7 +338,7 @@ const Dashboard = () => {
           </table>
         </div>
 
-        {totalPages > 1 && (
+        {total > 5 && !isLoading && (
           <Pagination
             currentPage={page}
             totalPages={totalPages}
