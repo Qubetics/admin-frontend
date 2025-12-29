@@ -1,5 +1,5 @@
-import Lottie from 'lottie-react'
-import datajson from "../../assets/Json/loaderFile.json"
+import Lottie from "lottie-react";
+import datajson from "../../assets/Json/loaderFile.json";
 
 function Loader() {
   return (
@@ -20,11 +20,15 @@ function Loader() {
       }}
     >
       <div className="lottieIcon">
-        <Lottie animationData={datajson} loop={true} style={{ width: "500px", height: "500px" }} />
+        <Lottie
+          animationData={datajson}
+          loop={true}
+          style={{ width: "500px", height: "500px" }}
+        />
         {/* <Spin size="large" /> */}
       </div>
     </div>
-  )
+  );
 }
 
-export default Loader
+export default Loader;

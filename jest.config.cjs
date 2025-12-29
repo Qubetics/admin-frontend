@@ -5,7 +5,9 @@ module.exports = {
     "^.+\\.(js|jsx|ts|tsx)$": "babel-jest",
   },
 
-  transformIgnorePatterns: ["node_modules/(?!(@keplr-wallet|@cosmjs|axios|react-toastify)/)"],
+  transformIgnorePatterns: [
+    "node_modules/(?!(@keplr-wallet|@cosmjs|axios|react-toastify)/)",
+  ],
 
   extensionsToTreatAsEsm: [".ts", ".tsx"],
   moduleFileExtensions: ["js", "jsx", "ts", "tsx"],
@@ -29,6 +31,12 @@ module.exports = {
 
   testMatch: ["**/__test__/**/*.[jt]s?(x)", "**/?(*.)+(test).[tj]s?(x)"],
 
-  testPathIgnorePatterns: ["<rootDir>/src/proto-gen/"],
-  coveragePathIgnorePatterns: ["<rootDir>/src/proto-gen/"],
+  testPathIgnorePatterns: [
+    "<rootDir>/src/proto-gen/",
+    "<rootDir>/src/Common/Loader/TableSkeleton.tsx",
+  ],
+  coveragePathIgnorePatterns: [
+    "<rootDir>/src/proto-gen/",
+    "<rootDir>/src/Common/Loader/TableSkeleton.tsx",
+  ],
 };

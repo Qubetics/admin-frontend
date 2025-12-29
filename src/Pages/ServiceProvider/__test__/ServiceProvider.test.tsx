@@ -77,6 +77,8 @@ jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => {
 jest.mock("../../../Context/LoggedInContext", () => ({
   useIsLoggedIn: () => ({
     authData: "cosmos123",
+    setIsExist: jest.fn(),
+    setProviderName: jest.fn(),
   }),
 }));
 

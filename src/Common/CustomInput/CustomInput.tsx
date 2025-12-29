@@ -1,18 +1,6 @@
-// src/components/Common/CustomInput/CustomInput.tsx
 import React from "react";
 import "./CustomInput.scss";
-
-type Option = { label: string; value: string | number };
-
-interface CustomInputProps {
-  type?: string;
-  name: string;
-  disable?: boolean;
-  value?: string | number;
-  placeholder?: string;
-  onChange?: (e: any) => void;
-  options?: Option[];
-}
+import type { CustomInputProps } from "../../utils/Interfaces";
 
 const CustomInput: React.FC<CustomInputProps> = ({
   type = "text",
@@ -26,9 +14,15 @@ const CustomInput: React.FC<CustomInputProps> = ({
   if (type === "select") {
     return (
       <div className={"custom-input"}>
-        <div className='select-wrap'>
-          <select name={name} value={value || ""} disabled={disable} onChange={onChange} className='select-field'>
-            <option value='' disabled>
+        <div className="select-wrap">
+          <select
+            name={name}
+            value={value || ""}
+            disabled={disable}
+            onChange={onChange}
+            className="select-field"
+          >
+            <option value="" disabled>
               {"Choose"}
             </option>
             {options.map((opt) => (
@@ -37,14 +31,14 @@ const CustomInput: React.FC<CustomInputProps> = ({
               </option>
             ))}
           </select>
-          <span className='chevron' aria-hidden='true' />
+          <span className="chevron" aria-hidden="true" />
         </div>
       </div>
     );
   }
 
   return (
-    <div className='custom-input'>
+    <div className="custom-input">
       <input
         type={type}
         name={name}
@@ -52,7 +46,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         disabled={disable}
         placeholder={placeholder}
         onChange={onChange as React.ChangeEventHandler<HTMLInputElement>}
-        className='input-field'
+        className="input-field"
       />
     </div>
   );

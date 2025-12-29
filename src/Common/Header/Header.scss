@@ -34,9 +34,9 @@
     justify-content: space-between;
     gap: 20px;
 
-    @media (max-width: 1299px) {
-      justify-content: unset;
-    }
+    // @media (max-width: 1299px) {
+    //   justify-content: unset;
+    // }
 
     @media (max-width: 1200px) {
       justify-content: space-between;
@@ -75,6 +75,21 @@
     justify-content: center;
     width: 100%;
     max-width: 200px;
+    @media (max-width: 991px) {
+      max-width: 100%;
+    }
+  }
+
+  &.connect-wallet-mobile {
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    width: 100%;
+    max-width: 200px;
+  }
+
+  &.connect-wallet-desktop {
+    display: flex;
   }
 
   @media (min-width: 992px) {
@@ -83,6 +98,16 @@
     }
 
     &.mobile-logout {
+      display: none;
+    }
+
+    &.connect-wallet-mobile {
+      display: none;
+    }
+  }
+
+  @media (max-width: 991px) {
+    &.connect-wallet-desktop {
       display: none;
     }
   }
@@ -119,6 +144,7 @@
     position: relative;
     img {
       max-width: 200px;
+      width: 100%;
 
       .mobile-logo {
         max-width: 40px;

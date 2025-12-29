@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import ButtonCustom from "../../Common/ButtonCustom/ButtonCustom";
 import CustomInput from "../../Common/CustomInput/CustomInput";
@@ -18,14 +16,13 @@ import {
 } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import {
-  DESCRIPTION,
   emailRegex,
   ERROR_MSG,
   HEADING,
   nameRegex,
   provWalletPrefix,
   STATUS_ENUM,
-  ERROR_MESSAGES
+  ERROR_MESSAGES,
 } from "../../Constant/constants";
 import useNetworkRequest from "../../Hooks/useGetApi";
 import { apiUrls } from "../../Constant/apiUrls";
@@ -34,23 +31,15 @@ import { envConstants } from "../../Constant/envConstants";
 import { useNavigate } from "react-router-dom";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import { getUserBalance } from "../../service/getUserBalance";
-
-interface ServiceProviderFormData {
-  name: string;
-  email: string;
-  website: string;
-}
-
-interface FormErrors {
-  name?: string;
-  email?: string;
-  website?: string;
-}
+import type {
+  FormErrors,
+  ServiceProviderFormData,
+} from "../../utils/Interfaces";
 
 const ServiceProvider = () => {
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
-  const { authData } = useIsLoggedIn();
+  const { authData, setIsExist, setProviderName } = useIsLoggedIn();
 
   const [walletBalance, setWalletBalance] = useState("0");
   const [formData, setFormData] = useState<ServiceProviderFormData>({
@@ -207,6 +196,8 @@ const ServiceProvider = () => {
       });
 
       if (success) {
+        setProviderName(formData?.name);
+        setIsExist(true);
         toast.success("Registration successful!");
         navigate("/dashboard");
       } else {
@@ -284,14 +275,12 @@ const ServiceProvider = () => {
         show={showRegisterToast}
         handleClose={() => setShowRegisterToast(false)}
         heading={HEADING.REGISTER_PROVIDER}
-        description={DESCRIPTION.REGISTER_PROVIDER}
       />
 
       <NotificationToast
         show={showProviderToast}
         handleClose={() => setShowProviderToast(false)}
         heading={HEADING.PROVIDER_STATUS}
-        description={DESCRIPTION.PROVIDER_STATUS}
       />
     </div>
   );

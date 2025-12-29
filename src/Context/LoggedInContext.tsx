@@ -1,62 +1,50 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
-
-interface AuthContextType {
-  authData: string;
-  setAuthData: React.Dispatch<React.SetStateAction<string>>;
-  providerName: string;
-  setProviderName: React.Dispatch<React.SetStateAction<string>>;
-  loading: boolean;
-  logout: () => void;
-  isExist: boolean;
-  setIsExist: React.Dispatch<React.SetStateAction<boolean>>;
-}
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import type { AuthContextType } from "../utils/Interfaces";
 
 export const MyLoggedInContext = createContext<AuthContextType | undefined>(undefined);
 
 export const LoggedInProvider = ({ children }: { children: React.ReactNode }) => {
   const [authData, setAuthData] = useState<string>("");
   const [providerName, setProviderName] = useState<string>("");
-  const [isExist, setIsExist] = useState(false);
-
+  const [isExist, setIsExist] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Load from localStorage on mount
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
-    const fetchAuthToken = async () => {
-      setLoading(true);
-      const stored = localStorage.getItem("authData");
-      const storedProvider = localStorage.getItem("providerName");
+    setLoading(true);
+    const stored = localStorage.getItem("authData");
+    const storedProvider = localStorage.getItem("providerName");
+    const storedExist = localStorage.getItem("isExist");
 
-      if (stored) setAuthData(stored);
-      if (storedProvider) setProviderName(storedProvider);
+    if (stored) setAuthData(stored);
+    if (storedProvider) setProviderName(storedProvider);
+    if (storedExist) setIsExist(storedExist === "true");
 
-      setLoading(false);
-    };
-    fetchAuthToken();
+    setLoading(false);
+    isInitialMount.current = false;
   }, []);
 
-  // Save to localStorage when authData changes
   useEffect(() => {
-    if (authData) {
-      localStorage.setItem("authData", authData);
-    } else {
-      localStorage.removeItem("authData");
-    }
-  }, [authData]);
+    if (isInitialMount.current) return;
 
-  useEffect(() => {
+    if (authData) localStorage.setItem("authData", authData);
+    else localStorage.removeItem("authData");
     if (providerName) localStorage.setItem("providerName", providerName);
     else localStorage.removeItem("providerName");
-  }, [providerName]);
+    if (isExist) localStorage.setItem("isExist", "true");
+    else localStorage.removeItem("isExist");
+  }, [authData, providerName, isExist]);
 
   const logout = () => {
     setAuthData("");
     setProviderName("");
-    localStorage.removeItem("authData");
-    localStorage.removeItem("providerName");
+    setIsExist(false);
 
     sessionStorage.clear();
+    localStorage.clear();
+
     window.location.href = "/landing";
   };
 
@@ -69,8 +57,8 @@ export const LoggedInProvider = ({ children }: { children: React.ReactNode }) =>
         setProviderName,
         loading,
         logout,
-        setIsExist,
         isExist,
+        setIsExist,
       }}
     >
       {children}

@@ -4,7 +4,6 @@ import { toast } from "react-toastify";
 
 import "./Header.scss";
 import Logo from "../../assets/Logo.svg";
-import mobLogo from "../../assets/MobileLogo.svg";
 import Path from "../../Routing/Constant/RoutePaths";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import useNetworkRequest from "../../Hooks/useGetApi";
@@ -24,24 +23,7 @@ import CopyText from "../Copy/CopyText";
 import useCurrentWidth from "../../Hooks/useCurrentWidth";
 import ProfileIcon from "../../assets/ProfileIcon.svg";
 import ConfirmationModal from "../ConfirmationModal/ConfirmationModal";
-// Types
-interface KeplrWindow extends Window {
-  keplr?: {
-    enable: (chainId: string) => Promise<void>;
-    disable: (chainId: string) => Promise<void>;
-    getOfflineSigner: (chainId: string) => {
-      getAccounts: () => Promise<Array<{ address: string }>>;
-    };
-    signArbitrary: (
-      chainId: string,
-      address: string,
-      message: string
-    ) => Promise<{
-      signature: string;
-      pub_key: any;
-    }>;
-  };
-}
+import type { KeplrWindow } from "../../utils/Interfaces";
 
 declare const window: KeplrWindow;
 
@@ -49,10 +31,12 @@ const Header = () => {
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
+      if (
+        profileRef.current &&
+        !profileRef.current.contains(event.target as Node)
+      ) {
         setIsProfileOpen(false);
       }
     };
@@ -64,27 +48,23 @@ const Header = () => {
   }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [balance, setBalance] = useState<number>(0);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { authData, setAuthData, providerName, setProviderName, isExist, setIsExist } = useIsLoggedIn();
+  const {
+    authData,
+    setAuthData,
+    providerName,
+    setProviderName,
+    isExist,
+    setIsExist,
+  } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
-  // function to logo resize
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const width = useCurrentWidth();
 
-  const handleResize = () => {
-    setIsMobile(window.innerWidth <= 768);
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -113,31 +93,33 @@ const Header = () => {
     setIsMenuOpen((prev) => !prev);
   }, []);
 
-  const fetchAccountBalance = useCallback(async (address: string): Promise<void> => {
-    if (!address) {
-      console.warn("No address provided for balance fetch");
-      return;
-    }
-
-    setIsLoading(true);
-    try {
-      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
-      const response = await api(uri);
-
-      if (response?.balances?.[0]?.amount) {
-        const balanceAmount = Number(response.balances[0].amount) / 1e18;
-        setBalance(balanceAmount);
-      } else {
-        setBalance(0);
+  const fetchAccountBalance = useCallback(
+    async (address: string): Promise<void> => {
+      if (!address) {
+        console.warn("No address provided for balance fetch");
+        return;
       }
-    } catch (error) {
-      console.error("Error fetching account balance:", error);
-      setBalance(0);
-      toast.error("Failed to fetch account balance");
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
+
+      try {
+        const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
+        const response = await api(uri);
+
+        if (response?.balances?.[0]?.amount) {
+          const balanceAmount = Number(response.balances[0].amount) / 1e18;
+          setBalance(balanceAmount);
+        } else {
+          setBalance(0);
+        }
+      } catch (error) {
+        console.error("Error fetching account balance:", error);
+        setBalance(0);
+        toast.error("Failed to fetch account balance");
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    []
+  );
 
   const handleLogout = useCallback(async (): Promise<void> => {
     if (isLoading) return;
@@ -146,14 +128,17 @@ const Header = () => {
     setAuthData("");
     setBalance(0);
 
-    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
+    const pathname =
+      typeof window !== "undefined" ? window.location.pathname : "";
 
-    if (pathname === Path.SERVICE_PROVIDER || (pathname === Path.LANDING && !isExist)) {
+    if (
+      pathname === Path.SERVICE_PROVIDER ||
+      (pathname === Path.LANDING && !isExist)
+    ) {
       navigate(Path.LANDING);
       return;
     }
 
-    setIsLoading(true);
     try {
       const { success } = await useGetApi({
         endpoint: apiUrls.logout,
@@ -180,7 +165,8 @@ const Header = () => {
   const connectKeplr = useCallback(async (): Promise<string | null> => {
     if (!window.keplr) {
       if (/Android/i.test(navigator.userAgent)) {
-        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+        window.location.href =
+          "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
       } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.location.href = "keplrwallet://";
       } else {
@@ -196,7 +182,6 @@ const Header = () => {
     }
 
     try {
-      // await window.keplr!.disable(chainId);
       await window.keplr!.enable(chainId);
 
       const offlineSigner = window.keplr!.getOfflineSigner(chainId);
@@ -230,7 +215,11 @@ const Header = () => {
         const message = address;
         const chainId = envConstants.chainId;
 
-        const { signature, pub_key } = await window.keplr.signArbitrary(chainId, address, message);
+        const { signature, pub_key } = await window.keplr.signArbitrary(
+          chainId,
+          address,
+          message
+        );
 
         if (!signature || !pub_key) {
           toast.error("Failed to sign in");
@@ -256,7 +245,6 @@ const Header = () => {
             signature: { pub_key, signature },
           },
         });
-
         if (!success) {
           setIsExist(false);
           setProviderName("");
@@ -329,38 +317,52 @@ const Header = () => {
     { path: Path.NODES, label: "Nodes" },
   ];
   const hasHeaderActions = location.pathname !== "/";
-  const hideNavItems = location.pathname === Path.SERVICE_PROVIDER || (!isExist && location.pathname === Path.LANDING);
+  const hideNavItems =
+    location.pathname === Path.SERVICE_PROVIDER ||
+    (!isExist && location.pathname === Path.LANDING);
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
-const isLandingPage = location.pathname.startsWith(Path.LANDING) || location.pathname.startsWith(Path.SERVICE_PROVIDER);
+  const isLandingPage =
+    location.pathname.startsWith(Path.LANDING) ||
+    location.pathname.startsWith(Path.SERVICE_PROVIDER);
 
   return (
-     <div className={`header-main`}>
+    <div className={`header-main`}>
       <div className="header-main__bottom container">
         <div className="header__left">
           <Link to={Path.LANDING}>
-            {isMobile ? (
-              <img src={mobLogo} alt="Mobile Logo" className="mobile-logo" />
-            ) : (
-              <img src={Logo} alt="Web Logo" className="web-logo" />
-            )}
+            <img src={Logo} alt="Web Logo" className="web-logo" />
           </Link>
         </div>
         {hasHeaderActions && authData && (
-          <div className={`header__details ${isMenuOpen ? "active" : ""}`} ref={menuRef}>
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
             {authData && (
               <>
                 {!hideNavItems && (
                   <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
                     {navigationItems.map(({ path, label }) => (
-                      <Link key={path} to={path} className={isActive(path)} onClick={() => setIsMenuOpen(false)}>
+                      <Link
+                        key={path}
+                        to={path}
+                        className={isActive(path)}
+                        onClick={() => setIsMenuOpen(false)}
+                      >
                         {label}
                       </Link>
                     ))}
                   </nav>
                 )}
 
-                <div className={`responsiveDrawerData ${isLandingPage ? "landing-header-logined" : ""}`}>
-                  <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
+                <div
+                  className={`responsiveDrawerData ${
+                    isLandingPage ? "landing-header-logined" : ""
+                  }`}
+                >
+                  <span className="customButton balance-display">
+                    {formatBalance(balance)} TICS
+                  </span>
                   <div className="header__wallet-address customButton">
                     <div>{truncateValue(authData)}</div>
                     <CopyText text={authData} />
@@ -378,35 +380,62 @@ const isLandingPage = location.pathname.startsWith(Path.LANDING) || location.pat
           </div>
         )}
 
-        {/* Right Section */}
+        {hasHeaderActions && !authData && (
+          <div
+            className={`header__details ${isMenuOpen ? "active" : ""}`}
+            ref={menuRef}
+          >
+            <div className="responsiveDrawerData">
+              <ButtonCustom
+                className="connect-wallet-mobile"
+                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
+                type="button"
+                onClick={handleWalletConnect}
+                disabled={isConnecting}
+              />
+            </div>
+          </div>
+        )}
+
         <div className={`header__right ${isMenuOpen ? "active" : ""}`}>
           {!authData ? (
-            <ButtonCustom
-              label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
-              type="button"
-              tabIndex={3}
-              onClick={handleWalletConnect}
-              disabled={isConnecting}
-            />
+            <>
+              <ButtonCustom
+                className="connect-wallet-desktop"
+                label={isConnecting ? "Connecting..." : "Connect Keplr Wallet"}
+                type="button"
+                tabIndex={3}
+                onClick={handleWalletConnect}
+                disabled={isConnecting}
+              />
+            </>
           ) : (
             width > 991 && (
               <>
-                <span className="customButton balance-display ticsbtnPadding">{formatBalance(balance)} TICS</span>
+                <span className="customButton balance-display ticsbtnPadding">
+                  {formatBalance(balance)} TICS
+                </span>
                 <div className="header__wallet-address customButton ticsbtnPadding">
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>
                 <div className="profile-container" ref={profileRef}>
-                  <div className="profile-icon" onClick={() => setIsProfileOpen(!isProfileOpen)}>
+                  <div
+                    className="profile-icon"
+                    onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  >
                     <img src={ProfileIcon} alt="Profile" />
                   </div>
                   {isProfileOpen && (
                     <div className="profile-dropdown">
                       {providerName && (
-                        <p className="dropdown-item">Provider Name: {toFirstCapitalCase(providerName)}</p>
+                        <p className="dropdown-item">
+                          Provider Name: {toFirstCapitalCase(providerName)}
+                        </p>
                       )}
                       <p className="dropdown-item">
-                        Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
+                        Provider Address: {truncateValue(provAddress)}{" "}
+                        <CopyText text={provAddress} />
                       </p>
                       <button
                         onClick={() => setShowConfirmModal(true)}
@@ -423,8 +452,12 @@ const isLandingPage = location.pathname.startsWith(Path.LANDING) || location.pat
           )}
         </div>
 
-        {hasHeaderActions && authData && (
-          <button className={`hamburger ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu} aria-label="Toggle menu">
+        {hasHeaderActions && (
+          <button
+            className={`hamburger ${isMenuOpen ? "active" : ""}`}
+            onClick={toggleMenu}
+            aria-label="Toggle menu"
+          >
             <span></span>
             <span></span>
             <span></span>

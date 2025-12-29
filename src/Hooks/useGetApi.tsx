@@ -4,20 +4,12 @@ import axios from "axios";
 import { apiMethods } from "../Constant/constants";
 import { envConstants } from "../Constant/envConstants";
 import { useIsLoggedIn } from "../Context/LoggedInContext";
-import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 
 const useNetworkRequest = () => {
-  const { setAuthData } = useIsLoggedIn();
-  const navigate = useNavigate();
+  const { logout } = useIsLoggedIn();
 
-  const useGetApi = async ({
-    endpoint,
-    method,
-    body,
-    url,
-  }: // checktoast,
-  any) => {
+  const useGetApi = async ({ endpoint, method, body, url }: any) => {
     try {
       const response = await axios({
         method: method || apiMethods.GET,
@@ -33,23 +25,16 @@ const useNetworkRequest = () => {
         message: response.data.message || "Success",
       };
     } catch (error: any) {
-      // if (checktoast) {
-      //   const hideOn = ![
-      //     "identity.user.already_registered",
-      //     "identity.user.is_pending",
-      //   ].includes(error?.message);
-      //   hideOn && updateToast("error", error?.message);
-      // }
       if (error?.response?.status === 401) {
-        localStorage.removeItem("authData");
-        sessionStorage.clear();
-        setAuthData("");
         toast.error("Unauthorized Access", { toastId: "unauthorized" });
-        navigate("/landing");
+        logout();
         return {
           success: false,
           message: "Session expired. Please log in again.",
         };
+      }
+      if (error?.response?.status === 429) {
+        toast.error("Too many requests. Please try again later.", { toastId: "too-many-requests" });
       }
       return {
         success: false,

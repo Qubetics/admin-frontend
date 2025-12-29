@@ -2,16 +2,7 @@ import React from "react";
 import { createPortal } from "react-dom";
 import "./ConfirmationModal.scss";
 import ButtonCustom from "../ButtonCustom/ButtonCustom";
-
-type ConfirmationModalProps = {
-  show: boolean;
-  heading?: string;
-  description?: string;
-  confirmLabel?: string;
-  cancelLabel?: string;
-  onConfirm: () => void;
-  onCancel: () => void;
-};
+import type { ConfirmationModalProps } from "../../utils/Interfaces";
 
 const ConfirmationModal: React.FC<ConfirmationModalProps> = ({
   show,

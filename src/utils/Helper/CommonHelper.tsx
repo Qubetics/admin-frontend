@@ -16,6 +16,7 @@ import { envConstants } from "../../Constant/envConstants";
 
 import bech32 from "bech32";
 import { DECIMAL_PLACES } from "../../Constant/constants";
+import type { ButtonItem } from "../Interfaces";
 
 function messageToAminoTransaction(signer: string, data: string) {
   return {
@@ -87,19 +88,17 @@ export const fetchAccountInfo = async (address: string) => {
   }
 };
 
-export const convertNodeToWallet = (address: any, walletPrefix: any) => {
+export const convertNodeToWallet = (address: string, walletPrefix: string) => {
   if (!address) {
     return "";
   }
-  // Decode node address
   const decoded = bech32.decode(address);
   const words = decoded.words;
 
-  // Re-encode with wallet prefix
   return bech32.encode(walletPrefix, words);
 };
 
-export const ModifyNum = (value: any) => {
+export const ModifyNum = (value: string) => {
   if (value.includes(".")) {
     const data = value.split(".")[1];
     const res = value.replace(".", "");
@@ -114,17 +113,15 @@ export const ModifyNum = (value: any) => {
 export const formatTimestamp = (timestamp: string) => {
   const date = new Date(timestamp);
 
-  // Extract date components
   const year = date.getFullYear();
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const day = String(date.getDate()).padStart(2, "0");
 
-  // Handle hours/minutes
   let hours = date.getHours();
   const minutes = String(date.getMinutes()).padStart(2, "0");
   const ampm = hours >= 12 ? "pm" : "am";
 
-  hours = hours % 12 || 12; // Convert to 12-hour format
+  hours = hours % 12 || 12;
 
   return `${year}-${month}-${day} ${String(hours).padStart(
     2,
@@ -133,10 +130,8 @@ export const formatTimestamp = (timestamp: string) => {
 };
 
 export const Timestamp = (value: string | number | Date): string => {
-  // Convert input to Date
   const date = new Date(value);
 
-  // Format options
   const options: Intl.DateTimeFormatOptions = {
     year: "numeric",
     month: "numeric",
@@ -155,11 +150,11 @@ export const truncateValue = (
   end: number = 4
 ) => {
   if (!value) return "";
-  if (value.length <= start + end) return value; // no need to truncate if too short
+  if (value.length <= start + end) return value;
   return `${value.slice(0, start)}...${value.slice(-end)}`;
 };
 
-export const formatDuration = (hours: any) => {
+export const formatDuration = (hours: number) => {
   if (!hours && hours !== 0) return "";
 
   if (hours >= 24) {
@@ -180,11 +175,11 @@ export const formatDuration = (hours: any) => {
   }
 };
 
-export const copyToClipboard = (text: any) => {
+export const copyToClipboard = (text: string) => {
   return navigator.clipboard.writeText(text);
 };
 
-export const formatBalance = (amount: any) => {
+export const formatBalance = (amount: number) => {
   return amount.toLocaleString("en-US", {
     minimumFractionDigits: 2,
     maximumFractionDigits: 2,
@@ -193,7 +188,7 @@ export const formatBalance = (amount: any) => {
 
 export const getValueWithUnit = (
   value: string | number,
-  unit: any = envConstants.currency
+  unit: string = envConstants.currency
 ) => {
   let unitBn: BigNumber.Value;
   switch (unit) {
@@ -258,17 +253,13 @@ export const toFirstCapitalCase = (str: string): string => {
     .join(" ");
 };
 
-export const convertPlanString = (planStr?: any): any => {
+export const convertPlanString = (planStr?: string): string => {
   if (!planStr) return "";
 
-  // Split the string into numeric part and the rest
   const [valueStr, ...rest] = planStr.split(" ");
-  const unitStr = rest.join(" "); // e.g., "TICS/month"
-
-  // Convert the numeric part
+  const unitStr = rest.join(" ");
   const convertedValue = getValueWithUnit(valueStr);
 
-  // Return formatted string
   return `${Number(convertedValue).toFixed(2)} ${unitStr}`;
 };
 
@@ -290,31 +281,76 @@ export const sanitizeInput = (value: string, field: string): string => {
   const jsAttack = /(javascript:|onerror=|onload=|<script|<\/script)/gi;
   if (jsAttack.test(value)) return "";
 
-  const sqlAttack = /\b(drop table|insert into|delete from|update .* set|select .* from)\b/gi;
+  const sqlAttack =
+    /\b(drop table|insert into|delete from|update .* set|select .* from)\b/gi;
   if (sqlAttack.test(value)) return "";
 
-
   if (field === "email") {
-    return value
-      .replace(/\s+/g, "")                 
-      .replace(/[^a-zA-Z0-9@._-]/g, "");   
+    return value.replace(/\s+/g, "").replace(/[^a-zA-Z0-9@._-]/g, "");
   }
 
   if (field === "name") {
-    let clean = value.replace(/<\/?[^>]+>/g, ""); 
-    clean = clean.replace(/[^\w\s.'-]/g, "");      
-    clean = clean.replace(/^\s+/, "");             
-    clean = clean.replace(/\s{2,}/g, " ");         
+    let clean = value.replace(/<\/?[^>]+>/g, "");
+    clean = clean.replace(/[^\p{L}\p{M}\p{N}\s.'-]/gu, "");
+    clean = clean.replace(/^\s+/, "");
+    clean = clean.replace(/\s{2,}/g, " ");
     return clean;
   }
 
   if (field === "website") {
-    return value
-      .replace(/"/g, "")        
-      .replace(/<|>/g, "")      
-      .trim();                  
+    return value.replace(/"/g, "").replace(/<|>/g, "").trim();
   }
 
   return value;
 };
 
+export const getStatusClass = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "active":
+      return "status-badge active";
+    case "inactive":
+      return "status-badge inactive";
+    case "pending":
+      return "status-badge pending";
+    case "approved":
+      return "status-badge approved";
+    case "rejected":
+      return "status-badge rejected";
+    default:
+      return "status-badge default";
+  }
+};
+
+export const buttons = (countAccount?: {
+  totalCount?: number;
+  linkCount?: number;
+  UnlinkCount?: number;
+}): ButtonItem[] => [
+  {
+    label: (
+      <>
+        All <span>Requests</span>
+      </>
+    ),
+    value: "allrequest",
+    count: countAccount?.totalCount ?? 0,
+  },
+  {
+    label: (
+      <>
+        Link <span>Requests</span>
+      </>
+    ),
+    value: "Link",
+    count: countAccount?.linkCount ?? 0,
+  },
+  {
+    label: (
+      <>
+        Unlink <span>Requests</span>
+      </>
+    ),
+    value: "Unlink",
+    count: countAccount?.UnlinkCount ?? 0,
+  },
+];
