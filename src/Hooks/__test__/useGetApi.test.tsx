@@ -18,9 +18,11 @@ jest.mock("react-router-dom", () => ({
 
 // Mock LoggedInContext
 const mockSetAuthData = jest.fn();
+const mockLogout = jest.fn();
 jest.mock("../../Context/LoggedInContext", () => ({
   useIsLoggedIn: () => ({
-    setAuthData: mockSetAuthData
+    setAuthData: mockSetAuthData,
+    logout: mockLogout
   })
 }));
 
@@ -77,9 +79,8 @@ describe("useGetApi (async API function)", () => {
     });
 
     
-    expect(mockSetAuthData).toHaveBeenCalledWith("");
+    expect(mockLogout).toHaveBeenCalled();
     expect(toast.error).toHaveBeenCalledWith("Unauthorized Access", { toastId: "unauthorized" });
-    expect(mockNavigate).toHaveBeenCalledWith("/landing");
 
     expect(result).toEqual({
       success: false,

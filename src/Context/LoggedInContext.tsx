@@ -1,42 +1,34 @@
 "use client";
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useRef, useState } from "react";
 import type { AuthContextType } from "../utils/Interfaces";
 
-export const MyLoggedInContext = createContext<AuthContextType | undefined>(
-  undefined
-);
+export const MyLoggedInContext = createContext<AuthContextType | undefined>(undefined);
 
-export const LoggedInProvider = ({
-  children,
-}: {
-  children: React.ReactNode;
-}) => {
+export const LoggedInProvider = ({ children }: { children: React.ReactNode }) => {
   const [authData, setAuthData] = useState<string>("");
   const [providerName, setProviderName] = useState<string>("");
   const [isExist, setIsExist] = useState<boolean>(false);
-
   const [loading, setLoading] = useState<boolean>(true);
 
-  // Load from localStorage on mount
+  const isInitialMount = useRef(true);
+
   useEffect(() => {
-    const fetchAuthToken = async () => {
-      setLoading(true);
-      const stored = localStorage.getItem("authData");
-      const storedProvider = localStorage.getItem("providerName");
-      const storedExist = localStorage.getItem("isExist");
+    setLoading(true);
+    const stored = localStorage.getItem("authData");
+    const storedProvider = localStorage.getItem("providerName");
+    const storedExist = localStorage.getItem("isExist");
 
-      if (stored) setAuthData(stored);
-      if (storedProvider) setProviderName(storedProvider);
-      if (storedExist) setIsExist(storedExist === "true");
+    if (stored) setAuthData(stored);
+    if (storedProvider) setProviderName(storedProvider);
+    if (storedExist) setIsExist(storedExist === "true");
 
-      setLoading(false);
-    };
-
-    fetchAuthToken();
+    setLoading(false);
+    isInitialMount.current = false;
   }, []);
 
-  // Save to localStorage when authData changes
   useEffect(() => {
+    if (isInitialMount.current) return;
+
     if (authData) localStorage.setItem("authData", authData);
     else localStorage.removeItem("authData");
     if (providerName) localStorage.setItem("providerName", providerName);
@@ -50,11 +42,9 @@ export const LoggedInProvider = ({
     setProviderName("");
     setIsExist(false);
 
-    localStorage.removeItem("authData");
-    localStorage.removeItem("providerName");
-    localStorage.removeItem("isExist");
-
     sessionStorage.clear();
+    localStorage.clear();
+
     window.location.href = "/landing";
   };
 
