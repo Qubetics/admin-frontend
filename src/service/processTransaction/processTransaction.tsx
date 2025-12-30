@@ -4,7 +4,7 @@ import { simulateMsgs } from "../../utils/Helper/stimulateMsg";
 import { sendMsgs } from "../../utils/Helper/sendMsg";
 
 import { toast } from "react-toastify";
-import { errMessages, PROCESS_TRANSACTION_ERRORS } from "../../Constant/constants";
+import { errMessages, leaseAlreadyExists, PROCESS_TRANSACTION_ERRORS } from "../../Constant/constants";
 
 export const processTransaction = async (message) => {
   if (window?.keplr) {
@@ -36,6 +36,9 @@ export const processTransaction = async (message) => {
       }
     } catch (error) {
       const message = error?.message || String(error);
+      if (message?.toLowerCase()?.includes(leaseAlreadyExists)) {
+        return false;
+      }
 
       for (const err of PROCESS_TRANSACTION_ERRORS) {
         if (message && message.includes(err.match)) {
