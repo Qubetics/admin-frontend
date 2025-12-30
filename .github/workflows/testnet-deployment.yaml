@@ -1,22 +1,22 @@
-name: '[dev] Deploy User Panel Frontend'
+name: '[testnet] Deploy User admin Frontend'
 
 on: 
   push:
     branches: 
-      - dev
+      - testnet
 
 jobs:
-  solver-onboarding-backend:
-    uses: Qubetics/argocd-qubetics/.github/workflows/deployment.yaml@dev
+  user-admin-frontend:
+    uses: Qubetics/argocd-qubetics/.github/workflows/deployment.yaml@testnet
     with:
-      SWR_ORGANIZATION: dev-qubetics
-      ARGOCD_BRANCH: dev
+      SWR_ORGANIZATION: testnet-qubetics
+      ARGOCD_BRANCH: testnet
       HUAWEI_REGION: 'ap-southeast-3'
       ARGOCD_REPOSITORY: Qubetics/argocd-qubetics
       DEPLOYMENT_PATH: Dvpn-admin-frontend/deployment.yaml
-      HUAWEI_IMAGE: dev-dvpn-admin-frontend
+      HUAWEI_IMAGE: dvpn-admin-frontend
       DOCKER_USERNAME: ap-southeast-3@HPUAJWWFSLCMD312AZSR
-      ENV: ${{ vars.DEV_FRONTEND }}
+      ENV: ${{ vars.TESTNET_DVPN_ADMIN_FRONTEND }}
     secrets:
       DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD_NEW }}
       GIT_SSH_KEY: ${{ secrets.ARGOCD_SSH_KEY_NEW }} 
