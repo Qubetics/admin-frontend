@@ -1,4 +1,4 @@
-name: '[dev] Deploy User Panel Frontend'
+name: '[dev] Deploy User admin Frontend'
 
 on: 
   push:
@@ -6,7 +6,7 @@ on:
       - dev
 
 jobs:
-  solver-onboarding-backend:
+  user-admin-frontend:
     uses: Qubetics/argocd-qubetics/.github/workflows/deployment.yaml@dev
     with:
       SWR_ORGANIZATION: dev-qubetics
@@ -14,7 +14,7 @@ jobs:
       HUAWEI_REGION: 'ap-southeast-3'
       ARGOCD_REPOSITORY: Qubetics/argocd-qubetics
       DEPLOYMENT_PATH: Dvpn-admin-frontend/deployment.yaml
-      HUAWEI_IMAGE: dev-dvpn-admin-frontend
+      HUAWEI_IMAGE: dvpn-admin-frontend
       DOCKER_USERNAME: ap-southeast-3@HPUAJWWFSLCMD312AZSR
       ENV: ${{ vars.DEV_FRONTEND }}
     secrets:

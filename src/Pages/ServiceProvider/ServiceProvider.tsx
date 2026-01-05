@@ -13,6 +13,7 @@ import {
   computePubKey,
   fetchStakeAmount,
   sanitizeInput,
+  api,
 } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import {
@@ -30,18 +31,14 @@ import { apiMethods } from "../../Constant/constants";
 import { envConstants } from "../../Constant/envConstants";
 import { useNavigate } from "react-router-dom";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
-import { getUserBalance } from "../../service/getUserBalance";
-import type {
-  FormErrors,
-  ServiceProviderFormData,
-} from "../../utils/Interfaces";
+import type { FormErrors, ServiceProviderFormData } from "../../utils/Interfaces";
 
 const ServiceProvider = () => {
   const useGetApi = useNetworkRequest();
   const navigate = useNavigate();
   const { authData, setIsExist, setProviderName } = useIsLoggedIn();
 
-  const [walletBalance, setWalletBalance] = useState("0");
+  const [walletBalance, setWalletBalance] = useState(0);
   const [formData, setFormData] = useState<ServiceProviderFormData>({
     name: "",
     email: "",
@@ -71,8 +68,7 @@ const ServiceProvider = () => {
         if (!safeValue) newErrors.name = "Name is required.";
         else if (safeValue.length < 3 || safeValue.length > 50)
           newErrors.name = "Name must be between 3 and 50 characters.";
-        else if (!nameRegex.test(safeValue))
-          newErrors.name = "Name contains invalid characters.";
+        else if (!nameRegex.test(safeValue)) newErrors.name = "Name contains invalid characters.";
         else delete newErrors.name;
       }
 
@@ -95,8 +91,7 @@ const ServiceProvider = () => {
     const newErrors: FormErrors = {};
     if (!formData.name.trim()) newErrors.name = "Name is required.";
     if (!formData.email.trim()) newErrors.email = "Email is required.";
-    else if (!/\S+@\S+\.\S+/.test(formData.email))
-      newErrors.email = "Please enter a valid email address.";
+    else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Please enter a valid email address.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -105,8 +100,15 @@ const ServiceProvider = () => {
   const fetchBalance = async () => {
     if (!authData) return;
     try {
-      const response = await getUserBalance(authData);
-      setWalletBalance(response);
+      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${authData}`;
+      const response = await api(uri);
+
+      if (response?.balances?.[0]?.amount) {
+        const balanceAmount = Number(response.balances[0].amount) / 1e18;
+        setWalletBalance(balanceAmount);
+      } else {
+        setWalletBalance(0);
+      }
     } catch (err) {
       console.log(ERROR_MSG.FAILED_FETCHING_BALANCE, err);
     }
@@ -173,11 +175,7 @@ const ServiceProvider = () => {
       const keplr = (window as any)?.keplr;
       if (!keplr) return toast.error("Keplr wallet not found");
 
-      const { signature, pub_key } = await keplr.signArbitrary(
-        envConstants.chainId,
-        authData,
-        authData
-      );
+      const { signature, pub_key } = await keplr.signArbitrary(envConstants.chainId, authData, authData);
       if (!signature) return toast.error("Signature rejected");
 
       const pubKeyFromSignature = computePubKey(authData, signature, authData);
@@ -210,10 +208,7 @@ const ServiceProvider = () => {
     }
   };
   const isFormValid =
-    formData?.name?.trim() !== "" &&
-    formData?.email?.trim() !== "" &&
-    !errors?.name &&
-    !errors?.email;
+    formData?.name?.trim() !== "" && formData?.email?.trim() !== "" && !errors?.name && !errors?.email;
 
   return (
     <div className="mainContainer">
@@ -221,12 +216,10 @@ const ServiceProvider = () => {
       <div className="borderDiv borderDiv-bordered">
         <h4 className="borderDiv-header">Connect Keplr Wallet</h4>
         <p className="borderDiv-para">
-          Make sure you're connected to the correct Keplr wallet before starting
-          your Service Provider registration. This wallet will be used to verify
-          your identity, register yourself as a provider, and manage all related
-          transactions on the Qubetics Blockchain. If you connect the wrong
-          wallet, your registration may fail or your ownership details may not
-          match correctly
+          Make sure you're connected to the correct Keplr wallet before starting your Service Provider registration.
+          This wallet will be used to verify your identity, register yourself as a provider, and manage all related
+          transactions on the Qubetics Blockchain. If you connect the wrong wallet, your registration may fail or your
+          ownership details may not match correctly
         </p>
       </div>
 
@@ -235,13 +228,7 @@ const ServiceProvider = () => {
           <label>
             Name<span className="redText">*</span>
           </label>
-          <CustomInput
-            type="text"
-            name="name"
-            placeholder="Enter name"
-            value={formData.name}
-            onChange={handleChange}
-          />
+          <CustomInput type="text" name="name" placeholder="Enter name" value={formData.name} onChange={handleChange} />
           {errors.name && <div className="redText">{errors.name}</div>}
         </div>
         <div className="form-group">

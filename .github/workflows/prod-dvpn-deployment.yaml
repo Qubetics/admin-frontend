@@ -1,0 +1,22 @@
+name: '[prod] Deploy Admin Frontend'
+
+on: 
+  push:
+    branches: 
+      - mainnet
+
+jobs:
+  deploy-admin-frontend:
+    uses: Qubetics/argocd-qubetics/.github/workflows/deployment.yaml@prod
+    with:
+      SWR_ORGANIZATION: prod-qubetics
+      ARGOCD_BRANCH: prod
+      HUAWEI_REGION: 'ap-southeast-1'
+      ARGOCD_REPOSITORY: Qubetics/argocd-qubetics
+      DEPLOYMENT_PATH: Dvpn-admin-frontend/deployment.yaml
+      HUAWEI_IMAGE: prod-dvpn-admin-frontend
+      DOCKER_USERNAME: ap-southeast-1@HPUAJWWFSLCMD312AZSR
+      ENV: ${{ vars.PROD_DVPN_ADMIN_FRONTEND }}
+    secrets:
+      DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD_NEW }}
+      GIT_SSH_KEY: ${{ secrets.ARGOCD_SSH_KEY_NEW }} 

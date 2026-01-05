@@ -4,7 +4,7 @@ import { simulateMsgs } from "../../utils/Helper/stimulateMsg";
 import { sendMsgs } from "../../utils/Helper/sendMsg";
 
 import { toast } from "react-toastify";
-import { PROCESS_TRANSACTION_ERRORS } from "../../Constant/constants";
+import { errMessages, leaseAlreadyExists, PROCESS_TRANSACTION_ERRORS } from "../../Constant/constants";
 
 export const processTransaction = async (message) => {
   if (window?.keplr) {
@@ -20,7 +20,7 @@ export const processTransaction = async (message) => {
         chainId,
         key.bech32Address,
         [message],
-        [{ denom: "tics", amount: "100000000" }]
+        [{ denom: "tics", amount: "10000000000" }]
       );
 
       if (gasUsed > 0) {
@@ -36,15 +36,18 @@ export const processTransaction = async (message) => {
       }
     } catch (error) {
       const message = error?.message || String(error);
+      if (message?.toLowerCase()?.includes(leaseAlreadyExists)) {
+        return false;
+      }
 
       for (const err of PROCESS_TRANSACTION_ERRORS) {
         if (message && message.includes(err.match)) {
           toast.error(err.toast, { toastId: err.id });
+          return false;
         }
       }
 
-      console.log(error, "error while signing transaction");
-      return false;
+      toast.error(errMessages.somethingErr, { toastId: "something-error" });
     }
   }
 };
