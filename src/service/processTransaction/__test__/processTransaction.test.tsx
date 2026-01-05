@@ -81,7 +81,7 @@ describe("processTransaction", () => {
     );
 
     const result = await processTransaction(mockMsg);
-    expect(result).toBe(false);
+    expect(result).toBeUndefined();
   });
 
   it('handles "Request rejected" branch', async () => {
