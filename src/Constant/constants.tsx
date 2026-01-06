@@ -16,8 +16,7 @@ export const TYPE_URLS = {
   LINK_NODE: "/qubetics.plan.v3.MsgLinkNodeRequest",
   UNLINK_NODE: "/qubetics.plan.v3.MsgUnlinkNodeRequest",
   REGISTER_PROVIDER: "/qubetics.provider.v3.MsgRegisterProviderRequest",
-  UPDATE_STATUS_PROVIDER:
-    "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
+  UPDATE_STATUS_PROVIDER: "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
 };
 
 export const provWalletPrefix = "qubeticsprov";
@@ -128,3 +127,4 @@ export const errMessages = {
 
 export const linkStatus = { link: "link", unlink: "Unlink" };
 export const requestStatus = { approve: "APPROVED", rejected: "REJECTED" };
+export const leaseAlreadyExists = "lease already exists";
