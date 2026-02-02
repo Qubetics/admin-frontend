@@ -3,7 +3,6 @@
 import * as CommonHelper from "../CommonHelper";
 import {
   api,
-  computePubKey,
   fetchAccountInfo,
   convertNodeToWallet,
   ModifyNum,
@@ -25,13 +24,6 @@ import { Buffer } from "buffer";
 import { envConstants } from "../../../Constant/envConstants";
 
 // Mock dependencies
-jest.mock("@hanchon/signature-to-pubkey", () => ({
-  signatureToPubkey: jest.fn().mockReturnValue("mockPubKey"),
-}));
-
-jest.mock("@cosmjs/launchpad", () => ({
-  serializeSignDoc: jest.fn().mockReturnValue(new Uint8Array([1, 2, 3])),
-}));
 
 jest.mock("../../../utils/Helper/CommonHelper", () => ({
   ...jest.requireActual("../../../utils/Helper/CommonHelper"),
@@ -41,11 +33,6 @@ jest.mock("../../../utils/Helper/CommonHelper", () => ({
     return num.toFixed(decimalPlaces);
   }),
 }));
-
-jest.mock("js-sha3", () => ({
-  keccak_256: jest.fn().mockReturnValue("hashedValue"),
-}));
-import * as sha3 from "js-sha3";
 
 jest.mock("bech32", () => ({
   decode: jest.fn().mockReturnValue({ words: [1, 2, 3] }),
@@ -102,19 +89,12 @@ describe("CommonHelper - Basic Functions", () => {
   });
 
   test("getValueWithUnit", () => {
-    expect(getValueWithUnit("1000000000000000000", envConstants.currency)).toBe(
-      "1"
-    );
+    expect(getValueWithUnit("1000000000000000000", envConstants.currency)).toBe("1");
     expect(getValueWithUnit("1000", "OTHER")).toBe("1000");
   });
 });
 
 describe("CommonHelper - Network / Blockchain", () => {
-  test("computePubKey", () => {
-    const res = computePubKey("addr", "c2ln", "msg");
-    expect(res).toBe("mockPubKey");
-  });
-
   test("api - success", async () => {
     const mock = { success: true };
     (global.fetch as jest.Mock).mockResolvedValueOnce({
@@ -168,9 +148,7 @@ describe("CommonHelper - Network / Blockchain", () => {
   });
 
   test("Timestamp", () => {
-    expect(Timestamp("2023-01-01T00:00:00Z")).toMatch(
-      /\d{1,2}\/\d{1,2}\/\d{4}/
-    );
+    expect(Timestamp("2023-01-01T00:00:00Z")).toMatch(/\d{1,2}\/\d{1,2}\/\d{4}/);
   });
 
   test("copyToClipboard", async () => {
@@ -192,26 +170,6 @@ describe("CommonHelper - Network / Blockchain", () => {
 
     const res = await fetchStakeAmount();
     expect(res).toBe(1);
-  });
-
-  test("computePubKey handles internal error and logs to console", () => {
-    const consoleErrorSpy = jest
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
-
-    const keccakSpy = jest
-      .spyOn(sha3, "keccak_256")
-      .mockImplementation(() => {
-        throw new Error("hash fail");
-      });
-
-    const result = computePubKey("addr", "c2ln", "msg");
-
-    expect(result).toBeUndefined();
-    expect(consoleErrorSpy).toHaveBeenCalledWith("err", expect.any(Error));
-
-    keccakSpy.mockRestore();
-    consoleErrorSpy.mockRestore();
   });
 
   test("api uses default error message when no message provided", async () => {
