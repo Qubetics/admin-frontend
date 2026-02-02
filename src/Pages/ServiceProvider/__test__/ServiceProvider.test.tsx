@@ -43,8 +43,7 @@ jest.mock("../../../Hooks/useGetApi", () => ({
 
 // Mock NotificationToast
 jest.mock("../../../Common/NotificationModal/NotificationModal", () => {
-  return ({ show, heading }: any) =>
-    show ? <div data-testid={`toast-${heading}`} /> : null;
+  return ({ show, heading }: any) => (show ? <div data-testid={`toast-${heading}`} /> : null);
 });
 
 // Mock CustomInput
@@ -62,11 +61,7 @@ jest.mock("../../../Common/CustomInput/CustomInput", () => (props: any) => (
 jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => {
   return function ButtonCustomMock(props: any) {
     return (
-      <button
-        data-testid="button-submit"
-        type={props.type || "submit"}
-        onClick={props.onClick}
-      >
+      <button data-testid="button-submit" type={props.type || "submit"} onClick={props.onClick}>
         {props.label ?? "Submit"}
       </button>
     );
@@ -86,7 +81,6 @@ jest.mock("../../../Context/LoggedInContext", () => ({
 import * as CH from "../../../utils/Helper/CommonHelper";
 jest.spyOn(CH, "fetchStakeAmount").mockResolvedValue(-5);
 jest.spyOn(CH, "convertNodeToWallet").mockReturnValue("prov-addr");
-jest.spyOn(CH, "computePubKey").mockReturnValue("pubkey-mock");
 
 // Mock balance
 jest.mock("../../../service/getUserBalance", () => ({
@@ -150,9 +144,7 @@ describe("ServiceProvider Component", () => {
 
     await act(async () => fireEvent.click(screen.getByTestId("button-submit")));
 
-    expect(
-      screen.getByText("Please enter a valid email address.")
-    ).toBeInTheDocument();
+    expect(screen.getByText("Please enter a valid email address.")).toBeInTheDocument();
   });
 
   test("validateForm passes with valid data", async () => {
@@ -189,7 +181,7 @@ describe("ServiceProvider Component", () => {
       fireEvent.click(screen.getByTestId("button-submit"));
     });
 
-    expect(mockToastError).toHaveBeenCalledWith("Low wallet Balance", { toastId: "low-balance" }); 
+    expect(mockToastError).toHaveBeenCalledWith("Low wallet Balance", { toastId: "low-balance" });
   });
 
   test("successful registration navigates to dashboard", async () => {
@@ -338,8 +330,6 @@ describe("ServiceProvider Component", () => {
 
     await act(async () => fireEvent.click(screen.getByTestId("button-submit")));
 
-    expect(mockToastError).toHaveBeenCalledWith(
-      "Sorry, but we do not accept your mail provider."
-    );
+    expect(mockToastError).toHaveBeenCalledWith("Sorry, but we do not accept your mail provider.");
   });
 });

@@ -12,7 +12,6 @@ import { envConstants } from "../../Constant/envConstants";
 import { apiMethods, provWalletPrefix } from "../../Constant/constants";
 import {
   api,
-  computePubKey,
   convertNodeToWallet,
   formatBalance,
   toFirstCapitalCase,
@@ -33,10 +32,7 @@ const Header = () => {
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (
-        profileRef.current &&
-        !profileRef.current.contains(event.target as Node)
-      ) {
+      if (profileRef.current && !profileRef.current.contains(event.target as Node)) {
         setIsProfileOpen(false);
       }
     };
@@ -53,14 +49,7 @@ const Header = () => {
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const {
-    authData,
-    setAuthData,
-    providerName,
-    setProviderName,
-    isExist,
-    setIsExist,
-  } = useIsLoggedIn();
+  const { authData, setAuthData, providerName, setProviderName, isExist, setIsExist } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
   const width = useCurrentWidth();
@@ -86,40 +75,37 @@ const Header = () => {
     (path: string): string => {
       return location.pathname === path ? "active" : "";
     },
-    [location.pathname]
+    [location.pathname],
   );
 
   const toggleMenu = useCallback(() => {
     setIsMenuOpen((prev) => !prev);
   }, []);
 
-  const fetchAccountBalance = useCallback(
-    async (address: string): Promise<void> => {
-      if (!address) {
-        console.warn("No address provided for balance fetch");
-        return;
-      }
+  const fetchAccountBalance = useCallback(async (address: string): Promise<void> => {
+    if (!address) {
+      console.warn("No address provided for balance fetch");
+      return;
+    }
 
-      try {
-        const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
-        const response = await api(uri);
+    try {
+      const uri = `${envConstants.swagger_api}/cosmos/bank/v1beta1/balances/${address}`;
+      const response = await api(uri);
 
-        if (response?.balances?.[0]?.amount) {
-          const balanceAmount = Number(response.balances[0].amount) / 1e18;
-          setBalance(balanceAmount);
-        } else {
-          setBalance(0);
-        }
-      } catch (error) {
-        console.error("Error fetching account balance:", error);
+      if (response?.balances?.[0]?.amount) {
+        const balanceAmount = Number(response.balances[0].amount) / 1e18;
+        setBalance(balanceAmount);
+      } else {
         setBalance(0);
-        toast.error("Failed to fetch account balance");
-      } finally {
-        setIsLoading(false);
       }
-    },
-    []
-  );
+    } catch (error) {
+      console.error("Error fetching account balance:", error);
+      setBalance(0);
+      toast.error("Failed to fetch account balance");
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   const handleLogout = useCallback(async (): Promise<void> => {
     if (isLoading) return;
@@ -128,13 +114,9 @@ const Header = () => {
     setAuthData("");
     setBalance(0);
 
-    const pathname =
-      typeof window !== "undefined" ? window.location.pathname : "";
+    const pathname = typeof window !== "undefined" ? window.location.pathname : "";
 
-    if (
-      pathname === Path.SERVICE_PROVIDER ||
-      (pathname === Path.LANDING && !isExist)
-    ) {
+    if (pathname === Path.SERVICE_PROVIDER || (pathname === Path.LANDING && !isExist)) {
       navigate(Path.LANDING);
       return;
     }
@@ -165,8 +147,7 @@ const Header = () => {
   const connectKeplr = useCallback(async (): Promise<string | null> => {
     if (!window.keplr) {
       if (/Android/i.test(navigator.userAgent)) {
-        window.location.href =
-          "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
       } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
         window.location.href = "keplrwallet://";
       } else {
@@ -215,23 +196,13 @@ const Header = () => {
         const message = address;
         const chainId = envConstants.chainId;
 
-        const { signature, pub_key } = await window.keplr.signArbitrary(
-          chainId,
-          address,
-          message
-        );
+        const { signature, pub_key } = await window.keplr.signArbitrary(chainId, address, message);
 
         if (!signature || !pub_key) {
           toast.error("Failed to sign in");
           return false;
         }
 
-        const pubKeyFromSignature = computePubKey(address, signature, message);
-
-        if (!pubKeyFromSignature) {
-          toast.error("Could not compute public key from signature");
-          return false;
-        }
         const {
           success,
           data,
@@ -241,7 +212,6 @@ const Header = () => {
           method: apiMethods.POST,
           body: {
             address,
-            pubKey: pubKeyFromSignature,
             signature: { pub_key, signature },
           },
         });
@@ -279,7 +249,7 @@ const Header = () => {
         return false;
       }
     },
-    [useGetApi, navigate, setAuthData]
+    [useGetApi, navigate, setAuthData],
   );
 
   const handleWalletConnect = useCallback(async (): Promise<void> => {
@@ -317,13 +287,10 @@ const Header = () => {
     { path: Path.NODES, label: "Nodes" },
   ];
   const hasHeaderActions = location.pathname !== "/";
-  const hideNavItems =
-    location.pathname === Path.SERVICE_PROVIDER ||
-    (!isExist && location.pathname === Path.LANDING);
+  const hideNavItems = location.pathname === Path.SERVICE_PROVIDER || (!isExist && location.pathname === Path.LANDING);
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
   const isLandingPage =
-    location.pathname.startsWith(Path.LANDING) ||
-    location.pathname.startsWith(Path.SERVICE_PROVIDER);
+    location.pathname.startsWith(Path.LANDING) || location.pathname.startsWith(Path.SERVICE_PROVIDER);
 
   return (
     <div className={`header-main`}>
@@ -334,35 +301,21 @@ const Header = () => {
           </Link>
         </div>
         {hasHeaderActions && authData && (
-          <div
-            className={`header__details ${isMenuOpen ? "active" : ""}`}
-            ref={menuRef}
-          >
+          <div className={`header__details ${isMenuOpen ? "active" : ""}`} ref={menuRef}>
             {authData && (
               <>
                 {!hideNavItems && (
                   <nav className={`header__nav ${isMenuOpen ? "active" : ""}`}>
                     {navigationItems.map(({ path, label }) => (
-                      <Link
-                        key={path}
-                        to={path}
-                        className={isActive(path)}
-                        onClick={() => setIsMenuOpen(false)}
-                      >
+                      <Link key={path} to={path} className={isActive(path)} onClick={() => setIsMenuOpen(false)}>
                         {label}
                       </Link>
                     ))}
                   </nav>
                 )}
 
-                <div
-                  className={`responsiveDrawerData ${
-                    isLandingPage ? "landing-header-logined" : ""
-                  }`}
-                >
-                  <span className="customButton balance-display">
-                    {formatBalance(balance)} TICS
-                  </span>
+                <div className={`responsiveDrawerData ${isLandingPage ? "landing-header-logined" : ""}`}>
+                  <span className="customButton balance-display">{formatBalance(balance)} TICS</span>
                   <div className="header__wallet-address customButton">
                     <div>{truncateValue(authData)}</div>
                     <CopyText text={authData} />
@@ -381,10 +334,7 @@ const Header = () => {
         )}
 
         {hasHeaderActions && !authData && (
-          <div
-            className={`header__details ${isMenuOpen ? "active" : ""}`}
-            ref={menuRef}
-          >
+          <div className={`header__details ${isMenuOpen ? "active" : ""}`} ref={menuRef}>
             <div className="responsiveDrawerData">
               <ButtonCustom
                 className="connect-wallet-mobile"
@@ -412,30 +362,22 @@ const Header = () => {
           ) : (
             width > 991 && (
               <>
-                <span className="customButton balance-display ticsbtnPadding">
-                  {formatBalance(balance)} TICS
-                </span>
+                <span className="customButton balance-display ticsbtnPadding">{formatBalance(balance)} TICS</span>
                 <div className="header__wallet-address customButton ticsbtnPadding">
                   <div>{truncateValue(authData)}</div>
                   <CopyText text={authData} />
                 </div>
                 <div className="profile-container" ref={profileRef}>
-                  <div
-                    className="profile-icon"
-                    onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  >
+                  <div className="profile-icon" onClick={() => setIsProfileOpen(!isProfileOpen)}>
                     <img src={ProfileIcon} alt="Profile" />
                   </div>
                   {isProfileOpen && (
                     <div className="profile-dropdown">
                       {providerName && (
-                        <p className="dropdown-item">
-                          Provider Name: {toFirstCapitalCase(providerName)}
-                        </p>
+                        <p className="dropdown-item">Provider Name: {toFirstCapitalCase(providerName)}</p>
                       )}
                       <p className="dropdown-item">
-                        Provider Address: {truncateValue(provAddress)}{" "}
-                        <CopyText text={provAddress} />
+                        Provider Address: {truncateValue(provAddress)} <CopyText text={provAddress} />
                       </p>
                       <button
                         onClick={() => setShowConfirmModal(true)}
@@ -453,11 +395,7 @@ const Header = () => {
         </div>
 
         {hasHeaderActions && (
-          <button
-            className={`hamburger ${isMenuOpen ? "active" : ""}`}
-            onClick={toggleMenu}
-            aria-label="Toggle menu"
-          >
+          <button className={`hamburger ${isMenuOpen ? "active" : ""}`} onClick={toggleMenu} aria-label="Toggle menu">
             <span></span>
             <span></span>
             <span></span>

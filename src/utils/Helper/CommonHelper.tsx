@@ -1,60 +1,15 @@
 import { WEI } from "../../Constant/constants";
 import BigNumber from "bignumber.js";
 import { Buffer } from "buffer";
-import sha3 from "js-sha3";
 import * as _m0 from "protobufjs/minimal";
-import { signatureToPubkey } from "@hanchon/signature-to-pubkey";
 
 window.Buffer = Buffer;
 
-declare module "@hanchon/signature-to-pubkey" {
-  export function signatureToPubkey(sig: string, msgHash: Uint8Array): string;
-}
-import { arrayify } from "@ethersproject/bytes";
-import { serializeSignDoc } from "@cosmjs/launchpad";
 import { envConstants } from "../../Constant/envConstants";
 
 import bech32 from "bech32";
 import { DECIMAL_PLACES } from "../../Constant/constants";
 import type { ButtonItem } from "../Interfaces";
-
-function messageToAminoTransaction(signer: string, data: string) {
-  return {
-    chain_id: "",
-    account_number: "0",
-    sequence: "0",
-    fee: { gas: "0", amount: [] },
-    msgs: [{ type: "sign/MsgSignData", value: { signer, data } }],
-    memo: "",
-  };
-}
-
-export const computePubKey = (
-  address: string,
-  signature: string,
-  signMessage: string
-) => {
-  try {
-    const aminoEncoded = messageToAminoTransaction(
-      address,
-      Buffer.from(signMessage).toString("base64")
-    );
-    const serialized = serializeSignDoc(aminoEncoded);
-    const hashed = sha3.keccak_256(arrayify(serialized));
-
-    const signatureToCompare = `0x${Buffer.from(signature, "base64").toString(
-      "hex"
-    )}`;
-    const pubkeyComputed = signatureToPubkey(
-      signatureToCompare,
-      Buffer.from(hashed, "hex")
-    );
-
-    return pubkeyComputed;
-  } catch (err) {
-    console.error("err", err);
-  }
-};
 
 export const api = async (url: string, init?: RequestInit) => {
   return fetch(url, init)
@@ -80,9 +35,7 @@ export const fetchAccountInfo = async (address: string) => {
     return response.account;
   } catch (e) {
     console.log(e, "ERROR");
-    console.error(
-      "This may be a new account. Please send some tokens to this account first."
-    );
+    console.error("This may be a new account. Please send some tokens to this account first.");
 
     return undefined;
   }
@@ -123,10 +76,7 @@ export const formatTimestamp = (timestamp: string) => {
 
   hours = hours % 12 || 12;
 
-  return `${year}-${month}-${day} ${String(hours).padStart(
-    2,
-    "0"
-  )}:${minutes}${ampm}`;
+  return `${year}-${month}-${day} ${String(hours).padStart(2, "0")}:${minutes}${ampm}`;
 };
 
 export const Timestamp = (value: string | number | Date): string => {
@@ -144,11 +94,7 @@ export const Timestamp = (value: string | number | Date): string => {
   return date.toLocaleString("en-US", options);
 };
 
-export const truncateValue = (
-  value: string,
-  start: number = 4,
-  end: number = 4
-) => {
+export const truncateValue = (value: string, start: number = 4, end: number = 4) => {
   if (!value) return "";
   if (value.length <= start + end) return value;
   return `${value.slice(0, start)}...${value.slice(-end)}`;
@@ -186,10 +132,7 @@ export const formatBalance = (amount: number) => {
   });
 };
 
-export const getValueWithUnit = (
-  value: string | number,
-  unit: string = envConstants.currency
-) => {
+export const getValueWithUnit = (value: string | number, unit: string = envConstants.currency) => {
   let unitBn: BigNumber.Value;
   switch (unit) {
     case envConstants.currency:
@@ -263,10 +206,7 @@ export const convertPlanString = (planStr?: string): string => {
   return `${Number(convertedValue).toFixed(2)} ${unitStr}`;
 };
 
-export const truncateDecimals = (
-  value: string,
-  decimalPlaces: number
-): string => {
+export const truncateDecimals = (value: string, decimalPlaces: number): string => {
   if (!value || isNaN(Number(value))) return "";
   const num = Number(value);
   return num.toFixed(decimalPlaces);
@@ -281,8 +221,7 @@ export const sanitizeInput = (value: string, field: string): string => {
   const jsAttack = /(javascript:|onerror=|onload=|<script|<\/script)/gi;
   if (jsAttack.test(value)) return "";
 
-  const sqlAttack =
-    /\b(drop table|insert into|delete from|update .* set|select .* from)\b/gi;
+  const sqlAttack = /\b(drop table|insert into|delete from|update .* set|select .* from)\b/gi;
   if (sqlAttack.test(value)) return "";
 
   if (field === "email") {
