@@ -8,13 +8,7 @@ import {
 } from "../../service/BuildMessage/buildMessage";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import { toast } from "react-toastify";
-import {
-  convertNodeToWallet,
-  computePubKey,
-  fetchStakeAmount,
-  sanitizeInput,
-  api,
-} from "../../utils/Helper/CommonHelper";
+import { convertNodeToWallet, fetchStakeAmount, sanitizeInput, api } from "../../utils/Helper/CommonHelper";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
 import {
   emailRegex,
@@ -157,7 +151,7 @@ const ServiceProvider = () => {
           from: authData,
           name: formData.name,
           website: formData.website,
-        })
+        }),
       );
       if (!registerTx) return;
       setShowRegisterToast(true);
@@ -166,7 +160,7 @@ const ServiceProvider = () => {
         buildUpdateProviderStatusMessage({
           from: provAddress,
           status: STATUS_ENUM.STATUS_ACTIVE,
-        })
+        }),
       );
       if (!statusTx) return;
 
@@ -178,7 +172,6 @@ const ServiceProvider = () => {
       const { signature, pub_key } = await keplr.signArbitrary(envConstants.chainId, authData, authData);
       if (!signature) return toast.error("Signature rejected");
 
-      const pubKeyFromSignature = computePubKey(authData, signature, authData);
       const { success } = await useGetApi({
         endpoint: apiUrls.register,
         method: apiMethods.POST,
@@ -187,7 +180,6 @@ const ServiceProvider = () => {
           name: formData.name,
           email: formData.email,
           url: formData.website,
-          pubKey: pubKeyFromSignature,
           signature: { pub_key, signature },
           txHash: Buffer.from(statusTx).toString("hex"),
         },
