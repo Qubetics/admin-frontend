@@ -1,16 +1,25 @@
-FROM node:20-alpine
-
-WORKDIR /app
-
-# Install deps
-COPY package*.json ./
-RUN npm install --force
-
-# Copy source & build
-COPY . .
-RUN npm run build
-
-# Vite preview serves dist correctly with base path
-EXPOSE 4173
-
-CMD ["npm", "run", "preview", "--", "--host", "0.0.0.0"]
+# ---- Build Stage ----
+    FROM node:20-alpine AS build
+    WORKDIR /app
+    
+    COPY package*.json ./
+    RUN npm install --force
+    
+    COPY . .
+    RUN npm run build
+    
+    # ---- Production Stage ----
+    FROM nginx:alpine
+    
+    # Create provider directory and copy build output into it
+    RUN mkdir -p /usr/share/nginx/html/provider
+    
+    COPY --from=build /app/dist /usr/share/nginx/html/provider
+    
+    # Copy Nginx config
+    COPY nginx.conf /etc/nginx/conf.d/default.conf
+    
+    # Nginx listens on 3000
+    EXPOSE 3000
+    
+    CMD ["nginx", "-g", "daemon off;"]
