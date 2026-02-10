@@ -14,6 +14,7 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
+  base: "/provider/",
   define: {
     global: "globalThis",
   },
