@@ -144,7 +144,7 @@ const Footer = () => {
               <li>
                 <a
                   target="_blank"
-                  href={envConstants.explorer_link}
+                  href={envConstants.app_link}
                   className="footer__link"
                 >
                   Qubetics dVPN
