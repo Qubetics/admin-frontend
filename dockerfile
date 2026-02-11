@@ -1,32 +1,25 @@
 # ---- Build Stage ----
-FROM node:20-alpine AS build
-# Set working directory
-WORKDIR /app
-
-# Copy package.json and lock file first (better caching)
-COPY package*.json ./
-
-# Install dependencies
-RUN npm install --force
-
-# Copy the rest of the app
-COPY . .
-
-# Build the Vite project (output goes to /app/dist)
-RUN npm run build
-
-# ---- Production Stage ----
-FROM nginx:alpine
-
-# Copy built files to Nginx web root
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Copy default Nginx config (optional, custom port, caching, etc.)
-# If you want to change port or setup SPA fallback:
-COPY nginx.conf /etc/nginx/conf.d/default.conf
-
-# Expose port 80
-EXPOSE 80
-
-# Start Nginx
-CMD ["nginx", "-g", "daemon off;"]
+    FROM node:20-alpine AS build
+    WORKDIR /app
+    
+    COPY package*.json ./
+    RUN npm install --force
+    
+    COPY . .
+    RUN npm run build
+    
+    # ---- Production Stage ----
+    FROM nginx:alpine
+    
+    # Create provider directory and copy build output into it
+    RUN mkdir -p /usr/share/nginx/html/provider
+    
+    COPY --from=build /app/dist /usr/share/nginx/html/provider
+    
+    # Copy Nginx config
+    COPY nginx.conf /etc/nginx/conf.d/default.conf
+    
+    # Nginx listens on 3000
+    EXPOSE 3000
+    
+    CMD ["nginx", "-g", "daemon off;"]
