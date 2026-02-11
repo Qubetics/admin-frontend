@@ -11,7 +11,6 @@ export const envConstants = {
   explorer_link: import.meta.env.VITE_EXPLORER_ENDPOINT,
   denom: import.meta.env.VITE_DENOM,
   app_link: import.meta.env.VITE_APP_LINK,
-
   qubetics_validator_app_link: import.meta.env.VITE_QUBETICS_VALIDATOR_APP_LINK,
   qubetics_delegator_app_link: import.meta.env.VITE_QUBETICS_DELEGATOR_APP_LINK,
   qubetics_ide_link: import.meta.env.VITE_IDE_LINK,
