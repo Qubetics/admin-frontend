@@ -35,7 +35,7 @@ export default defineConfig({
     proxy: {
       "/api": {
         target: "https://dvpn-node-operator.qubetics.work",
-        changeOrigin: true,
+        // changeOrigin: true,
         secure: true,
         ws: true,
       },
