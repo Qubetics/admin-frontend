@@ -145,17 +145,18 @@ const Header = () => {
   }, [useGetApi, navigate, setAuthData, isLoading]);
 
   const connectKeplr = useCallback(async (): Promise<string | null> => {
+
     if (!window.keplr) {
       if (/Android/i.test(navigator.userAgent)) {
-        window.location.href = "intent://wc#Intent;package=com.chainapsis.keplr;scheme=keplrwallet;end;";
+        window.location.href =
+          "intent://browser#Intent;scheme=keplrwallet;package=com.chainapsis.keplr;end;";
       } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-        window.location.href = "keplrwallet://";
+        window.location.href = "keplrwallet://browser";
       } else {
         toast.error("Install Keplr extension first");
       }
       return null;
     }
-
     const chainId = envConstants.chainId;
     if (!chainId) {
       toast.error("Chain ID not configured");

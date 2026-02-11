@@ -10,4 +10,5 @@ export const envConstants = {
   swagger_api: import.meta.env.VITE_SWAGGER_HTTP_HOST,
   explorer_link: import.meta.env.VITE_EXPLORER_ENDPOINT,
   denom: import.meta.env.VITE_DENOM,
+  app_link: import.meta.env.VITE_APP_LINK,
 };

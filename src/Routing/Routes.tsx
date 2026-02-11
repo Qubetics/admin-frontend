@@ -19,6 +19,8 @@ export const router = createBrowserRouter([
     path: "*",
     element: <NotFound />,
   },
-]);
+], {
+  basename: "/provider", 
+});
 
 export default router;
