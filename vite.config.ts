@@ -14,7 +14,6 @@ export default defineConfig({
       protocolImports: true,
     }),
   ],
-  base: "/provider/",
   define: {
     global: "globalThis",
   },
@@ -31,12 +30,13 @@ export default defineConfig({
     include: ["buffer", "process"],
   },
   server: {
+    host:true,
     proxy: {
       "/api": {
         // Proxy requests starting with /api
-        target: "https://dvpn-admin-api.qubetics.work", // Your backend server address
-        // changeOrigin: true, // Needed for virtual hosted sites
-        secure: process.env.VITE_PLATFORM_ENVIROMENT == "production" ? true : false,
+        target: "https://ticsdvpn.com", // Your backend server address
+        changeOrigin: true, // Needed for virtual hosted sites
+        secure: false,
         ws: true,
       },
     },

@@ -45,7 +45,7 @@ export const LoggedInProvider = ({ children }: { children: React.ReactNode }) =>
     sessionStorage.clear();
     localStorage.clear();
 
-    window.location.href = "/landing";
+    window.location.href = "/provider/landing";
   };
 
   return (
