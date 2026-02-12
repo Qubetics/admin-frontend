@@ -93,11 +93,14 @@ const Dashboard = () => {
           id: Long.fromString(planId),
           nodeAddress: address,
         });
+        console.log('[DEBUG] Testing Log message===========================>', message);
         const TxHash = await processTransaction(message);
         if (!TxHash) {
+          console.log("TxHash is not defined");
           return;
         }
         setShow(true);
+        console.log("TxHash is defined");
         await updateStatus(address, requestStatus.approve);
       } catch (err: any) {
         toast.error(errMessages.somethingErr);
