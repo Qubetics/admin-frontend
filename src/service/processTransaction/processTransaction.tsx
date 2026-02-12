@@ -15,7 +15,6 @@ export const processTransaction = async (message) => {
       const feeObj = chainInfos.find((c) => c.chainId === chainId);
       const key = await window.keplr?.getKey(chainId);
 
-       console.log("key======",key)
       const gasUsed = await simulateMsgs(
         window.keplr,
         chainId,
@@ -24,7 +23,6 @@ export const processTransaction = async (message) => {
         [{ denom: "tics", amount: "10000000000" }]
       );
 
-      console.log("gasUsed======",gasUsed)
       if (gasUsed > 0) {
         const gasLimit = Math.floor(gasUsed * 1.3);
         const feeAmount = Math.ceil(envConstants.gas_limit * gasPrice).toString();
@@ -32,13 +30,11 @@ export const processTransaction = async (message) => {
           amount: [{ denom: "tics", amount: feeAmount }],
           gas: Math.floor(gasUsed * 1.5).toString(),
         });
-        console.log('[DEBUG] Testing Log res===========================>', res);
         return res;
       } else {
         return false;
       }
     } catch (error) {
-      console.log('[DEBUG] Testing Log error===========================>', error);
       const message = error?.message || String(error);
       if (message?.toLowerCase()?.includes(leaseAlreadyExists)) {
         return false;
