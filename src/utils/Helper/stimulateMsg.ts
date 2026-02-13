@@ -27,7 +27,6 @@ export const simulateMsgs = async (
   memo: string = "",
 ) => {
   const account = await fetchAccountInfo(sender);
-  console.log("🚀 ~ simulateMsgs ~ account:", account);
 
   const { pubKey } = await keplr.getKey(chainId);
 
@@ -87,14 +86,8 @@ export const simulateMsgs = async (
         }),
       },
     );
-    // console.log("🚀 ~ simulateMsgs ~ simulatedResult:", simulatedResult);
-    console.log(
-      "==========================================================SIMULATE RESPONSE:",
-      JSON.stringify(simulatedResult),
-    );
 
     const gasUsed = parseInt(simulatedResult?.gas_info.gas_used);
-    console.log("🚀 ~ simulateMsgs ~ simulatedResult:", simulatedResult);
     if (Number.isNaN(gasUsed)) {
       throw new Error(
         `Invalid integer gas: ${simulatedResult?.gas_info.gas_used}`,

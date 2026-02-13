@@ -24,7 +24,7 @@ export const processTransaction = async (message) => {
         chainId,
         key.bech32Address,
         [message],
-        [{ denom: "tics", amount: "1000000000000" }],
+        [{ denom: "tics", amount: "10000000000" }],
       );
 
       if (gasUsed > 0) {
