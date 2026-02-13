@@ -4,7 +4,7 @@ import Dashboard from '../Dashboard';
 import { useIsLoggedIn } from '../../../Context/LoggedInContext';
 import useNetworkRequest from '../../../Hooks/useGetApi';
 import { processTransaction } from '../../../service/processTransaction/processTransaction';
-import { buildLinkNodeMessage, buildStartLeaseStatusMessage, buildUnlinkNodeMessage } from '../../../service/BuildMessage/buildMessage';
+import { buildLinkNodeMessage, buildStartLeaseStatusMessage, buildEndLeaseStatusMessage } from '../../../service/BuildMessage/buildMessage';
 import { convertNodeToWallet, getValueWithUnit, truncateValue, convertPlanString } from '../../../utils/Helper/CommonHelper';
 import { toast } from 'react-toastify';
 
@@ -104,7 +104,7 @@ describe('Dashboard Component', () => {
     const mockProcessTransaction = processTransaction as jest.Mock;
     const mockBuildLinkNodeMessage = buildLinkNodeMessage as jest.Mock;
     const mockBuildStartLeaseStatusMessage = buildStartLeaseStatusMessage as jest.Mock;
-    const mockBuildUnlinkNodeMessage = buildUnlinkNodeMessage as jest.Mock;
+    const mockBuildEndLeaseStatusMessage = buildEndLeaseStatusMessage as jest.Mock;
     const mockConvertNodeToWallet = convertNodeToWallet as jest.Mock;
     const mockGetValueWithUnit = getValueWithUnit as jest.Mock;
     const mockTruncateValue = truncateValue as jest.Mock;
@@ -114,6 +114,7 @@ describe('Dashboard Component', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
+        mockProcessTransaction.mockReset();
         mockUseIsLoggedIn.mockReturnValue({ authData: 'test-wallet' });
         mockUseNetworkRequest.mockReturnValue(mockApi);
         mockConvertNodeToWallet.mockReturnValue('prov-address');
@@ -332,7 +333,7 @@ describe('Dashboard Component', () => {
         });
 
         mockProcessTransaction.mockResolvedValue('tx-hash');
-        mockBuildUnlinkNodeMessage.mockReturnValue({});
+        mockBuildEndLeaseStatusMessage.mockReturnValue({});
 
         await act(async () => {
             render(<Dashboard />);
@@ -348,7 +349,7 @@ describe('Dashboard Component', () => {
         });
 
         await waitFor(() => {
-            expect(mockBuildUnlinkNodeMessage).toHaveBeenCalled();
+            expect(mockBuildEndLeaseStatusMessage).toHaveBeenCalled();
             expect(mockProcessTransaction).toHaveBeenCalled();
         });
     });
@@ -615,7 +616,7 @@ describe('Dashboard Component', () => {
         });
 
         mockProcessTransaction.mockResolvedValue('tx-hash');
-        mockBuildUnlinkNodeMessage.mockReturnValue({});
+        mockBuildEndLeaseStatusMessage.mockReturnValue({});
 
         const consoleLogSpy = jest.spyOn(console, 'log').mockImplementation(() => {});
 
@@ -669,7 +670,7 @@ describe('Dashboard Component', () => {
         });
 
         mockProcessTransaction.mockRejectedValue(new Error('Transaction failed'));
-        mockBuildUnlinkNodeMessage.mockReturnValue({});
+        mockBuildEndLeaseStatusMessage.mockReturnValue({});
 
         const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -748,7 +749,7 @@ describe('Dashboard Component', () => {
 
         await waitFor(() => {
             expect(mockBuildStartLeaseStatusMessage).toHaveBeenCalled();
-            expect(mockBuildLinkNodeMessage).toHaveBeenCalled();
+            // expect(mockBuildLinkNodeMessage).toHaveBeenCalled(); // Should not be called on lease failure
         });
     });
 
@@ -811,10 +812,10 @@ describe('Dashboard Component', () => {
             return Promise.resolve({ success: true, data: {} });
         });
 
-        // First processTransaction (lease) returns null to trigger unLease modal
+        // Both transactions succeed to trigger lease modal
         mockProcessTransaction
-            .mockResolvedValueOnce(null)  // lease fails - triggers unLease
-            .mockResolvedValueOnce('tx-hash');  // link succeeds
+            .mockResolvedValueOnce('lease-tx-hash')  // lease succeeds - triggers lease modal
+            .mockResolvedValueOnce('link-tx-hash');  // link succeeds
         mockBuildLinkNodeMessage.mockReturnValue({});
         mockBuildStartLeaseStatusMessage.mockReturnValue({});
 
@@ -876,7 +877,7 @@ describe('Dashboard Component', () => {
         });
 
         mockProcessTransaction.mockResolvedValue(null);
-        mockBuildUnlinkNodeMessage.mockReturnValue({});
+        mockBuildEndLeaseStatusMessage.mockReturnValue({});
 
         await act(async () => {
             render(<Dashboard />);

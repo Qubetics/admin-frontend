@@ -22,9 +22,9 @@ export const simulateMsgs = async (
     {
       denom: string;
       amount: string;
-    }
+    },
   ],
-  memo: string = ""
+  memo: string = "",
 ) => {
   const account = await fetchAccountInfo(sender);
 
@@ -36,7 +36,7 @@ export const simulateMsgs = async (
         TxBody.fromPartial({
           messages: proto,
           memo,
-        })
+        }),
       ).finish(),
       authInfoBytes: AuthInfo.encode({
         signerInfos: [
@@ -84,13 +84,13 @@ export const simulateMsgs = async (
         body: JSON.stringify({
           tx_bytes: Buffer.from(unsignedTx).toString("base64"),
         }),
-      }
+      },
     );
 
     const gasUsed = parseInt(simulatedResult?.gas_info.gas_used);
     if (Number.isNaN(gasUsed)) {
       throw new Error(
-        `Invalid integer gas: ${simulatedResult?.gas_info.gas_used}`
+        `Invalid integer gas: ${simulatedResult?.gas_info.gas_used}`,
       );
     }
 

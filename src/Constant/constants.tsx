@@ -12,11 +12,13 @@ export const TYPE_URLS = {
   CREATE_PLAN: "/qubetics.plan.v3.MsgCreatePlanRequest",
   UPDATE_PLAN_STATUS: "/qubetics.plan.v3.MsgUpdatePlanStatusRequest",
   START_LEASE: "/qubetics.lease.v1.MsgStartLeaseRequest",
+  END_LEASE: "/qubetics.lease.v1.MsgEndLeaseRequest",
   UPDATE_NODE_STATUS: "/qubetics.node.v3.MsgUpdateNodeStatusRequest",
   LINK_NODE: "/qubetics.plan.v3.MsgLinkNodeRequest",
   UNLINK_NODE: "/qubetics.plan.v3.MsgUnlinkNodeRequest",
   REGISTER_PROVIDER: "/qubetics.provider.v3.MsgRegisterProviderRequest",
-  UPDATE_STATUS_PROVIDER: "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
+  UPDATE_STATUS_PROVIDER:
+    "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
 };
 
 export const provWalletPrefix = "qubeticsprov";
@@ -43,14 +45,12 @@ export const STATUS_ENUM = {
 
 export const HEADING = {
   LEASE_NODE: "NODE Provided On Lease",
-  EXIST_LEASE: "Existing Leased Node",
   REGISTER_PROVIDER: "Provider registered succesfully",
   PROVIDER_STATUS: "Provider Status updated Succesfully",
 };
 
 export const DESCRIPTION = {
   LEASE_NODE: "Node provided on lease successfully!",
-  EXIST_LEASE: "This node already exists within the ecosystem!",
 };
 
 export const UNDEFINED = "undefined";
@@ -110,6 +110,11 @@ export const PROCESS_TRANSACTION_ERRORS = [
     toast: "Provider Already Exists",
     id: "duplicate_provider",
   },
+  {
+    match: "insufficient funds",
+    toast: "Insufficient funds in your wallet to lease the node",
+    id: "insufficient_funds",
+  },
 ];
 export const defaultOnLimitChange = () => {};
 
@@ -123,6 +128,7 @@ export const activeStatus = "active";
 export const errMessages = {
   somethingErr: "Something went wrong",
   leaseErr: "Lease something went wrong",
+  leaseNotFound: "unable to find the lease",
 };
 
 export const linkStatus = { link: "link", unlink: "Unlink" };
