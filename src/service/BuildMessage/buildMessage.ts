@@ -2,7 +2,6 @@ import { TYPE_URLS } from "../../Constant/constants";
 import {
   MsgCreatePlanRequest,
   MsgLinkNodeRequest,
-  MsgUnlinkNodeRequest,
   MsgUpdatePlanStatusRequest,
 } from "../../proto-gen/src/codec/qubetics/plan/v3/msg";
 import {
@@ -42,9 +41,9 @@ export function buildCreatePlanMessage(params: {
 }
 
 export function buildLinkNodeMessage(params: {
-  from?: string;
-  id?: Long;
-  nodeAddress?: string;
+  from: string;
+  id: Long;
+  nodeAddress: string;
 }) {
   return {
     typeUrl: TYPE_URLS.LINK_NODE,
@@ -56,27 +55,12 @@ export function buildLinkNodeMessage(params: {
   };
 }
 
-export function buildUnlinkNodeMessage(params: {
-  from?: string;
-  id?: Long;
-  nodeAddress?: string;
-}) {
-  return {
-    typeUrl: TYPE_URLS.UNLINK_NODE,
-    value: MsgUnlinkNodeRequest.encode({
-      from: params?.from,
-      id: params?.id,
-      nodeAddress: params?.nodeAddress,
-    }).finish(),
-  };
-}
-
 export function buildStartLeaseStatusMessage(params: {
-  from?: string;
-  nodeAddress?: string;
-  hours?: Long;
-  denom?: string;
-  renewalPricePolicy?: RenewalPricePolicy;
+  from: string;
+  nodeAddress: string;
+  hours: Long;
+  denom: string;
+  renewalPricePolicy: RenewalPricePolicy;
 }) {
   return {
     typeUrl: TYPE_URLS.START_LEASE,
@@ -93,7 +77,6 @@ export function buildEndLeaseStatusMessage(params: {
   from: string;
   id: number;
 }) {
-  console.log(params, "========================>params");
   return {
     typeUrl: TYPE_URLS.END_LEASE,
     value: MsgEndLeaseRequest.encode({
@@ -104,7 +87,7 @@ export function buildEndLeaseStatusMessage(params: {
 }
 
 export function buildUpdatePlanStatusMessage(params: {
-  from?: string;
+  from: string;
   id: Long;
   status: Status;
 }) {
@@ -118,8 +101,8 @@ export function buildUpdatePlanStatusMessage(params: {
   };
 }
 
-export function buildRegisterProviderMessage(params?: {
-  from?: string;
+export function buildRegisterProviderMessage(params: {
+  from: string;
   name?: string;
   identity?: string;
   website?: string;
@@ -137,15 +120,15 @@ export function buildRegisterProviderMessage(params?: {
   };
 }
 
-export function buildUpdateProviderStatusMessage(params?: {
-  from?: string;
-  status?: Status;
+export function buildUpdateProviderStatusMessage(params: {
+  from: string;
+  status: Status;
 }) {
   return {
     typeUrl: TYPE_URLS.UPDATE_STATUS_PROVIDER,
     value: MsgUpdateProviderStatusRequest.encode({
-      from: params?.from, //provider address
-      status: params?.status,
+      from: params.from, //provider address
+      status: params.status,
     }).finish(),
   };
 }

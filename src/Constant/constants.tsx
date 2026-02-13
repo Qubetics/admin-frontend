@@ -45,14 +45,12 @@ export const STATUS_ENUM = {
 
 export const HEADING = {
   LEASE_NODE: "NODE Provided On Lease",
-  EXIST_LEASE: "Existing Leased Node",
   REGISTER_PROVIDER: "Provider registered succesfully",
   PROVIDER_STATUS: "Provider Status updated Succesfully",
 };
 
 export const DESCRIPTION = {
   LEASE_NODE: "Node provided on lease successfully!",
-  EXIST_LEASE: "This node already exists within the ecosystem!",
 };
 
 export const UNDEFINED = "undefined";
@@ -111,6 +109,11 @@ export const PROCESS_TRANSACTION_ERRORS = [
     match: "duplicate provider",
     toast: "Provider Already Exists",
     id: "duplicate_provider",
+  },
+  {
+    match: "insufficient funds",
+    toast: "Insufficient funds in your wallet to lease the node",
+    id: "insufficient_funds",
   },
 ];
 export const defaultOnLimitChange = () => {};

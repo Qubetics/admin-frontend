@@ -11,7 +11,6 @@ import {
 } from "../../Constant/constants";
 
 export const processTransaction = async (message) => {
-  console.log("🚀 ~ processTransaction ~ message:", message);
   if (window?.keplr) {
     try {
       const chainInfos = await window.keplr?.getChainInfosWithoutEndpoints();
