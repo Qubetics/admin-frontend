@@ -101,6 +101,10 @@ const Dashboard = () => {
       try {
         //unlease
         const leaseId = await leaseStatusId(provAddress, address);
+        if(!leaseId){
+          toast.error(errMessages.leaseNotFound);
+          return;
+        }
         const unleaseMessage = buildEndLeaseStatusMessage({
           from: provAddress,
           id: leaseId,

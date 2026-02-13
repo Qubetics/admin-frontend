@@ -128,6 +128,7 @@ export const activeStatus = "active";
 export const errMessages = {
   somethingErr: "Something went wrong",
   leaseErr: "Lease something went wrong",
+  leaseNotFound: "unable to find the lease",
 };
 
 export const linkStatus = { link: "link", unlink: "Unlink" };
