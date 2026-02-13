@@ -1,18 +1,18 @@
-import { useEffect, useState } from "react";
-import "./Dashboard.scss";
-import Modal from "react-bootstrap/Modal";
-import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import useNetworkRequest from "../../Hooks/useGetApi";
-import { apiUrls } from "../../Constant/apiUrls";
-import Pagination from "../../utils/pagination";
-import Long from "long";
-import { processTransaction } from "../../service/processTransaction/processTransaction";
+import { useEffect, useState } from 'react';
+import './Dashboard.scss';
+import Modal from 'react-bootstrap/Modal';
+import { useIsLoggedIn } from '../../Context/LoggedInContext';
+import useNetworkRequest from '../../Hooks/useGetApi';
+import { apiUrls } from '../../Constant/apiUrls';
+import Pagination from '../../utils/pagination';
+import Long from 'long';
+import { processTransaction } from '../../service/processTransaction/processTransaction';
 import {
+  buildEndLeaseStatusMessage,
   buildLinkNodeMessage,
   buildStartLeaseStatusMessage,
-  buildUnlinkNodeMessage,
-} from "../../service/BuildMessage/buildMessage";
-import { buttons, convertNodeToWallet, convertPlanString, truncateValue } from "../../utils/Helper/CommonHelper";
+} from '../../service/BuildMessage/buildMessage';
+import { buttons, convertNodeToWallet, convertPlanString, truncateValue } from '../../utils/Helper/CommonHelper';
 import {
   DESCRIPTION,
   HEADING,
@@ -21,21 +21,20 @@ import {
   errMessages,
   linkStatus,
   requestStatus,
-} from "../../Constant/constants";
-import NotificationToast from "../../Common/NotificationModal/NotificationModal";
-import CopyText from "../../Common/Copy/CopyText";
-import { toast } from "react-toastify";
-import { Col, Row, Tooltip } from "antd";
-import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
-import TableSkeleton from "../../Common/Loader/TableSkeleton";
-import type { CardBoxProps, RejectShowState, TableRow } from "../../utils/Interfaces";
+} from '../../Constant/constants';
+import NotificationToast from '../../Common/NotificationModal/NotificationModal';
+import CopyText from '../../Common/Copy/CopyText';
+import { toast } from 'react-toastify';
+import { Col, Row, Tooltip } from 'antd';
+import { CircleCheckIcon } from '../../assets/SvgIcon/SvgIcon';
+import TableSkeleton from '../../Common/Loader/TableSkeleton';
+import type { CardBoxProps, RejectShowState, TableRow } from '../../utils/Interfaces';
 const Dashboard = () => {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
     show: false,
     nodeAddress: null,
   });
   const [lease, setLease] = useState(false);
-  const [unLease, setUnLease] = useState(false);
   const [show, setShow] = useState(false);
   const [nodeList, setNodeList] = useState<TableRow[]>([]);
   const [page, setPage] = useState<number>(1);
@@ -51,7 +50,7 @@ const Dashboard = () => {
     setShow(true);
   };
 
-  const [active, setActive] = useState("allrequest");
+  const [active, setActive] = useState('allrequest');
 
   const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
 
@@ -62,11 +61,11 @@ const Dashboard = () => {
 
   const CardBox: React.FC<CardBoxProps> = ({ title, value, icons }) => {
     return (
-      <div className="card-box">
-        <div className="card-box-icons">{icons}</div>
-        <div className="right-text">
-          <p className="card-title">{title}</p>
-          <h2 className="card-value">{value}</h2>
+      <div className='card-box'>
+        <div className='card-box-icons'>{icons}</div>
+        <div className='right-text'>
+          <p className='card-title'>{title}</p>
+          <h2 className='card-value'>{value}</h2>
         </div>
       </div>
     );
@@ -78,23 +77,40 @@ const Dashboard = () => {
     });
 
     if (!success) {
-      console.log("Server Error");
+      console.log('Server Error');
       return false;
     }
     fetchData();
     return true;
   };
 
+  const leaseStatusId = async (provAddress: string, nodeAddress: string) => {
+    const { success, data } = await useGetApi({
+      endpoint: apiUrls.leaseID(provAddress, nodeAddress),
+    });
+
+    if (!success || data.error) {
+      console.log('Server Error');
+      return '';
+    }
+    return data?.data?.leaseId;
+  };
+
   const onApproval = async (address: string, type: string, planId: string, hours: string) => {
     if (type === linkStatus.unlink) {
       try {
-        const message = buildUnlinkNodeMessage({
+        //unlease
+        const leaseId = await leaseStatusId(provAddress, address);
+        if(!leaseId){
+          toast.error(errMessages.leaseNotFound);
+          return;
+        }
+        const unleaseMessage = buildEndLeaseStatusMessage({
           from: provAddress,
-          id: Long.fromString(planId),
-          nodeAddress: address,
+          id: leaseId,
         });
-        const TxHash = await processTransaction(message);
-        if (!TxHash) {
+        const TxHashUnlease = await processTransaction(unleaseMessage);
+        if (!TxHashUnlease) {
           return;
         }
         setShow(true);
@@ -111,19 +127,20 @@ const Dashboard = () => {
         from: provAddress,
         nodeAddress: address,
         hours: Long.fromString(hours),
-        denom: "tics",
+        denom: 'tics',
         renewalPricePolicy: 3,
       });
 
       const res = await processTransaction(leaseMessage);
+
       if (!res) {
-        setUnLease(true);
+        return;
       } else {
         setLease(true);
       }
     } catch (err: any) {
       toast.error(errMessages.leaseErr);
-      console.error(err?.message, "err");
+      console.error(err?.message, 'err');
       return;
     }
 
@@ -213,41 +230,41 @@ const Dashboard = () => {
   const cards: CardBoxProps[] = [
     {
       icons: <CircleCheckIcon />,
-      title: "Active Nodes",
+      title: 'Active Nodes',
       value: activeAccount?.activeCount || 0,
     },
   ];
 
   return (
-    <div className="dashboard">
-      <div className="dashboard__header">
+    <div className='dashboard'>
+      <div className='dashboard__header'>
         <h3>Dashboard</h3>
       </div>
-      <div className="cardSection">
-        <Row gutter={[25, 20]} className="card-row">
+      <div className='cardSection'>
+        <Row gutter={[25, 20]} className='card-row'>
           {cards.map((card, index) => (
-            <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
+            <Col className='gutter-row' lg={8} md={8} sm={12} xs={24}>
               <CardBox key={index} title={card.title} value={card.value} icons={card.icons} />
             </Col>
           ))}
         </Row>
       </div>
 
-      <div className="custom-table-wrapper commonTable">
-        <h3 className="table-title">Node Requests</h3>
-        <div className="node__btns">
+      <div className='custom-table-wrapper commonTable'>
+        <h3 className='table-title'>Node Requests</h3>
+        <div className='node__btns'>
           {buttons(countAccount).map(({ label, value, count }) => (
             <button
               key={value}
-              className={active === value ? "active" : "dashboardBtn"}
+              className={active === value ? 'active' : 'dashboardBtn'}
               onClick={() => handleTabChange(value)}
             >
               {label}&nbsp;({count})
             </button>
           ))}
         </div>
-        <div className="outerTable">
-          <table className="custom-table dashboard-table">
+        <div className='outerTable'>
+          <table className='custom-table dashboard-table'>
             {!isLoading && (
               <thead>
                 <tr>
@@ -257,7 +274,7 @@ const Dashboard = () => {
                   <th>Node Address</th>
                   <th>Bandwidth</th>
                   <th>Plan</th>
-                  {active === "allrequest" && <th>Request Type</th>}
+                  {active === 'allrequest' && <th>Request Type</th>}
                   <th>Action</th>
                 </tr>
               </thead>
@@ -267,66 +284,66 @@ const Dashboard = () => {
                 <TableSkeleton rows={2} columns={5} />
               ) : nodeList?.length === 0 ? (
                 <tr>
-                  <td colSpan={8} style={{ textAlign: "center" }}>
+                  <td colSpan={8} style={{ textAlign: 'center' }}>
                     No data found
                   </td>
                 </tr>
               ) : (
                 nodeList?.map((row, i) => (
                   <tr key={i}>
-                    <td>{row?.orgName ? row?.orgName : "-"}</td>
+                    <td>{row?.orgName ? row?.orgName : '-'}</td>
 
                     <td>
                       <Tooltip title={row?.email}>
-                        <span>{row?.email ? truncateValue(row?.email, 3, 3) : "-"}</span>
+                        <span>{row?.email ? truncateValue(row?.email, 3, 3) : '-'}</span>
                       </Tooltip>
                     </td>
 
-                    <td>{row?.location || "-"}</td>
+                    <td>{row?.location || '-'}</td>
 
                     <td>
                       <div
                         style={{
-                          display: "flex",
-                          alignItems: "center",
-                          gap: "2px",
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '2px',
                         }}
                       >
                         <Tooltip title={row?.nodeAddress}>
                           <span
-                            className="address_nord"
+                            className='address_nord'
                             style={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              gap: "6px",
+                              display: 'inline-flex',
+                              alignItems: 'center',
+                              gap: '6px',
                             }}
                           >
                             {truncateValue(row?.nodeAddress)}
                           </span>
                         </Tooltip>
-                        <span className="copy-btn">
+                        <span className='copy-btn'>
                           <CopyText text={row?.nodeAddress} />
                         </span>
                       </div>
                     </td>
 
-                    <td>{bytesToGb(Number(row?.bandwidth)) + "GB" || ""}</td>
+                    <td>{bytesToGb(Number(row?.bandwidth)) + 'GB' || ''}</td>
 
-                    <td title={row?.plan ? convertPlanString(row?.plan) : "-"}>
-                      {row?.plan ? convertPlanString(row?.plan) : "-"}
+                    <td title={row?.plan ? convertPlanString(row?.plan) : '-'}>
+                      {row?.plan ? convertPlanString(row?.plan) : '-'}
                     </td>
 
-                    {active === "allrequest" && <td>{row?.requestFor}</td>}
+                    {active === 'allrequest' && <td>{row?.requestFor}</td>}
 
                     <td>
-                      <div className="action-btns">
+                      <div className='action-btns'>
                         <button
-                          className="approve-btn"
+                          className='approve-btn'
                           onClick={() => onApproval(row?.nodeAddress, row?.requestFor, row?.planId, row?.hours)}
                         >
                           Approve
                         </button>
-                        <button className="reject-btn" onClick={() => onReject(row?.nodeAddress)}>
+                        <button className='reject-btn' onClick={() => onReject(row?.nodeAddress)}>
                           Reject
                         </button>
                       </div>
@@ -345,19 +362,19 @@ const Dashboard = () => {
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
             onLimitChange={(limit: number) => {
-              setLimit(limit), setPage(1);
+              (setLimit(limit), setPage(1));
             }}
           />
         )}
         <Modal show={show} onHide={handleClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
-            <div className="modal-overlay">
-              <div className="modal-content">
+            <div className='modal-overlay'>
+              <div className='modal-content'>
                 <h2>Node Request</h2>
                 <p>Node Approved successfully!</p>
-                <div className="action-btns btns-mb">
-                  <button className="gradient-btn" onClick={handleClose}>
+                <div className='action-btns btns-mb'>
+                  <button className='gradient-btn' onClick={handleClose}>
                     OK
                   </button>
                 </div>
@@ -368,16 +385,16 @@ const Dashboard = () => {
         <Modal show={rejectShow.show} onHide={handleRejectClose} centered>
           <Modal.Header closeButton></Modal.Header>
           <Modal.Body>
-            <div className="modal-overlay">
-              <div className="modal-content">
+            <div className='modal-overlay'>
+              <div className='modal-content'>
                 <h2>Node Request</h2>
                 <p>Are you sure you want to reject the request?</p>
-                <div className="action-btns">
-                  <button className="reject-btn" onClick={handleRejectClose}>
+                <div className='action-btns'>
+                  <button className='reject-btn' onClick={handleRejectClose}>
                     No
                   </button>
                   <button
-                    className="gradient-btn"
+                    className='gradient-btn'
                     onClick={() => {
                       handleRejectCall(String(rejectShow.nodeAddress));
                     }}
@@ -390,12 +407,7 @@ const Dashboard = () => {
           </Modal.Body>
         </Modal>
       </div>
-      <NotificationToast
-        show={unLease}
-        handleClose={() => setUnLease(false)}
-        heading={HEADING.EXIST_LEASE}
-        description={DESCRIPTION.EXIST_LEASE}
-      />
+
       <NotificationToast
         show={lease}
         handleClose={() => setLease(false)}
