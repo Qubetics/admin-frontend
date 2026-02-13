@@ -5,11 +5,14 @@ export const apiUrls = {
   logout: `/api/v1/auth/logout`,
   login: `/api/v1/auth/login`,
   register: `/api/v1/auth/register`,
+  leaseID: () =>
+    `/api/v1/provider/lease/qubeticsprov1swc8pcq7j9msvt3pgp6ws20x0rmq9j56k79h6p`,
+
   nodeRequestedList: (
     page: number,
     limit: number,
     status: string,
-    address: string
+    address: string,
   ) =>
     `/api/v1/node?page=${page}&limit=${limit}&status=${status}&address=${address}`,
   nodelist: (status: any, page: number, limit: number) =>

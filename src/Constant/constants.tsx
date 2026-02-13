@@ -12,11 +12,13 @@ export const TYPE_URLS = {
   CREATE_PLAN: "/qubetics.plan.v3.MsgCreatePlanRequest",
   UPDATE_PLAN_STATUS: "/qubetics.plan.v3.MsgUpdatePlanStatusRequest",
   START_LEASE: "/qubetics.lease.v1.MsgStartLeaseRequest",
+  END_LEASE: "/qubetics.lease.v1.MsgEndLeaseRequest",
   UPDATE_NODE_STATUS: "/qubetics.node.v3.MsgUpdateNodeStatusRequest",
   LINK_NODE: "/qubetics.plan.v3.MsgLinkNodeRequest",
   UNLINK_NODE: "/qubetics.plan.v3.MsgUnlinkNodeRequest",
   REGISTER_PROVIDER: "/qubetics.provider.v3.MsgRegisterProviderRequest",
-  UPDATE_STATUS_PROVIDER: "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
+  UPDATE_STATUS_PROVIDER:
+    "/qubetics.provider.v3.MsgUpdateProviderStatusRequest",
 };
 
 export const provWalletPrefix = "qubeticsprov";

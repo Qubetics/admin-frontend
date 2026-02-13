@@ -8,11 +8,17 @@ import Pagination from "../../utils/pagination";
 import Long from "long";
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import {
+  buildEndLeaseStatusMessage,
   buildLinkNodeMessage,
   buildStartLeaseStatusMessage,
   buildUnlinkNodeMessage,
 } from "../../service/BuildMessage/buildMessage";
-import { buttons, convertNodeToWallet, convertPlanString, truncateValue } from "../../utils/Helper/CommonHelper";
+import {
+  buttons,
+  convertNodeToWallet,
+  convertPlanString,
+  truncateValue,
+} from "../../utils/Helper/CommonHelper";
 import {
   DESCRIPTION,
   HEADING,
@@ -28,7 +34,11 @@ import { toast } from "react-toastify";
 import { Col, Row, Tooltip } from "antd";
 import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
-import type { CardBoxProps, RejectShowState, TableRow } from "../../utils/Interfaces";
+import type {
+  CardBoxProps,
+  RejectShowState,
+  TableRow,
+} from "../../utils/Interfaces";
 const Dashboard = () => {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
     show: false,
@@ -85,16 +95,39 @@ const Dashboard = () => {
     return true;
   };
 
-  const onApproval = async (address: string, type: string, planId: string, hours: string) => {
+  const leaseStatusId = async () => {
+    const { success, data } = await useGetApi({
+      endpoint: apiUrls.leaseID,
+    });
+    if (!success) {
+      console.log("Server Error");
+      return;
+    }
+    fetchData();
+    return;
+  };
+
+  const onApproval = async (
+    address: string,
+    type: string,
+    planId: string,
+    hours: string,
+  ) => {
     if (type === linkStatus.unlink) {
       try {
-        const message = buildUnlinkNodeMessage({
+        //unlease
+        console.log(provAddress, "====>prov");
+        console.log("🚀 ~ onApproval ~ planId:", planId);
+        const leaseId = await leaseStatusId(provAddress);
+        const unleaseMessage = buildEndLeaseStatusMessage({
           from: provAddress,
-          id: Long.fromString(planId),
-          nodeAddress: address,
+          id: leaseId,
         });
-        const TxHash = await processTransaction(message);
-        if (!TxHash) {
+        console.log("🚀 ~ onApproval ~ unleaseMessage:", unleaseMessage);
+
+        const TxHashUnlease = await processTransaction(unleaseMessage);
+        console.log("🚀 ~ onApproval ~ TxHashUnlease:", TxHashUnlease);
+        if (!TxHashUnlease) {
           return;
         }
         setShow(true);
@@ -116,8 +149,11 @@ const Dashboard = () => {
       });
 
       const res = await processTransaction(leaseMessage);
+      console.log("🚀 ~ onApproval ~ res:----------txhash::::::", res);
+
       if (!res) {
         setUnLease(true);
+        return;
       } else {
         setLease(true);
       }
@@ -134,6 +170,7 @@ const Dashboard = () => {
         nodeAddress: address,
       });
       const TxHash = await processTransaction(message);
+      console.log("🚀 ~ onApproval ~ TxHash--------------------:", TxHash);
       if (!TxHash) {
         return;
       }
@@ -227,7 +264,12 @@ const Dashboard = () => {
         <Row gutter={[25, 20]} className="card-row">
           {cards.map((card, index) => (
             <Col className="gutter-row" lg={8} md={8} sm={12} xs={24}>
-              <CardBox key={index} title={card.title} value={card.value} icons={card.icons} />
+              <CardBox
+                key={index}
+                title={card.title}
+                value={card.value}
+                icons={card.icons}
+              />
             </Col>
           ))}
         </Row>
@@ -278,7 +320,9 @@ const Dashboard = () => {
 
                     <td>
                       <Tooltip title={row?.email}>
-                        <span>{row?.email ? truncateValue(row?.email, 3, 3) : "-"}</span>
+                        <span>
+                          {row?.email ? truncateValue(row?.email, 3, 3) : "-"}
+                        </span>
                       </Tooltip>
                     </td>
 
@@ -322,11 +366,21 @@ const Dashboard = () => {
                       <div className="action-btns">
                         <button
                           className="approve-btn"
-                          onClick={() => onApproval(row?.nodeAddress, row?.requestFor, row?.planId, row?.hours)}
+                          onClick={() =>
+                            onApproval(
+                              row?.nodeAddress,
+                              row?.requestFor,
+                              row?.planId,
+                              row?.hours,
+                            )
+                          }
                         >
                           Approve
                         </button>
-                        <button className="reject-btn" onClick={() => onReject(row?.nodeAddress)}>
+                        <button
+                          className="reject-btn"
+                          onClick={() => onReject(row?.nodeAddress)}
+                        >
                           Reject
                         </button>
                       </div>
@@ -345,7 +399,7 @@ const Dashboard = () => {
             onPageChange={(newPage: any) => setPage(newPage)}
             limit={limit}
             onLimitChange={(limit: number) => {
-              setLimit(limit), setPage(1);
+              (setLimit(limit), setPage(1));
             }}
           />
         )}

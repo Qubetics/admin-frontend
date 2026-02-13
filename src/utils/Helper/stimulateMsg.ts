@@ -22,11 +22,12 @@ export const simulateMsgs = async (
     {
       denom: string;
       amount: string;
-    }
+    },
   ],
-  memo: string = ""
+  memo: string = "",
 ) => {
   const account = await fetchAccountInfo(sender);
+  console.log("🚀 ~ simulateMsgs ~ account:", account);
 
   const { pubKey } = await keplr.getKey(chainId);
 
@@ -36,7 +37,7 @@ export const simulateMsgs = async (
         TxBody.fromPartial({
           messages: proto,
           memo,
-        })
+        }),
       ).finish(),
       authInfoBytes: AuthInfo.encode({
         signerInfos: [
@@ -84,13 +85,19 @@ export const simulateMsgs = async (
         body: JSON.stringify({
           tx_bytes: Buffer.from(unsignedTx).toString("base64"),
         }),
-      }
+      },
+    );
+    // console.log("🚀 ~ simulateMsgs ~ simulatedResult:", simulatedResult);
+    console.log(
+      "==========================================================SIMULATE RESPONSE:",
+      JSON.stringify(simulatedResult),
     );
 
     const gasUsed = parseInt(simulatedResult?.gas_info.gas_used);
+    console.log("🚀 ~ simulateMsgs ~ simulatedResult:", simulatedResult);
     if (Number.isNaN(gasUsed)) {
       throw new Error(
-        `Invalid integer gas: ${simulatedResult?.gas_info.gas_used}`
+        `Invalid integer gas: ${simulatedResult?.gas_info.gas_used}`,
       );
     }
 

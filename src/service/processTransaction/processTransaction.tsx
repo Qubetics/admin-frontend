@@ -4,9 +4,14 @@ import { simulateMsgs } from "../../utils/Helper/stimulateMsg";
 import { sendMsgs } from "../../utils/Helper/sendMsg";
 
 import { toast } from "react-toastify";
-import { errMessages, leaseAlreadyExists, PROCESS_TRANSACTION_ERRORS } from "../../Constant/constants";
+import {
+  errMessages,
+  leaseAlreadyExists,
+  PROCESS_TRANSACTION_ERRORS,
+} from "../../Constant/constants";
 
 export const processTransaction = async (message) => {
+  console.log("🚀 ~ processTransaction ~ message:", message);
   if (window?.keplr) {
     try {
       const chainInfos = await window.keplr?.getChainInfosWithoutEndpoints();
@@ -20,12 +25,14 @@ export const processTransaction = async (message) => {
         chainId,
         key.bech32Address,
         [message],
-        [{ denom: "tics", amount: "10000000000" }]
+        [{ denom: "tics", amount: "1000000000000" }],
       );
 
       if (gasUsed > 0) {
         const gasLimit = Math.floor(gasUsed * 1.3);
-        const feeAmount = Math.ceil(envConstants.gas_limit * gasPrice).toString();
+        const feeAmount = Math.ceil(
+          envConstants.gas_limit * gasPrice,
+        ).toString();
         const res = await sendMsgs(window.keplr, key.bech32Address, [message], {
           amount: [{ denom: "tics", amount: feeAmount }],
           gas: Math.floor(gasUsed * 1.5).toString(),
