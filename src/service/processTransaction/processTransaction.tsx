@@ -6,6 +6,7 @@ import { sendMsgs } from "../../utils/Helper/sendMsg";
 import { toast } from "react-toastify";
 import {
   errMessages,
+  INSUFFICIENT_FUNDS,
   leaseAlreadyExists,
   PROCESS_TRANSACTION_ERRORS,
 } from "../../Constant/constants";
@@ -48,6 +49,9 @@ export const processTransaction = async (message) => {
 
       for (const err of PROCESS_TRANSACTION_ERRORS) {
         if (message && message.includes(err.match)) {
+          if(err.id==INSUFFICIENT_FUNDS){
+            return INSUFFICIENT_FUNDS;
+          }
           toast.error(err.toast, { toastId: err.id });
           return false;
         }

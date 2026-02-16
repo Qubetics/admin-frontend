@@ -43,13 +43,12 @@ const Header = () => {
     };
   }, []);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [balance, setBalance] = useState<number>(0);
   const [isLoading, setIsLoading] = useState(true);
   const [isConnecting, setIsConnecting] = useState(false);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { authData, setAuthData, providerName, setProviderName, isExist, setIsExist } = useIsLoggedIn();
+  const { authData, setAuthData, providerName, setProviderName, isExist, setIsExist,balance, setBalance } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
   const menuRef = useRef<HTMLDivElement>(null);
   const width = useCurrentWidth();
