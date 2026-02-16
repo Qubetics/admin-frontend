@@ -74,6 +74,13 @@ export const ERROR_MESSAGES = {
   DISPOSABLE_EMAIL: "Sorry, but we do not accept your mail provider.",
 };
 
+export const INSUFFICIENT_FUNDS = "insufficient_funds";
+
+export const INSUFFICIENT_FUNDS_ERR_MES = { 
+  value: (msg_value: number) => `Your wallet balance is currently insufficient to lease this node. Please deposit an additional ${msg_value} TICS to proceed`, 
+  id: "insufficient_funds_id" 
+};
+
 export const PROCESS_TRANSACTION_ERRORS = [
   {
     match: "Request rejected",
@@ -116,7 +123,7 @@ export const PROCESS_TRANSACTION_ERRORS = [
     id: "insufficient_funds",
   },
 ];
-export const defaultOnLimitChange = () => {};
+export const defaultOnLimitChange = () => { };
 
 export const emailRegex =
   /^(?!\s)(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
