@@ -257,3 +257,9 @@
     }
   }
 }
+
+.footer__link--disabled {
+  pointer-events: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+}

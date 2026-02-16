@@ -143,9 +143,9 @@ const Footer = () => {
               </li>
               <li>
                 <a
-                  target="_blank"
-                  href={envConstants.app_link}
-                  className="footer__link"
+                  className="footer__link footer__link--disabled"
+                  aria-disabled="true"
+                  onClick={(e) => e.preventDefault()}
                 >
                   Qubetics dVPN
                 </a>
