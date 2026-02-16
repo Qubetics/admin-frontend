@@ -9,6 +9,7 @@ export const LoggedInProvider = ({ children }: { children: React.ReactNode }) =>
   const [providerName, setProviderName] = useState<string>("");
   const [isExist, setIsExist] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+  const [balance, setBalance] = useState<number>(0);
 
   const isInitialMount = useRef(true);
 
@@ -41,6 +42,7 @@ export const LoggedInProvider = ({ children }: { children: React.ReactNode }) =>
     setAuthData("");
     setProviderName("");
     setIsExist(false);
+    setBalance(0);
 
     sessionStorage.clear();
     localStorage.clear();
@@ -59,6 +61,8 @@ export const LoggedInProvider = ({ children }: { children: React.ReactNode }) =>
         logout,
         isExist,
         setIsExist,
+        balance,
+        setBalance
       }}
     >
       {children}

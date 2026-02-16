@@ -12,7 +12,7 @@ import {
   buildLinkNodeMessage,
   buildStartLeaseStatusMessage,
 } from '../../service/BuildMessage/buildMessage';
-import { buttons, convertNodeToWallet, convertPlanString, truncateValue } from '../../utils/Helper/CommonHelper';
+import { api, buttons, convertNodeToWallet, convertPlanString, truncateValue } from '../../utils/Helper/CommonHelper';
 import {
   DESCRIPTION,
   HEADING,
@@ -21,6 +21,8 @@ import {
   errMessages,
   linkStatus,
   requestStatus,
+  INSUFFICIENT_FUNDS,
+  INSUFFICIENT_FUNDS_ERR_MES,
 } from '../../Constant/constants';
 import NotificationToast from '../../Common/NotificationModal/NotificationModal';
 import CopyText from '../../Common/Copy/CopyText';
@@ -29,6 +31,8 @@ import { Col, Row, Tooltip } from 'antd';
 import { CircleCheckIcon } from '../../assets/SvgIcon/SvgIcon';
 import TableSkeleton from '../../Common/Loader/TableSkeleton';
 import type { CardBoxProps, RejectShowState, TableRow } from '../../utils/Interfaces';
+import { envConstants } from '../../Constant/envConstants';
+
 const Dashboard = () => {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
     show: false,
@@ -54,7 +58,7 @@ const Dashboard = () => {
 
   const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
 
-  const { authData } = useIsLoggedIn();
+  const { authData,balance } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
 
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
@@ -82,6 +86,28 @@ const Dashboard = () => {
     }
     fetchData();
     return true;
+  };
+
+  const getRequiredBalanceForNode = async (
+    address: string,
+    hours: number,
+    balance: number
+  ): Promise<number> => {
+    const uri = `${envConstants.swagger_api}/qubetics/node/v3/nodes/${address}`;
+    const response: any = await api(uri);
+  
+    const node = response?.node;
+  
+    if (!node || !node.hourly_prices?.length) {
+      throw new Error("Server Error");
+    }
+  
+    const hourlyPrice =
+      Number(node.hourly_prices[0].quote_value) / 1e18;
+  
+    const requiredAmount = Number(hours) * hourlyPrice;
+  
+    return requiredAmount - balance;
   };
 
   const leaseStatusId = async (provAddress: string, nodeAddress: string) => {
@@ -132,6 +158,22 @@ const Dashboard = () => {
       });
 
       const res = await processTransaction(leaseMessage);
+
+      if(res==INSUFFICIENT_FUNDS){
+        const need_more = await getRequiredBalanceForNode(
+          address,
+          Number(hours),
+          balance
+        );
+      
+        if (need_more > 0) {
+          toast.error(
+            INSUFFICIENT_FUNDS_ERR_MES?.value(need_more),
+            { toastId: INSUFFICIENT_FUNDS_ERR_MES?.id }
+          );
+        }
+        return;
+      }
 
       if (!res) {
         return;

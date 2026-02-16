@@ -56,6 +56,8 @@ export interface AuthContextType {
   logout: () => void;
   isExist: boolean;
   setIsExist: React.Dispatch<React.SetStateAction<boolean>>;
+  balance: number;
+  setBalance: React.Dispatch<React.SetStateAction<number>>;
 }
 export interface ErrorBoundaryProps {
   children: ReactNode;
