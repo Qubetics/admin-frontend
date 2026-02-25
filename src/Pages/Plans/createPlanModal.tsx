@@ -20,7 +20,7 @@ const CreatePlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
   };
   const [formData, setFormData] = useState(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
-  const { tokenPrice, tokenPriceLoading } = useTokenPrice();
+  const { tokenPrice } = useTokenPrice();
   const [errors, setErrors] = useState({
     price: "",
     bytes: "",

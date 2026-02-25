@@ -13,7 +13,8 @@ import {
   buildStartLeaseStatusMessage,
 } from "../../service/BuildMessage/buildMessage";
 import {
-  api, buttons,
+  api,
+  buttons,
   convertNodeToWallet,
   convertPlanString,
   truncateValue,
@@ -27,7 +28,6 @@ import {
   errMessages,
   linkStatus,
   requestStatus,
-  DECIMAL_PLACES,
   INSUFFICIENT_FUNDS,
   INSUFFICIENT_FUNDS_ERR_MES,
 } from "../../Constant/constants";
@@ -39,7 +39,7 @@ import { CircleCheckIcon } from "../../assets/SvgIcon/SvgIcon";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
 import type { CardBoxProps, RejectShowState, TableRow } from "../../utils/Interfaces";
 import { useTokenPrice } from "../../Context/TokenPriceContext";
-import { envConstants } from '../../Constant/envConstants';
+import { envConstants } from "../../Constant/envConstants";
 
 const Dashboard = () => {
   const [rejectShow, setRejectShow] = useState<RejectShowState>({
@@ -66,9 +66,9 @@ const Dashboard = () => {
 
   const handleRejectClose = () => setRejectShow({ ...rejectShow, show: false });
 
-  const { authData,balance } = useIsLoggedIn();
+  const { authData, balance } = useIsLoggedIn();
   const useGetApi = useNetworkRequest();
-  const { tokenPrice } = useTokenPrice();
+  const { tokenPrice, tokenPriceLoading } = useTokenPrice();
 
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
 
@@ -97,25 +97,20 @@ const Dashboard = () => {
     return true;
   };
 
-  const getRequiredBalanceForNode = async (
-    address: string,
-    hours: number,
-    balance: number
-  ): Promise<number> => {
+  const getRequiredBalanceForNode = async (address: string, hours: number, balance: number): Promise<number> => {
     const uri = `${envConstants.swagger_api}/qubetics/node/v3/nodes/${address}`;
     const response: any = await api(uri);
-  
+
     const node = response?.node;
-  
+
     if (!node || !node.hourly_prices?.length) {
       throw new Error("Server Error");
     }
-  
-    const hourlyPrice =
-      Number(node.hourly_prices[0].quote_value) / 1e18;
-  
+
+    const hourlyPrice = Number(node.hourly_prices[0].quote_value) / 1e18;
+
     const requiredAmount = Number(hours) * hourlyPrice;
-  
+
     return requiredAmount - balance;
   };
 
@@ -168,18 +163,11 @@ const Dashboard = () => {
 
       const res = await processTransaction(leaseMessage);
 
-      if(res==INSUFFICIENT_FUNDS){
-        const need_more = await getRequiredBalanceForNode(
-          address,
-          Number(hours),
-          balance
-        );
-      
+      if (res == INSUFFICIENT_FUNDS) {
+        const need_more = await getRequiredBalanceForNode(address, Number(hours), balance);
+
         if (need_more > 0) {
-          toast.error(
-            INSUFFICIENT_FUNDS_ERR_MES?.value(need_more),
-            { toastId: INSUFFICIENT_FUNDS_ERR_MES?.id }
-          );
+          toast.error(INSUFFICIENT_FUNDS_ERR_MES?.value(need_more), { toastId: INSUFFICIENT_FUNDS_ERR_MES?.id });
         }
         return;
       }
@@ -316,7 +304,7 @@ const Dashboard = () => {
         </div>
         <div className="outerTable">
           <table className="custom-table dashboard-table">
-            {!isLoading && (
+            {!isLoading && !tokenPriceLoading && (
               <thead>
                 <tr>
                   <th>Operator Name</th>
@@ -331,7 +319,7 @@ const Dashboard = () => {
               </thead>
             )}
             <tbody>
-              {isLoading ? (
+              {isLoading || tokenPriceLoading ? (
                 <TableSkeleton rows={2} columns={5} />
               ) : nodeList?.length === 0 ? (
                 <tr>
@@ -382,11 +370,12 @@ const Dashboard = () => {
 
                     <td>
                       <Tooltip
-                        title={
-                          row?.plan && !isNaN(parseFloat(row?.plan))
-                            ? `${noExponents(parseFloat(row?.plan) / DECIMAL_PLACES)} TICS`
-                            : undefined
-                        }
+                        title={(() => {
+                          const qv = row?.plan;
+                          if (!qv || isNaN(parseFloat(qv))) return undefined;
+                          const tics = parseFloat(String(qv)) / 1e18;
+                          return `${noExponents(tics)} TICS`;
+                        })()}
                       >
                         <span>{row?.plan ? convertPlanString(row?.plan, tokenPrice) : "-"}</span>
                       </Tooltip>

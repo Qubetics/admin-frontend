@@ -197,30 +197,22 @@ export const toFirstCapitalCase = (str: string): string => {
 };
 
 export const convertPlanString = (plan: any, tokenPrice: any): string => {
+  if (plan === null || plan === undefined) return "-";
+
   const price = parseFloat(String(tokenPrice));
   const hasFiat = !isNaN(price) && price > 0;
-
   const fmt = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(2));
 
-  if (plan?.prices?.length) {
-    const priceObj = plan.prices[0];
-    const denom = String(priceObj.denom ?? "TICS").toUpperCase();
-    const raw = parseFloat(String(priceObj.quote_value));
-    if (isNaN(raw)) return "-";
-    const tics = raw / 1e18;
-    if (hasFiat) return `$${(tics * price).toFixed(4)}/month (${fmt(tics)} ${denom})`;
-    return `${fmt(tics)} ${denom}/month`;
-  }
+  const hasPrices = !!plan?.prices?.length;
+  const rawValue = hasPrices ? plan.prices[0].quote_value : plan;
+  const raw = parseFloat(String(rawValue));
 
-  if (plan !== null && plan !== undefined) {
-    const raw = parseFloat(String(plan));
-    if (isNaN(raw)) return String(plan);
-    const tics = raw / 1e18;
-    if (hasFiat) return `$${(tics * price).toFixed(4)}/month (${fmt(tics)} TICS)`;
-    return `${fmt(tics)} TICS/month`;
-  }
+  if (isNaN(raw)) return hasPrices ? "-" : String(plan);
 
-  return "-";
+  const denom = String(hasPrices ? (plan.prices[0].denom ?? "TICS") : "TICS").toUpperCase();
+  const tics = raw / 1e18;
+
+  return hasFiat ? `$${(tics * price).toFixed(4)}/month (${fmt(tics)} ${denom})` : `${fmt(tics)} ${denom}/month`;
 };
 
 export const truncateDecimals = (value: string, decimalPlaces: number): string => {
