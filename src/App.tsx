@@ -5,6 +5,7 @@ import { RouterProvider } from "react-router-dom";
 import router from "./Routing/Routes";
 import ErrorBoundary from "./ErrorBoundary/ErrorBoundary";
 import { LoggedInProvider } from "./Context/LoggedInContext";
+import { TokenPriceProvider } from "./Context/TokenPriceContext";
 import Loader from "./Common/Loader/Loader";
 import { ToastContainer } from "react-toastify";
 
@@ -22,9 +23,11 @@ function App() {
           </div>
         }
       >
-        <LoggedInProvider>
-          <AppContent />
-        </LoggedInProvider>
+        <TokenPriceProvider>
+          <LoggedInProvider>
+            <AppContent />
+          </LoggedInProvider>
+        </TokenPriceProvider>
       </Suspense>
       <ToastContainer position="top-right" autoClose={3000} />
     </ErrorBoundary>

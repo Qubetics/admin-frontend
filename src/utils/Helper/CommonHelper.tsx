@@ -196,14 +196,23 @@ export const toFirstCapitalCase = (str: string): string => {
     .join(" ");
 };
 
-export const convertPlanString = (planStr?: string): string => {
-  if (!planStr) return "";
+export const convertPlanString = (plan: any, tokenPrice: any): string => {
+  if (plan === null || plan === undefined) return "-";
 
-  const [valueStr, ...rest] = planStr.split(" ");
-  const unitStr = rest.join(" ");
-  const convertedValue = getValueWithUnit(valueStr);
+  const price = parseFloat(String(tokenPrice));
+  const hasFiat = !isNaN(price) && price > 0;
+  const fmt = (n: number): string => (Number.isInteger(n) ? String(n) : n.toFixed(2));
 
-  return `${Number(convertedValue).toFixed(2)} ${unitStr}`;
+  const hasPrices = !!plan?.prices?.length;
+  const rawValue = hasPrices ? plan.prices[0].quote_value : plan;
+  const raw = parseFloat(String(rawValue));
+
+  if (isNaN(raw)) return hasPrices ? "-" : String(plan);
+
+  const denom = String(hasPrices ? (plan.prices[0].denom ?? "TICS") : "TICS").toUpperCase();
+  const tics = raw / 1e18;
+
+  return hasFiat ? `$${(tics * price).toFixed(4)}/month (${fmt(tics)} ${denom})` : `${fmt(tics)} ${denom}/month`;
 };
 
 export const truncateDecimals = (value: string, decimalPlaces: number): string => {
