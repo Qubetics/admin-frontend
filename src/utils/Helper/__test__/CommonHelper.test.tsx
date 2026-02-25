@@ -205,4 +205,30 @@ describe("CommonHelper - Network / Blockchain", () => {
     expect(typeof truncateDecimals).toBe("function");
     expect(truncateDecimals("1.234567", 4)).toBe("1.2346");
   });
+
+  test("convertPlanString", () => {
+    // With prices array
+    const planWithPrices = { prices: [{ denom: "usdc", quote_value: "1000000000000000000" }] };
+    expect(CommonHelper.convertPlanString(planWithPrices, 0.5)).toBe("$0.5000/month (1 USDC)");
+    expect(CommonHelper.convertPlanString(planWithPrices, 0)).toBe("1 USDC/month");
+
+    // Invalid quote_value
+    const planInvalidQuote = { prices: [{ denom: "usdc", quote_value: "invalid" }] };
+    expect(CommonHelper.convertPlanString(planInvalidQuote, 0.5)).toBe("-");
+
+    // With raw plan (value only)
+    expect(CommonHelper.convertPlanString("1000000000000000000", 0.5)).toBe("$0.5000/month (1 TICS)");
+    expect(CommonHelper.convertPlanString("1000000000000000000", 0)).toBe("1 TICS/month");
+
+    // Invalid raw plan
+    expect(CommonHelper.convertPlanString("invalid", 0.5)).toBe("invalid");
+
+    // Null or undefined plan
+    expect(CommonHelper.convertPlanString(null, 0.5)).toBe("-");
+    expect(CommonHelper.convertPlanString(undefined, 0.5)).toBe("-");
+
+    // Decimals test
+    const planWithDecimals = { prices: [{ denom: "tics", quote_value: "1500000000000000000" }] };
+    expect(CommonHelper.convertPlanString(planWithDecimals, 0)).toBe("1.50 TICS/month");
+  });
 });

@@ -1,11 +1,6 @@
 // __test__/createPlanModal.test.tsx
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-} from "@testing-library/react";
+import { render, screen, fireEvent, act } from "@testing-library/react";
 import CreatePlanModal from "../createPlanModal";
 
 const mockToastError = jest.fn();
@@ -28,6 +23,11 @@ jest.mock("../../../service/processTransaction/processTransaction", () => ({
 jest.mock("../../../utils/Helper/CommonHelper", () => ({
   ModifyNum: (v: any) => v,
   sanitizeInput: (value: any) => value,
+  getValueWithUnit: (v: any) => String(Number(v) / 1e18),
+}));
+
+jest.mock("../../../Context/TokenPriceContext", () => ({
+  useTokenPrice: () => ({ tokenPrice: 0.017 }),
 }));
 
 jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => (props: any) => {
@@ -57,19 +57,11 @@ jest.mock("long", () => ({
 }));
 
 jest.mock("../../../Common/CustomInput/CustomInput", () => (props: any) => {
-  return (
-    <input
-      data-testid={props.name}
-      name={props.name}
-      value={props.value}
-      onChange={props.onChange}
-    />
-  );
+  return <input data-testid={props.name} name={props.name} value={props.value} onChange={props.onChange} />;
 });
 
 jest.mock("../../../Common/NotificationModal/NotificationModal", () => {
-  return ({ show }: any) =>
-    show ? <div data-testid="notif">Plan Created Successfully!</div> : null;
+  return ({ show }: any) => (show ? <div data-testid="notif">Plan Created Successfully!</div> : null);
 });
 jest.mock("../../../Common/ButtonCustom/ButtonCustom", () => (props: any) => {
   return (
@@ -249,5 +241,12 @@ describe("CreatePlanModal Component", () => {
     expect(notif).toBeInTheDocument();
 
     fireEvent.click(notif);
+  });
+
+  test("shows flat amount input when price is typed and tokenPrice > 0", () => {
+    setup();
+    const price = screen.getByTestId("price");
+    fireEvent.change(price, { target: { value: "1000000000000000000" } }); 
+    expect(screen.getByTestId("flatAmount")).toHaveValue("$17000000000000002.0000");
   });
 });

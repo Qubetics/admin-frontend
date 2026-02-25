@@ -10,6 +10,7 @@ import { toast } from "react-toastify";
 import CustomInput from "../../Common/CustomInput/CustomInput";
 import NotificationToast from "../../Common/NotificationModal/NotificationModal";
 import type { CreatePlanModalProps } from "../../utils/Interfaces";
+import { useTokenPrice } from "../../Context/TokenPriceContext";
 
 const CreatePlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }: CreatePlanModalProps) => {
   const initialFormData = {
@@ -19,6 +20,7 @@ const CreatePlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
   };
   const [formData, setFormData] = useState(initialFormData);
   const [isLoading, setIsLoading] = useState(false);
+  const { tokenPrice, tokenPriceLoading } = useTokenPrice();
   const [errors, setErrors] = useState({
     price: "",
     bytes: "",
@@ -145,6 +147,18 @@ const CreatePlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                 {errors.price && <p style={{ color: "red", fontSize: "12px" }}>{errors.price}</p>}
               </div>
 
+              {formData.price && !errors.price && tokenPrice > 0 && (
+                <div className="form-group">
+                  <label>Flat Amount</label>
+                  <CustomInput
+                    type="text"
+                    name="flatAmount"
+                    value={`$${(Number(formData.price) * tokenPrice).toFixed(4)}`}
+                    disable={true}
+                  />
+                </div>
+              )}
+
               <div className="form-group">
                 <label>Plan Bandwidth</label>
                 <CustomInput
@@ -154,7 +168,7 @@ const CreatePlanModal = ({ createShow, setCreateShow, getAllPlan, provAddress }:
                   value={formData.bytes}
                   onChange={handleChange}
                 />
-                {errors.bytes && <p style={{ color: "red", fontSize: "12px" }}>{errors.bytes}</p>}
+                {errors.bytes && <p style={{ color: "red", fontStyle: "bold", fontSize: "12px" }}>{errors.bytes}</p>}
               </div>
 
               <div className="create-form">
