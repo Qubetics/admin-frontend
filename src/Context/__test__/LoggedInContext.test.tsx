@@ -34,6 +34,8 @@ describe("LoggedInContext", () => {
       logout: expect.any(Function),
       isExist: false,
       setIsExist: expect.any(Function),
+      balance: 0,
+      setBalance: expect.any(Function),
     });
   });
 
@@ -85,9 +87,7 @@ describe("LoggedInContext", () => {
 
     const spy = jest.spyOn(console, "error").mockImplementation(() => {});
 
-    expect(() => render(<TestComponent />)).toThrow(
-      "useIsLoggedIn must be used within a LoggedInProvider"
-    );
+    expect(() => render(<TestComponent />)).toThrow("useIsLoggedIn must be used within a LoggedInProvider");
 
     spy.mockRestore();
   });
@@ -99,9 +99,7 @@ describe("LoggedInContext", () => {
     localStorage.setItem("providerName", "Keplr");
     sessionStorage.setItem("something", "test");
 
-    const consoleSpy = jest
-      .spyOn(console, "error")
-      .mockImplementation(() => {});
+    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 
     const TestComponent = () => {
       contextValue = useIsLoggedIn();
@@ -112,7 +110,7 @@ describe("LoggedInContext", () => {
       render(
         <LoggedInProvider>
           <TestComponent />
-        </LoggedInProvider>
+        </LoggedInProvider>,
       );
     });
 

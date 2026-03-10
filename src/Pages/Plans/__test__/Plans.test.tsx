@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import {
-  render,
-  screen,
-  waitFor,
-  fireEvent,
-  act,
-} from "@testing-library/react";
+import { render, screen, waitFor, fireEvent, act } from "@testing-library/react";
 import Plans from "../Plans";
 
 // mock toast
@@ -35,12 +29,19 @@ jest.mock("../../../Context/LoggedInContext.tsx", () => ({
   }),
 }));
 
+// mock token price context
+jest.mock("../../../Context/TokenPriceContext", () => ({
+  useTokenPrice: () => ({ tokenPrice: 0.017 }),
+}));
+
 // mock helper functions
 jest.mock("../../../utils/Helper/CommonHelper.tsx", () => ({
   Timestamp: (v: any) => `TS-${v}`,
   convertNodeToWallet: () => "wallet123",
+  convertPlanString: () => "10 USDC",
   formatDuration: () => "5 hrs",
   getValueWithUnit: () => "10",
+  noExponents: (v: any) => String(v),
 }));
 
 jest.mock("../../../Constant/constants.tsx", () => ({
@@ -67,9 +68,7 @@ jest.mock("../../../service/processTransaction/processTransaction.tsx", () => ({
 // mock modal
 jest.mock("../../../Pages/Plans/createPlanModal.tsx", () => {
   return function MockModal(props: any) {
-    return props.createShow ? (
-      <div data-testid="create-modal">Modal Open</div>
-    ) : null;
+    return props.createShow ? <div data-testid="create-modal">Modal Open</div> : null;
   };
 });
 
@@ -83,10 +82,16 @@ jest.mock("../../../Common/Loader/TableSkeleton.tsx", () => () => (
 describe("Plans Component", () => {
   beforeEach(() => {
     jest.clearAllMocks();
-        mockUseApi.mockResolvedValue({
+    mockUseApi.mockResolvedValue({
       success: true,
       data: { data: [], total: { total: 0 } },
     });
+
+    global.fetch = jest.fn(() =>
+      Promise.resolve({
+        json: () => Promise.resolve({ data: { current_token_price: "0.017" } }),
+      }),
+    ) as jest.Mock;
   });
 
   const mockPlansResponse = {
@@ -307,7 +312,7 @@ describe("Plans Component", () => {
     mockProcessTx.mockReturnValue(
       new Promise((res) => {
         resolveTx = res;
-      })
+      }),
     );
 
     await act(async () => {
@@ -345,9 +350,7 @@ describe("Plans Component", () => {
       },
     };
 
-    mockUseApi
-      .mockResolvedValueOnce(response)
-      .mockResolvedValueOnce(response);
+    mockUseApi.mockResolvedValueOnce(response).mockResolvedValueOnce(response);
 
     mockProcessTx.mockResolvedValue("tx-hash");
 

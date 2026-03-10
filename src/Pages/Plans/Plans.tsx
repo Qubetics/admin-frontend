@@ -10,9 +10,17 @@ import { STATUS_ENUM, activeStatus, bytesToGb, provWalletPrefix } from "../../Co
 import { processTransaction } from "../../service/processTransaction/processTransaction";
 import Long from "long";
 import { useIsLoggedIn } from "../../Context/LoggedInContext";
-import { Timestamp, convertNodeToWallet, formatDuration, getValueWithUnit } from "../../utils/Helper/CommonHelper";
+import {
+  Timestamp,
+  convertNodeToWallet,
+  convertPlanString,
+  formatDuration,
+  noExponents,
+} from "../../utils/Helper/CommonHelper";
+import { Tooltip } from "antd";
 import { toast } from "react-toastify";
 import TableSkeleton from "../../Common/Loader/TableSkeleton";
+import { useTokenPrice } from "../../Context/TokenPriceContext";
 
 const Plans = () => {
   const [planList, setPlanList] = useState<Plan[]>([]);
@@ -23,6 +31,7 @@ const Plans = () => {
   const [isTxRunning, setIsTxRunning] = useState(false);
 
   const provAddress = convertNodeToWallet(authData, provWalletPrefix);
+  const { tokenPrice, tokenPriceLoading } = useTokenPrice();
 
   const getAllPlan = async () => {
     const { success, data } = await useGetApi({
@@ -76,7 +85,7 @@ const Plans = () => {
       <div className="custom-table-wrapper commonTable">
         <div className="outerTable">
           <table className="custom-table plans-table">
-            {!isLoading && (
+            {!isLoading && !tokenPriceLoading && (
               <thead>
                 <tr>
                   <th>Plan ID</th>
@@ -90,7 +99,7 @@ const Plans = () => {
             )}
 
             <tbody>
-              {isLoading ? (
+              {isLoading || tokenPriceLoading ? (
                 <TableSkeleton rows={4} columns={6} />
               ) : planList.length === 0 ? (
                 <tr>
@@ -104,11 +113,16 @@ const Plans = () => {
                     <td>{row?.id}</td>
 
                     <td>
-                      {row?.prices?.length > 0
-                        ? `${getValueWithUnit(row?.prices[0]?.quote_value)} ${String(
-                            row?.prices[0]?.denom
-                          ).toUpperCase()}`
-                        : "-"}
+                      <Tooltip
+                        title={(() => {
+                          const qv = row?.prices[0]?.quote_value;
+                          if (!qv) return undefined;
+                          const tics = parseFloat(String(qv)) / 1e18;
+                          return `${noExponents(tics)} ${String(row?.prices[0]?.denom ?? "").toUpperCase()}`;
+                        })()}
+                      >
+                        <span>{row?.prices[0]?.quote_value ? convertPlanString(row, tokenPrice) : "-"}</span>
+                      </Tooltip>
                     </td>
 
                     <td>{bytesToGb(Number(row?.gigabytes)) + " GB" || ""}</td>
