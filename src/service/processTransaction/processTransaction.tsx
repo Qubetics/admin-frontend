@@ -44,7 +44,7 @@ export const processTransaction = async (message) => {
     } catch (error) {
       const message = error?.message || String(error);
       if (message?.toLowerCase()?.includes(leaseAlreadyExists)) {
-        return false;
+        return true;
       }
 
       for (const err of PROCESS_TRANSACTION_ERRORS) {
