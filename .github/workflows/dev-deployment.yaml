@@ -7,7 +7,7 @@ on:
 
 jobs:
   user-admin-frontend:
-    uses: Qubetics/argocd-qubetics/.github/workflows/deployment.yaml@dev
+    uses: Qubetics/argocd-qubetics/.github/workflows/helm-deployment.yaml@dev
     with:
       SWR_ORGANIZATION: dev-qubetics
       ARGOCD_BRANCH: dev
