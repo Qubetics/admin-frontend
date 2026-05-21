@@ -13,7 +13,7 @@ jobs:
       ARGOCD_BRANCH: dev
       HUAWEI_REGION: 'ap-southeast-3'
       ARGOCD_REPOSITORY: Qubetics/argocd-qubetics
-      DEPLOYMENT_PATH: Dvpn-admin-frontend/deployment.yaml
+      DEPLOYMENT_PATH: services/vaules/dvpn-admin-frontend.yaml
       HUAWEI_IMAGE: dvpn-admin-frontend
       DOCKER_USERNAME: ap-southeast-3@${{ vars.DOCKER_USERNAME_V2 }}
       ENV: ${{ vars.DEV_FRONTEND }}
